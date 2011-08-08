@@ -122,6 +122,39 @@ AC_ARG_WITH(kasumi-icon,
            [KASUMI_ICON_FILE="$datadir/pixmaps/kasumi.png"])
 AC_SUBST(KASUMI_ICON_FILE)
 
+dnl - check hotkeys for ibus-anthy which is used for ibus bridge mode.
+dnl - Normally you don't need this so could be HOTKEYS="no"
+AC_ARG_WITH(hotkeys,
+           [AC_HELP_STRING([--with-hotkeys=HOTKEYS],
+                   [Use hotkeys for ibus bridge mode. (available value: yes/no/keys)])],
+           [HOTKEYS="$withval"],
+           [HOTKEYS="no"])
+if test x"$HOTKEYS" = x"no"; then
+    HOTKEYS_XML="<!-- <hotkeys>Control+space,Zenkaku_Hankaku</hotkeys> -->"
+elif test x"$HOTKEYS" = x"yes"; then
+    HOTKEYS_XML="<hotkeys>Control+space,Zenkaku_Hankaku</hotkeys>"
+elif test x"$HOTKEYS" = x; then
+    HOTKEYS_XML="<hotkeys>Control+space,Zenkaku_Hankaku</hotkeys>"
+elif test x"$HOTKEYS" = xnull; then
+    HOTKEYS_XML="<hotkeys></hotkeys>"
+else
+    HOTKEYS_XML="<hotkeys>${HOTKEYS}</hotkeys>"
+fi
+AC_SUBST(HOTKEYS_XML)
+
+SYMBOL_CHAR='&#x3042;'
+SYMBOL_TEST="import ibus
+engine = ibus.EngineDesc('test')
+exit(not hasattr(engine, 'symbol'))
+"
+$PYTHON -c "$SYMBOL_TEST"
+if test $? -eq 0; then
+    SYMBOL_XML="<symbol>${SYMBOL_CHAR}</symbol>"
+else
+    SYMBOL_XML="<!-- <symbol>${SYMBOL_CHAR}</symbol> -->"
+fi
+AC_SUBST(SYMBOL_XML)
+
 dnl - define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus-anthy
 AC_SUBST(GETTEXT_PACKAGE)
@@ -146,3 +179,15 @@ m4/Makefile
 ])
 
 AC_OUTPUT
+echo "
+                IBus-Anthy version ibus_version
+
+python-config:           $PYTHON_CONFIG
+PYTHON_CFLAGS            $PYTHON_CFLAGS
+PYTHON_LIBS              $PYTHON_LIBS
+ANTHY_ZIPCODE_FILE       $ANTHY_ZIPCODE_FILE
+KASUMI_EXEC_FILE         $KASUMI_EXEC_FILE
+KASUMI_ICON_FILE         $KASUMI_ICON_FILE
+HOTKEYS_XML              $HOTKEYS_XML
+SYMBOL_XML               $SYMBOL_XML
+"

@@ -18,6 +18,7 @@ BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  anthy-devel
 BuildRequires:  gettext-devel
+BuildRequires:  ibus
 BuildRequires:  intltool >= %require_intltool_version
 BuildRequires:  libtool
 BuildRequires:  pkgconfig
