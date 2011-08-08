@@ -22,7 +22,6 @@
 
 import os
 from os import environ, path
-from locale import getpreferredencoding
 import signal
 import sys
 import gobject
@@ -37,6 +36,11 @@ from ibus import keysyms
 from ibus import modifier
 import jastring
 from segment import unichar_half_to_full
+
+try:
+    from locale import getpreferredencoding
+except:
+    pass
 
 try:
     from gtk import clipboard_get
@@ -118,7 +122,10 @@ class Engine(ibus.EngineBase):
         self.__segment_mode = SEGMENT_DEFAULT
         self.__dict_mode = 0
         self.__prop_dict = {}
-        self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
+        try:
+            self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
+        except:
+            self.__is_utf8 = False
         self.__ibus_version = 0
 
 #        self.__lookup_table = ibus.LookupTable(page_size=9, round=True)

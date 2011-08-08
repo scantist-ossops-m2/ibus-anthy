@@ -28,6 +28,11 @@ from gtk import glade
 from ibus import keysyms, modifier, Bus
 from gettext import dgettext, bindtextdomain
 
+try:
+    from locale import getpreferredencoding
+except:
+    pass
+
 from anthyprefs import AnthyPrefs
 
 
@@ -183,6 +188,14 @@ class AnthySetup(object):
         about_vbox = self.xml.get_widget("about_vbox")
 
         about_dialog.set_version(self.prefs.get_version())
+        try:
+            if getpreferredencoding().lower() == "utf-8":
+                copyright = about_dialog.get_copyright()
+                copyright = copyright.replace('(c)', '\xc2\xa9')
+                copyright = copyright.replace('-', '\xe2\x80\x93')
+                about_dialog.set_copyright(copyright)
+        except:
+            pass
         if icon_path != None:
             image = gtk.image_new_from_file(icon_path)
             about_dialog.set_logo(image.get_pixbuf())
