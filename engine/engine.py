@@ -1423,7 +1423,7 @@ class Engine(ibus.EngineBase):
     def _get_userhome(cls):
         if 'HOME' not in environ:
             import pwd
-            userhome = pwd.getpwuid(getuid()).pw_dir
+            userhome = pwd.getpwuid(os.getuid()).pw_dir
         else:
             userhome = environ['HOME']
         userhome = userhome.rstrip('/')
