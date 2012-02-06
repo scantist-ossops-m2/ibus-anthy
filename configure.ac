@@ -155,6 +155,20 @@ else
 fi
 AC_SUBST(SYMBOL_XML)
 
+dnl - set ibus-anthy layout
+AC_ARG_WITH(layout,
+           [AC_HELP_STRING([--with-layout=LAYOUT],
+                           [Define the layout. the default is 'jp'.
+                            Probably you could set 'default'.])],
+           [LAYOUT="$withval"],
+           [LAYOUT="jp"])
+if test x"$LAYOUT" = x; then
+    LAYOUT_XML="<layout>jp</layout>"
+else
+    LAYOUT_XML="<layout>${LAYOUT}</layout>"
+fi
+AC_SUBST(LAYOUT_XML)
+
 dnl - define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus-anthy
 AC_SUBST(GETTEXT_PACKAGE)
@@ -190,4 +204,5 @@ KASUMI_EXEC_FILE         $KASUMI_EXEC_FILE
 KASUMI_ICON_FILE         $KASUMI_ICON_FILE
 HOTKEYS_XML              $HOTKEYS_XML
 SYMBOL_XML               $SYMBOL_XML
+LAYOUT_XML               $LAYOUT_XML
 "
