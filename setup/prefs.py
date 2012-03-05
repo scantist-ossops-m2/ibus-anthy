@@ -20,8 +20,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from ibus import Bus
+import sys
 
+from gi.repository import GLib
+from gi.repository import IBus
 
 class Prefs(object):
     _prefix = 'engine/dummy'
@@ -30,10 +32,39 @@ class Prefs(object):
         self.default = {}
         self.modified = {}
         self.new = {}
+        self.__no_key_warning = False
 
         self._config = config if config else \
                        bus.get_config() if bus else  \
-                       Bus().get_config()
+                       IBus.Bus().get_config()
+
+    def __log_handler(self, domain, level, message, data):
+        if not data:
+            return
+        GLib.log_default_handler(domain, level, message, '')
+
+    def variant_to_value(self, variant):
+        if type(variant) != GLib.Variant:
+            return variant
+        if variant.get_type_string() == 's':
+            return variant.get_string()
+        elif variant.get_type_string() == 'i':
+            return variant.get_int32()
+        elif variant.get_type_string() == 'b':
+            return variant.get_boolean()
+        elif variant.get_type_string() == 'as':
+            return variant.dup_strv()[0]
+        else:
+            print >> sys.stderr, 'Unknown variant type:', \
+                variant.get_type_string()
+            sys.abrt()
+        return variant
+
+    def set_no_key_warning(self, no_key_warning):
+        if no_key_warning and hasattr(IBus, 'unset_log_handler'):
+            self.__no_key_warning = True
+        else:
+            self.__no_key_warning = False
 
     def keys(self, section):
         return self.default[section].keys()
@@ -60,7 +91,15 @@ class Prefs(object):
         s = section
         section = '/'.join(
             [s for s in '/'.join([self._prefix, section]).split('/') if s])
-        return self._config.get_value(section, key, default)
+        try:
+            if self.__no_key_warning:
+                IBus.set_log_handler(False)
+            variant = self._config.get_value(section, key)
+            if self.__no_key_warning:
+                IBus.unset_log_handler()
+            return self.variant_to_value(variant)
+        except:
+            return default
 
     def set_value(self, section, key, value):
         if section not in self.sections():
@@ -81,7 +120,20 @@ class Prefs(object):
     def fetch_item(self, section, key, readonly=False):
         s = '/'.join(
             [s for s in '/'.join([self._prefix, section]).split('/') if s])
-        v = self._config.get_value(s, key, None)
+        try:
+            v = None
+            # gobject-introspection has a bug.
+            # https://bugzilla.gnome.org/show_bug.cgi?id=670509
+            # GLib.log_set_handler("IBUS", GLib.LogLevelFlags.LEVEL_MASK,
+            #                      self.__log_handler, False)
+            if self.__no_key_warning:
+                IBus.set_log_handler(False)
+            variant = self._config.get_value(s, key)
+            if self.__no_key_warning:
+                IBus.unset_log_handler()
+            v = self.variant_to_value(variant)
+        except:
+            v = None
         if readonly:
             return v != None
         if v != None:
@@ -104,7 +156,19 @@ class Prefs(object):
             v = self.new[section][key]
             if v == []:
                 v = ['']
-            self._config.set_value(s, key, v)
+            variant = None
+            if type(v) == str:
+                variant = GLib.Variant.new_string(v)
+            elif type(v) == int:
+                variant = GLib.Variant.new_int32(v)
+            elif type(v) == bool:
+                variant = GLib.Variant.new_boolean(v)
+            elif type(v) == list:
+                variant = GLib.Variant.new_strv(v)
+            if variant == None:
+                print >> sys.stderr, 'Unknown value type:', type(v)
+                sys.abrt()
+            self._config.set_value(s, key, variant)
             self.modified.setdefault(section, {})[key] = v
             del(self.new[section][key])
 
@@ -137,4 +201,27 @@ class Prefs(object):
                 self.new[section][key] = self.default[section][key]
         except:
             pass
+
+    # Convert DBus.String to str
+    # sys.getdefaultencoding() == 'utf-8' with pygtk2 but
+    # sys.getdefaultencoding() == 'ascii' with gi gtk3
+    # so the simple str(unicode_string) causes an error and need to use
+    # unicode_string.encode('utf-8') instead.
+    def str(self, uni):
+        if uni == None:
+            return None
+        if type(uni) == str:
+            return uni
+        if type(uni) == unicode:
+            return uni.encode('utf-8')
+        return str(uni)
+
+    # The simple unicode(string) causes an error and need to use
+    # unicode(string, 'utf-8') instead.
+    def unicode(self, string):
+        if string == None:
+            return None
+        if type(string) == unicode:
+            return string
+        return unicode(string, 'utf-8')
 

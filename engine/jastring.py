@@ -87,9 +87,9 @@ class JaString:
             else:
                 new_segments = segment_after.prepend(c)
         else:
-            if c != u"\0" and c != u"":
+            if c != u'\0' and c != u'':
                 if self.__mode == TYPING_MODE_ROMAJI:
-                    new_segments = [romaji.RomajiSegment(c, u"", self.__shift)]
+                    new_segments = [romaji.RomajiSegment(c, u'', self.__shift)]
                 elif self.__mode == TYPING_MODE_KANA:
                     # kana mode doesn't have shift latin in MS.
                     new_segments = [kana.KanaSegment(c)]
@@ -222,34 +222,34 @@ class JaString:
     def get_hiragana(self, commit=False):
         conv = lambda s: s.to_hiragana()
         R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ん'
-        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
-        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        text_before = R(u''.join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u''.join(map(conv, self.__segments[self.__cursor:])))
         return self._chk_text(text_before + text_after), len(text_before)
 
     def get_katakana(self, commit=False):
         conv = lambda s: s.to_katakana()
         R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ン'
-        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
-        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        text_before = R(u''.join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u''.join(map(conv, self.__segments[self.__cursor:])))
         return self._chk_text(text_before + text_after), len(text_before)
 
     def get_half_width_katakana(self, commit=False):
         conv = lambda s: s.to_half_width_katakana()
         R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ﾝ'
-        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
-        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        text_before = R(u''.join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u''.join(map(conv, self.__segments[self.__cursor:])))
         return self._chk_text(text_before + text_after), len(text_before)
 
     def get_latin(self):
         conv = lambda s: s.to_latin()
-        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
-        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        text_before = u''.join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u''.join(map(conv, self.__segments[self.__cursor:]))
         return text_before + text_after, len(text_before)
 
     def get_wide_latin(self):
         conv = lambda s: s.to_wide_latin()
-        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
-        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        text_before = u''.join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u''.join(map(conv, self.__segments[self.__cursor:]))
         return text_before + text_after, len(text_before)
 
     def is_empty(self):

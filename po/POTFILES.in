@@ -4,4 +4,4 @@ engine/engine.py
 engine/factory.py
 setup/anthyprefs.py.in
 setup/main.py
-setup/setup.glade
+[type: gettext/glade]setup/setup.ui

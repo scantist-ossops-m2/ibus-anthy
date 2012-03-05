@@ -20,15 +20,20 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 dnl - if not 1, append datestamp to the version number.
-m4_define([ibus_released], [1])
+m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [2])
-m4_define([ibus_micro_version], [7])
+m4_define([ibus_minor_version], [3])
+m4_define([ibus_micro_version], [99])
+m4_define([ibus_abi_current], [4])
+m4_define([ibus_abi_revision],
+          [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
+m4_define([ibus_abi_age], [0])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
+m4_define([glib_required_version], [2.26.0])
 
 AC_INIT([ibus-anthy], [ibus_version], [http://code.google.com/p/ibus/issues/entry],[ibus-anthy])
 AM_INIT_AUTOMAKE([1.10])
@@ -70,12 +75,36 @@ NTH_HALFKANA_CANDIDATE],,
     AC_MSG_ERROR([Could not find NTH_*_CANDIDATE values in anthy.h]),
     [[#include <anthy/anthy.h>]])
 
-dnl - check swig
-AC_PATH_PROG(SWIG, swig)
-if test x"$SWIG" = x""; then
-     AC_MSG_ERROR([can not find swig])
-fi
-AC_SUBST(SWIG)
+PKG_CHECK_MODULES(GOBJECT2, [
+    gobject-2.0 >= glib_required_version
+])
+
+dnl - GObject introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.8])
+
+dnl - check libanthy directory
+AC_ARG_WITH(anthygobject-libdir,
+           [AC_HELP_STRING([--with-anthygobject-libdir=PATH],
+                           [file path of libanthygobject.so])],
+           [ANTHY_GOBJECT_LIBDIR="$withval"],
+           [ANTHY_GOBJECT_LIBDIR='$(libdir)'])
+AC_SUBST(ANTHY_GOBJECT_LIBDIR)
+
+dnl - check anthygir directory
+AC_ARG_WITH(anthygoject-girdir,
+           [AC_HELP_STRING([--with-anthygobject-girdir=PATH],
+                           [file path of anthy.gir])],
+           [ANTHY_GOBJECT_GIRDIR="$withval"],
+           [ANTHY_GOBJECT_GIRDIR='$(datadir)/gir-1.0'])
+AC_SUBST(ANTHY_GOBJECT_GIRDIR)
+
+dnl - check anthygir directory
+AC_ARG_WITH(anthygobject-typelibsdir,
+           [AC_HELP_STRING([--with-anthygobject-typelibsdir=PATH],
+                           [file path of anthy.typelibs])],
+           [ANTHY_GOBJECT_TYPELIBSDIR="$withval"],
+           [ANTHY_GOBJECT_TYPELIBSDIR='$(libdir)/girepository-1.0'])
+AC_SUBST(ANTHY_GOBJECT_TYPELIBSDIR)
 
 dnl - check env
 AC_PATH_PROG(ENV_IBUS_TEST, env)
@@ -84,19 +113,58 @@ AC_SUBST(ENV_IBUS_TEST)
 dnl - check python
 AM_PATH_PYTHON([2.5])
 
-AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
-if test x"$PYTHON_CONFIG" = x""; then
-    AC_PATH_PROG(PYTHON_CONFIG, python-config)
+dnl - engine-env
+AC_MSG_CHECKING([what are the enviroments for ibus-engine-anthy])
+AC_ARG_WITH(engine-env,
+           [AC_HELP_STRING([--engine-env=ENVIRONMENTS],
+                           [ibus-engine-anthy environments likes
+                            "LD_LIBRARY_PATH=/usr/lib/anthy" for libanthy.so.
+                            default is none])],
+           [engine_env="$withval"],
+           [engine_env='none'])
+AC_MSG_RESULT($engine_env)
+ENV_IBUS_ENGINE=""
+if test x"$engine_env" != xnone; then
+    ENV_IBUS_ENGINE="$ENV_IBUS_TEST $engine_env"
 fi
-if test x"$PYTHON_CONFIG" != x""; then
-    PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
-    PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+AC_SUBST(ENV_IBUS_ENGINE)
+
+dnl - check pygtk2
+AC_MSG_CHECKING([whether you enable pygtk2 anthy])
+AC_ARG_ENABLE(pygtk2-anthy,
+              AS_HELP_STRING([--enable-pygtk2-anthy=no/yes],
+                             [Install pygtk2 anthy default=no]),
+              enable_pygtk2_anthy=yes,
+              enable_pygtk2_anthy=no)
+AC_MSG_RESULT($enable_pygtk2_anthy)
+
+if test x"$enable_pygtk2_anthy" = xyes; then
+    AM_CONDITIONAL(HAVE_PYGTK2_ANTHY, true)
+
+    dnl - check swig
+    AC_PATH_PROG(SWIG, swig)
+    if test x"$SWIG" = x""; then
+        AC_MSG_ERROR([can not find swig])
+    fi
+    AC_SUBST(SWIG)
+
+    AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
+    if test x"$PYTHON_CONFIG" = x""; then
+        AC_PATH_PROG(PYTHON_CONFIG, python-config)
+    fi
+    if test x"$PYTHON_CONFIG" != x""; then
+        PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
+        PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+    else
+        PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
+        PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
+    fi
+    AC_SUBST(PYTHON_CFLAGS)
+    AC_SUBST(PYTHON_LIBS)
 else
-    PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
-    PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
+    AM_CONDITIONAL(HAVE_PYGTK2_ANTHY, false)
 fi
-AC_SUBST(PYTHON_CFLAGS)
-AC_SUBST(PYTHON_LIBS)
+
 
 dnl - check file path of Anthy zipcode.t
 AC_ARG_WITH(anthy-zipcode,
@@ -169,6 +237,20 @@ else
 fi
 AC_SUBST(LAYOUT_XML)
 
+dnl libtool versioning
+dnl
+dnl If LT_VERSION_INFO="lt_current:lt_revision:lt_age", libibus is
+dnl libibus-ibus_api_version.so.(lt_current - lt_age).lt_age.lt_revision
+dnl If the abi is changed, but it is compatible with last version,
+dnl ibus_abi_current++, ibus_abi_age++;
+dnl If the abi is not compatible with last version,
+dnl ibus_abi_current++, ibus_abi_age = 0;
+m4_define([lt_current], [ibus_abi_current])
+m4_define([lt_revision], [ibus_abi_revision])
+m4_define([lt_age], [ibus_abi_age])
+LT_VERSION_INFO="lt_current:lt_revision:lt_age"
+AC_SUBST(LT_VERSION_INFO)
+
 dnl - define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus-anthy
 AC_SUBST(GETTEXT_PACKAGE)
@@ -183,6 +265,7 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-anthy.spec
 data/Makefile
+gir/Makefile
 engine/Makefile
 engine/ibus-engine-anthy
 engine/anthy.xml.in
@@ -196,6 +279,14 @@ AC_OUTPUT
 echo "
                 IBus-Anthy version ibus_version
 
+GOBJECT2_CFLAGS          $GOBJECT2_CFLAGS
+GOBJECT2_LIBS            $GOBJECT2_LIBS
+ANTHY_GOBJECT_LIBDIR     $ANTHY_GOBJECT_LIBDIR
+ANTHY_GOBJECT_GIRDIR     $ANTHY_GOBJECT_GIRDIR
+ANTHY_GOBJECT_GIRDIR     $ANTHY_GOBJECT_TYPELIBSDIR
+LT_VERSION_INFO          $LT_VERSION_INFO
+ENV_IBUS_ENGINE          $ENV_IBUS_ENGINE
+HAVE_PYGTK2_ANTHY        $enable_pygtk2_anthy
 python-config:           $PYTHON_CONFIG
 PYTHON_CFLAGS            $PYTHON_CFLAGS
 PYTHON_LIBS              $PYTHON_LIBS

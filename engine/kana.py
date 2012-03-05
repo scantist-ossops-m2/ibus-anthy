@@ -20,20 +20,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from ibus import unichar_half_to_full
-from tables import *
-import segment
 import sys
 
-_UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひふへほ")
+from tables import *
+import segment
+
+_UNFINISHED_HIRAGANA = set(u'かきくけこさしすせそたちつてとはひふへほ')
 
 class KanaSegment(segment.Segment):
     _prefs = None
     _kana_typing_rule_section = None
     
-    def __init__(self, enchars=u"", jachars=u""):
+    def __init__(self, enchars=u'', jachars=u''):
         if not jachars:
-            jachars = self.__get_kana_typing_rule(enchars, u"")
+            jachars = self.__get_kana_typing_rule(enchars, u'')
         super(KanaSegment, self).__init__(enchars, jachars)
 
     @classmethod
@@ -60,13 +60,15 @@ class KanaSegment(segment.Segment):
                 enchars = enchars.encode('utf-8')
             except:
                 print >> sys.stderr, \
-                    "Failed to encode UTF-8:", enchars
+                    'Failed to encode UTF-8:', enchars
             if enchars in prefs.keys(section):
-                value = unicode(str(prefs.get_value(section, enchars)))
+                value = prefs.unicode(prefs.str(prefs.get_value(section, enchars)))
             else:
+                prefs.set_no_key_warning(True)
                 value = prefs.get_value_direct(section, enchars)
+                prefs.set_no_key_warning(False)
                 if value != None:
-                    value = unicode(str(value))
+                    value = prefs.unicode(prefs.str(value))
             if value == '':
                 value = None
             if value == None:
@@ -79,7 +81,7 @@ class KanaSegment(segment.Segment):
         return not (self._jachars in _UNFINISHED_HIRAGANA)
 
     def append(self, enchar):
-        if enchar == u"\0" or enchar == u"":
+        if enchar == u'\0' or enchar == u'':
             return []
         if self._jachars:
             text = self._jachars + enchar
@@ -90,15 +92,15 @@ class KanaSegment(segment.Segment):
                 return []
             return [KanaSegment(enchar)]
         self._enchars = self._enchars + enchar
-        self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
+        self._jachars = self.__get_kana_typing_rule(self._enchars, u'')
         return []
 
     def prepend(self, enchar):
-        if enchar == u"\0" or enchar == u"":
+        if enchar == u'\0' or enchar == u'':
             return []
-        if self._enchars == u"":
+        if self._enchars == u'':
             self._enchars = enchar
-            self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
+            self._jachars = self.__get_kana_typing_rule(self._enchars, u'')
             return []
         return [KanaSegment(enchar)]
 
@@ -106,12 +108,12 @@ class KanaSegment(segment.Segment):
         if index == -1:
             index = len(self._enchars) - 1
         if index < 0 or index >= len(self._enchars):
-            raise IndexError("Out of bound")
+            raise IndexError('Out of bound')
         if self.is_finished():
-            self._enchars = u""
-            self._jachars = u""
+            self._enchars = u''
+            self._jachars = u''
         else:
             enchars = list(self._enchars)
             del enchars[index]
-            self._enchars = u"".join(enchars)
-            self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
+            self._enchars = u''.join(enchars)
+            self._jachars = self.__get_kana_typing_rule(self._enchars, u'')

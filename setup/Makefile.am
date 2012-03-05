@@ -20,15 +20,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-BUILT_SOURCES = anthyprefs.py
+BUILT_SOURCES = \
+	_config.py \
+	anthyprefs.py \
+	$(NULL)
 
 libexec_SCRIPTS = ibus-setup-anthy
 
 setup_anthy_PYTHON = \
+	_config.py \
 	anthyprefs.py \
 	main.py \
 	prefs.py \
-	setup.glade \
+	setup.ui \
 	$(NULL)
 
 setup_anthy_built_files = \
@@ -61,6 +65,15 @@ anthyprefs.py: anthyprefs.py.in
 	    -e "s|\@VERSION\@|$(VERSION)|g" \
 	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
 	$< > $@
+
+_config.py: _config.py.in
+	( \
+		PKGDATADIR=$(pkgdatadir); \
+		LIBEXECDIR=$(libexecdir); \
+		DATADIR=$(datadir); \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \ 
+	) > $@
 
 # Need a time lag between .py and .py.in files to build .py files
 # because *_PYTHON valuables are installed in the tarball.

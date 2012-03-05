@@ -20,45 +20,54 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import ibus
-import engine
 import os
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus-anthy", a)
-N_ = lambda a : a
+from gi.repository import IBus
+
+import _config as config
+import engine
 
 
-class EngineFactory(ibus.EngineFactoryBase):
-    FACTORY_PATH = "/com/redhat/IBus/engines/Anthy/Factory"
-    ENGINE_PATH = "/com/redhat/IBus/engines/Anthy/Engine"
-    NAME = _("Anthy")
-    LANG = "ja"
-    ICON = os.getenv("IBUS_ANTHY_PKGDATADIR") + "/icons/ibus-anthy.png"
-    AUTHORS = "Huang Peng <shawn.p.huang@gmail.com>"
-    CREDITS = "GPLv2"
+class EngineFactory(IBus.Factory):
+    FACTORY_PATH = '/com/redhat/IBus/engines/Anthy/Factory'
+    ENGINE_PATH = '/com/redhat/IBus/engines/Anthy/Engine'
+    NAME = 'Anthy'
+    LANG = 'ja'
+    ICON = config.PKGDATADIR + '/icons/ibus-anthy.png'
+    AUTHORS = 'Huang Peng <shawn.p.huang@gmail.com>'
+    CREDITS = 'GPLv2'
 
     def __init__(self, bus):
         self.__bus = bus
         engine.Engine.CONFIG_RELOADED(bus)
-        super(EngineFactory, self).__init__(bus)
+        super(EngineFactory, self).__init__(object_path=IBus.PATH_FACTORY,
+                                            connection=bus.get_connection())
 
         self.__id = 0
         self.__config = self.__bus.get_config()
 
-        self.__config.connect("reloaded", self.__config_reloaded_cb)
-        self.__config.connect("value-changed", self.__config_value_changed_cb)
+        self.__config.connect('value-changed', self.__config_value_changed_cb)
+        bus.get_connection().signal_subscribe('org.freedesktop.DBus',
+                                              'org.freedesktop.DBus',
+                                              'NameOwnerChanged',
+                                              '/org/freedesktop/DBus',
+                                              None,
+                                              0,
+                                              self.__name_owner_changed_cb,
+                                              bus)
 
-    def create_engine(self, engine_name):
-        if engine_name == "anthy":
+    def do_create_engine(self, engine_name):
+        if engine_name == 'anthy':
             self.__id += 1
-            return engine.Engine(self.__bus, "%s/%d" % (self.ENGINE_PATH, self.__id))
+            return engine.Engine(self.__bus, '%s/%d' % (self.ENGINE_PATH, self.__id))
 
-        return super(EngineFactory, self).create_engine(engine_name)
-
-    def __config_reloaded_cb(self, config):
-        engine.Engine.CONFIG_RELOADED(self.__bus)
+        return super(EngineFactory, self).do_create_engine(engine_name)
 
     def __config_value_changed_cb(self, config, section, name, value):
         engine.Engine.CONFIG_VALUE_CHANGED(self.__bus, section, name, value)
 
+    def __name_owner_changed_cb(self, connection, sender_name, object_path,
+                                interface_name, signal_name, parameters,
+                                user_data):
+        if signal_name == 'NameOwnerChanged':
+            engine.Engine.CONFIG_RELOADED(self.__bus)

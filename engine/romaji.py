@@ -20,10 +20,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from ibus import unichar_half_to_full
+import sys
+
 from tables import *
 import segment
-import sys
 
 def romaji_correction_rule_get(k, d):
     return (u'ん', k[1:2]) if k[0:1] == u'n' and not k[1:2] in u"aiueony'" else d
@@ -32,11 +32,11 @@ class RomajiSegment(segment.Segment):
     _prefs = None
     _romaji_typing_rule_section = None
 
-    def __init__(self, enchars=u"", jachars=u"", shift=False):
+    def __init__(self, enchars=u'', jachars=u'', shift=False):
         if not jachars and not shift:
             jachars = self.__get_romaji_typing_rule(enchars, None)
             if jachars == None:
-                jachars = symbol_rule.get(enchars, u"")
+                jachars = symbol_rule.get(enchars, u'')
         super(RomajiSegment, self).__init__(enchars, jachars)
 
     @classmethod
@@ -63,13 +63,16 @@ class RomajiSegment(segment.Segment):
                 enchars = enchars.encode('utf-8')
             except:
                 print >> sys.stderr, \
-                    "Failed to encode UTF-8:", enchars
+                    'Failed to encode UTF-8:', enchars
             if enchars in prefs.keys(section):
-                value = unicode(str(prefs.get_value(section, enchars)))
+                value = prefs.unicode(prefs.str(
+                    prefs.get_value(section, enchars)))
             else:
+                prefs.set_no_key_warning(True)
                 value = prefs.get_value_direct(section, enchars)
+                prefs.set_no_key_warning(False)
                 if value != None:
-                    value = unicode(str(value))
+                    value = prefs.unicode(prefs.str(value))
             if value == '':
                 value = None
             if value == None:
@@ -79,11 +82,11 @@ class RomajiSegment(segment.Segment):
         return value
 
     def is_finished(self):
-        return self._jachars != u""
+        return self._jachars != u''
 
     def append(self, enchar, shift=False):
         if self.is_finished():
-            if enchar == u"" and enchar == u"\0":
+            if enchar == u'' and enchar == u'\0':
                 return []
             return [RomajiSegment(enchar)]
 
@@ -145,7 +148,7 @@ class RomajiSegment(segment.Segment):
         return []
 
     def prepend(self, enchar, shift=False):
-        if enchar == u"" or enchar == u"\0":
+        if enchar == u'' or enchar == u'\0':
             return []
 
         if self.is_finished():
@@ -204,17 +207,17 @@ class RomajiSegment(segment.Segment):
         if index == -1:
             index = len(self._enchars) - 1
         if index < 0 or index >= len(self._enchars):
-            raise IndexError("Out of bound")
+            raise IndexError('Out of bound')
         if self.is_finished():
-            self._enchars = u""
-            self._jachars = u""
+            self._enchars = u''
+            self._jachars = u''
         else:
             enchars = list(self._enchars)
             del enchars[index]
-            self._enchars = u"".join(enchars)
+            self._enchars = u''.join(enchars)
             jachars = self.__get_romaji_typing_rule(self._enchars, None)
             if jachars == None:
-                jachars = symbol_rule.get(self._enchars, u"")
+                jachars = symbol_rule.get(self._enchars, u'')
             self._jachars = jachars
 
 

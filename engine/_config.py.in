@@ -1,6 +1,5 @@
-#!/bin/sh
-#
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
+# -*- coding: utf-8 -*-
 #
 # ibus-anthy - The Anthy engine for IBus
 #
@@ -21,14 +20,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-prefix=@prefix@
-datarootdir=@datarootdir@
-exec_prefix=@exec_prefix@
-libexecdir=@libexecdir@
-pyexecdir=@pyexecdir@
-export PYTHONPATH=@pyexecdir@:$PYTHONPATH
-export IBUS_PREFIX=@prefix@
-export IBUS_ANTHY_PKGDATADIR=@datarootdir@/@PACKAGE@
-export LIBEXECDIR=$libexecdir
-exec @ENV_IBUS_ENGINE@ @PYTHON@ @datarootdir@/@PACKAGE@/engine/main.py $@
-
+PKGDATADIR = '${PKGDATADIR}'
+LIBEXECDIR = '${LIBEXECDIR}'
+LOCALEDIR= '${DATADIR}/locale'

@@ -22,18 +22,23 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 __all__ = (
-        "ThumbShiftKeyboard",
-        "ThumbShiftSegment",
+        'ThumbShiftKeyboard',
+        'ThumbShiftSegment',
     )
 
-from ibus import keysyms
-from ibus import modifier
-import segment
+from gi.repository import IBus
 
 try:
-    from gtk.gdk import get_default_root_window
+    from gi.repository import Gdk
+    get_default_root_window = Gdk.get_default_root_window
+    property_get = Gdk.property_get
+    intern = Gdk.Atom.intern
 except ImportError:
     get_default_root_window = lambda : None
+    property_get = lambda : None
+    intern = lambda : None
+
+import segment
 
 _THUMB_BASIC_METHOD = 'base'
 
@@ -186,34 +191,34 @@ for k in _table_static.keys():
         r_table_static[c] = k
 
 kana_voiced_consonant_rule = {
-    u"か゛" : u"が",
-    u"き゛" : u"ぎ",
-    u"く゛" : u"ぐ",
-    u"け゛" : u"げ",
-    u"こ゛" : u"ご",
-    u"さ゛" : u"ざ",
-    u"し゛" : u"じ",
-    u"す゛" : u"ず",
-    u"せ゛" : u"ぜ",
-    u"そ゛" : u"ぞ",
-    u"た゛" : u"だ",
-    u"ち゛" : u"ぢ",
-    u"つ゛" : u"づ",
-    u"て゛" : u"で",
-    u"と゛" : u"ど",
-    u"は゛" : u"ば",
-    u"ひ゛" : u"び",
-    u"ふ゛" : u"ぶ",
-    u"へ゛" : u"べ",
-    u"ほ゛" : u"ぼ",
-    u"は゜" : u"ぱ",
-    u"ひ゜" : u"ぴ",
-    u"ふ゜" : u"ぷ",
-    u"へ゜" : u"ぺ",
-    u"ほ゜" : u"ぽ",
+    u'か゛' : u'が',
+    u'き゛' : u'ぎ',
+    u'く゛' : u'ぐ',
+    u'け゛' : u'げ',
+    u'こ゛' : u'ご',
+    u'さ゛' : u'ざ',
+    u'し゛' : u'じ',
+    u'す゛' : u'ず',
+    u'せ゛' : u'ぜ',
+    u'そ゛' : u'ぞ',
+    u'た゛' : u'だ',
+    u'ち゛' : u'ぢ',
+    u'つ゛' : u'づ',
+    u'て゛' : u'で',
+    u'と゛' : u'ど',
+    u'は゛' : u'ば',
+    u'ひ゛' : u'び',
+    u'ふ゛' : u'ぶ',
+    u'へ゛' : u'べ',
+    u'ほ゛' : u'ぼ',
+    u'は゜' : u'ぱ',
+    u'ひ゜' : u'ぴ',
+    u'ふ゜' : u'ぷ',
+    u'へ゜' : u'ぺ',
+    u'ほ゜' : u'ぽ',
 }
 
-_UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひふへほ")
+_UNFINISHED_HIRAGANA = set(u'かきくけこさしすせそたちつてとはひふへほ')
 
 class ThumbShiftKeyboard:
     def __init__(self, prefs=None):
@@ -272,13 +277,15 @@ class ThumbShiftKeyboard:
                     self.__r_table[c] = k
 
     def __set_bus_table(self, key, value):
-        if value == None or len(value) != 3 or \
-            (str(value[0]) == '' and \
-             str(value[1]) == '' and str(value[2]) == ''):
+        prefs = self.__prefs
+        if value == None or len(value) != 3:
             return
-        value = [unicode(str(value[0])),
-                 unicode(str(value[1])),
-                 unicode(str(value[2]))]
+        value = [prefs.unicode(prefs.str(value[0])),
+                 prefs.unicode(prefs.str(value[1])),
+                 prefs.unicode(prefs.str(value[2]))]
+        if value[0] == u'' and \
+                value[1] == u'' and value[2] == u'':
+            return
         self.__table[ord(key)] = value
         for c in value:
             self.__r_table[c] = key
@@ -321,29 +328,29 @@ class ThumbShiftKeyboard:
 
     def __reset_extension_table(self, init):
         self.__reset_layout_table(init,
-                                  "nicola_j_table",
+                                  'nicola_j_table',
                                   _nicola_j_table_static,
-                                  "nicola_a_table",
+                                  'nicola_a_table',
                                   _nicola_a_table_static,
-                                  "nicola_f_table",
+                                  'nicola_f_table',
                                   _nicola_f_table_static)
         if self.__fmv_extension == 0:
             return
         if self.__fmv_extension >= 1:
             self.__reset_layout_table(False,
-                                      "kb231_j_fmv_table",
+                                      'kb231_j_fmv_table',
                                       _kb231_j_fmv_table_static,
-                                      "kb231_a_fmv_table",
+                                      'kb231_a_fmv_table',
                                       _kb231_a_fmv_table_static,
-                                      "kb231_f_fmv_table",
+                                      'kb231_f_fmv_table',
                                       _kb231_f_fmv_table_static)
         if self.__fmv_extension >= 2:
             self.__reset_layout_table(False,
-                                      "kb611_j_fmv_table",
+                                      'kb611_j_fmv_table',
                                       _kb611_j_fmv_table_static,
-                                      "kb611_a_fmv_table",
+                                      'kb611_a_fmv_table',
                                       _kb611_a_fmv_table_static,
-                                      "kb611_f_fmv_table",
+                                      'kb611_f_fmv_table',
                                       _kb611_f_fmv_table_static)
 
     def __reset_shift_table(self, init):
@@ -360,28 +367,40 @@ class ThumbShiftKeyboard:
                     del self.__r_table[_shift_table[k]]
 
     def __s_to_key_raw(self, s):
-        keyval = keysyms.name_to_keycode(s.split('+')[-1])
+        keyval = IBus.keyval_from_name(s.split('+')[-1])
         s = s.lower()
-        state = ('shift+' in s and modifier.SHIFT_MASK or 0) | (
-                 'ctrl+' in s and modifier.CONTROL_MASK or 0) | (
-                 'alt+' in s and modifier.MOD1_MASK or 0)
+        state = ('shift+' in s and IBus.ModifierType.SHIFT_MASK or 0) | (
+                 'ctrl+' in s and IBus.ModifierType.CONTROL_MASK or 0) | (
+                 'alt+' in s and IBus.ModifierType.MOD1_MASK or 0)
         return (keyval, state)
 
     def __get_xkb_layout(self):
         root_window = get_default_root_window()
         if not root_window:
             return 0
-        prop = root_window.property_get("_XKB_RULES_NAMES")[2]
-        list = prop.split('\0')
+        xkb_rules_names = intern('_XKB_RULES_NAMES', False)
+        xa_string = intern('STRING', False)
+        try:
+            prop = property_get(root_window,
+                                xkb_rules_names, xa_string,
+                                0, 1024, 0)[3]
+            layout_list = prop.split('\0')
+        except TypeError:
+            import sys
+            print >> sys.stderr, \
+              'This problem is fixed in the latest gobject-introspection'
+            print >> sys.stderr, \
+              'https://bugzilla.gnome.org/show_bug.cgi?id=670509'
+            return 0
         layout = 0
-        for data in list:
-            if data == "jp":
+        for data in layout_list:
+            if data == 'jp':
                 layout = 0
-            elif data == "us":
+            elif data == 'us':
                 layout = 1
-            elif data.find("japan:nicola_f_bs") >= 0:
+            elif data.find('japan:nicola_f_bs') >= 0:
                 layout = 2
-            elif data.find("japan:") >= 0:
+            elif data.find('japan:') >= 0:
                 layout = 0
         return layout
 
@@ -389,13 +408,13 @@ class ThumbShiftKeyboard:
         s = self.__prefs.get_value('thumb', 'ls')
         ls, state = self.__s_to_key_raw(s)
         if ls == 0xffffff:
-            ls = keysyms.Muhenkan
+            ls = IBus.KEY_Muhenkan
         self.set_ls(ls)
 
         s = self.__prefs.get_value('thumb', 'rs')
         rs, state = self.__s_to_key_raw(s)
         if rs == 0xffffff:
-            rs = keysyms.Henkan
+            rs = IBus.KEY_Henkan
         self.set_rs(rs)
 
         t1 = self.__prefs.get_value('thumb', 't1')
@@ -492,7 +511,7 @@ class ThumbShiftSegment(segment.Segment):
     _thumb_typing_rule_section = None
     _r_table = {}
 
-    def __init__(self, enchars=u"", jachars=u""):
+    def __init__(self, enchars=u'', jachars=u''):
         if not jachars:
             if u'!' <= enchars <= u'~':
                 jachars = segment.unichar_half_to_full(enchars)
@@ -538,13 +557,15 @@ class ThumbShiftSegment(segment.Segment):
 
     @classmethod
     def _set_bus_table(cls, key, value):
-        if value == None or len(value) != 3 or \
-            (str(value[0]) == '' and \
-             str(value[1]) == '' and str(value[2]) == ''):
+        prefs = cls._prefs
+        if value == None or len(value) != 3:
             return
-        value = [unicode(str(value[0])),
-                 unicode(str(value[1])),
-                 unicode(str(value[2]))]
+        value = [prefs.unicode(prefs.str(value[0])),
+                 prefs.unicode(prefs.str(value[1])),
+                 prefs.unicode(prefs.str(value[2]))]
+        if value[0] == u'' and \
+                value[1] == u'' and value[2] == u'':
+            return
         for c in value:
             cls._r_table[c] = key
 
@@ -552,7 +573,7 @@ class ThumbShiftSegment(segment.Segment):
         return not (self._jachars in _UNFINISHED_HIRAGANA)
 
     def append(self, enchar):
-        if enchar == u"\0" or enchar == u"":
+        if enchar == u'\0' or enchar == u'':
             return []
         text = self._jachars + enchar
         jachars = kana_voiced_consonant_rule.get(text, None)
@@ -563,9 +584,9 @@ class ThumbShiftSegment(segment.Segment):
         return [ThumbShiftSegment(enchar)]
 
     def prepend(self, enchar):
-        if enchar == u"\0" or enchar == u"":
+        if enchar == u'\0' or enchar == u'':
             return []
-        if self._jachars == u"":
+        if self._jachars == u'':
             if 0x21 <= enchars <= 0x7e:
                 self._enchars = enchar
                 self._jachars = segment.unichar_half_to_full(enchars)

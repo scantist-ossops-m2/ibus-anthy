@@ -20,30 +20,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-#from ibus import unichar_half_to_full
-from ibus import unichar_half_to_full as h_to_f
 from tables import *
+
+_half_full_table = [
+    (0x0020, 0x3000, 1),
+    (0x0021, 0xFF01, 0x5E),
+]
+
+def _h_to_f(c):
+    code = ord (c)
+    for half, full, size in _half_full_table:
+        if code >= half and code < half + size:
+            return unichr (full + code - half)
+    return c
 
 def unichar_half_to_full(c):
     tdl = {'"': u'\u201d', "'": u'\u2019', '`': u'\u2018'}
-    return tdl[c] if c in tdl else h_to_f(c)
+    return tdl[c] if c in tdl else _h_to_f(c)
 
 class Segment(object):
-    def __init__(self, enchars=u"", jachars=u""):
+    def __init__(self, enchars=u'', jachars=u''):
         self._enchars = enchars
         self._jachars = jachars
 
     def append(self, enchar):
-        raise NotImplementedError("append() is not implemented")
+        raise NotImplementedError('append() is not implemented')
 
     def prepend(self, enchar):
-        raise NotImplementedError("prepend() is not implemented")
+        raise NotImplementedError('prepend() is not implemented')
 
     def pop(self, index=-1):
-        raise NotImplementedError("pop() is not implemented")
+        raise NotImplementedError('pop() is not implemented')
 
     def is_finished(self):
-        raise NotImplementedError("is_finised() is not implemented")
+        raise NotImplementedError('is_finised() is not implemented')
 
     def set_enchars(self, enchars):
         self.enchars = enchars
@@ -64,19 +74,19 @@ class Segment(object):
 
     def to_katakana(self):
         if self._jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[0], self._jachars))
+            return u''.join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[0], self._jachars))
         return self._enchars
 
     def to_half_width_katakana(self):
         if self._jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[1], self._jachars))
+            return u''.join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[1], self._jachars))
         return self._enchars
 
     def to_latin(self):
         return self._enchars
 
     def to_wide_latin(self):
-        return u"".join(map(unichar_half_to_full, self._enchars))
+        return u''.join(map(unichar_half_to_full, self._enchars))
 
     def is_empty(self):
         if self._enchars or self._jachars:

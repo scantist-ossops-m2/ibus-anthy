@@ -1,9 +1,9 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %{!?enable_kasumi: %define enable_kasumi 0}
 
-%define require_ibus_version            1.2.0.20100111
+%define sub_version                     1.0
+%define require_ibus_version            1.4.2
 %define require_intltool_version        0.41.1
-%define require_pygtk2_version          2.15.2
 
 Name:       @PACKAGE_NAME@
 Version:    @PACKAGE_VERSION@
@@ -17,16 +17,16 @@ Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  anthy-devel
+BuildRequires:  glib2-devel
 BuildRequires:  gettext-devel
 BuildRequires:  ibus
 BuildRequires:  intltool >= %require_intltool_version
 BuildRequires:  libtool
 BuildRequires:  pkgconfig
-BuildRequires:  python2-devel
-BuildRequires:  swig
+BuildRequires:  gobject-introspection-devel
 
-Requires:   pygtk2 >= %require_pygtk2_version
 Requires:   ibus   >= %require_ibus_version
+Requires:   pygobject3
 Requires:   anthy
 %if %enable_kasumi
 Requires:   kasumi
@@ -35,6 +35,17 @@ Requires:   kasumi
 %description
 The Anthy engine for IBus platform. It provides Japanese input method from
 libanthy.
+
+%package devel
+Summary:    Development tools for ibus
+Group:      Development/Libraries
+Requires:   %{name} = %{version}-%{release}
+Requires:   glib2-devel
+Requires:   anthy-devel
+
+%description devel
+The ibus-anthy-devel package contains .so file and .gir files
+for developers.
 
 %prep
 %setup -q
@@ -47,7 +58,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/_anthy.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libanthygobject-%{sub_version}.la
 
 %find_lang %{name}
 
@@ -58,11 +69,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
 # %dir %{python_sitearch}/ibus
-%{python_sitearch}/anthy.py*
-%{python_sitearch}/_anthy.so
+%{_libdir}/libanthygobject-%{sub_version}.so.*
+%{_libdir}/girepository-1.0/Anthy*.typelib
 %{_libexecdir}/ibus-*-anthy
 %{_datadir}/ibus-anthy
 %{_datadir}/ibus/component/*
+
+%files devel
+%{_datadir}/gir-1.0/Anthy*.gir
+%{_includedir}/ibus-anthy-%{sub_version}
+%{_libdir}/libanthygobject-%{sub_version}.so
 
 %changelog
 * @DATE_DISPLAY@ Peng Huang <shawn.p.huang@gmail.com> - @PACKAGE_VERSION@-1

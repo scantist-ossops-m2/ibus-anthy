@@ -19,7 +19,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+BUILT_SOURCES = _config.py
+
 engine_anthy_PYTHON = \
+	_config.py \
 	engine.py \
 	factory.py \
 	jastring.py \
@@ -31,6 +34,12 @@ engine_anthy_PYTHON = \
 	thumb.py \
 	$(NULL)
 engine_anthydir = $(pkgdatadir)/engine
+engine_anthy_built_files = $(BUILT_SOURCES)
+engine_anthy_built_in_files = $(addsuffix .in, $(engine_anthy_built_files))
+
+if HAVE_PYGTK2_ANTHY
+PYGTK2_ANTHY_RAW = anthy.i
+PYGTK2_ANTHY_GEN = anthy.py anthy_wrap.c
 
 anthy_DATA = \
 	anthy.py \
@@ -57,17 +66,30 @@ _anthy_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
+anthy.py anthy_wrap.c: anthy.i
+	$(SWIG) -python $(ANTHY_CFLAGS) -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
+else
+PYGTK2_ANTHY_RAW =
+PYGTK2_ANTHY_GEN =
+endif
+
 libexec_SCRIPTS = ibus-engine-anthy
 engine_DATA = anthy.xml
 enginedir = $(datadir)/ibus/component
-
-anthy.py anthy_wrap.c: anthy.i
-	$(SWIG) -python $(ANTHY_CFLAGS) -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
 anthy.xml: anthy.xml.in
 	( \
 		libexecdir=${libexecdir}; \
 		pkgdatadir=${pkgdatadir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
+_config.py: _config.py.in
+	( \
+		PKGDATADIR=$(pkgdatadir); \
+		LIBEXECDIR=$(libexecdir); \
+		DATADIR=$(datadir); \
 		s=`cat $<`; \
 		eval "echo \"$${s}\""; \
 	) > $@
@@ -81,17 +103,29 @@ test:
 		$(srcdir)/main.py
 
 EXTRA_DIST = \
-	anthy.i \
+	$(engine_anthy_built_in_files) \
+	$(PYGTK2_ANTHY_RAW) \
 	anthy.xml.in.in \
 	ibus-engine-anthy.in \
 	$(NULL)
 
 CLEANFILES = \
+	$(BUILT_SOURCES) \
+	$(PYGTK2_ANTHY_GEN) \
 	anthy.xml \
-	anthy.py \
-	anthy_wrap.* \
 	*.pyc \
 	$(NULL)
 
 DISTCLEANFILES = \
 	$(NULL)
+
+# Need a time lag between .py and .py.in files to build .py files
+# because *_PYTHON valuables are installed in the tarball.
+dist-hook:
+	@sleep 1; \
+	for in_file in $(engine_anthy_built_in_files) ; do \
+	    if [ -f $(distdir)/$(srcdir)/$$in_file ] ; then \
+	        touch $(distdir)/$(srcdir)/$$in_file; \
+	    fi; \
+	done;
+

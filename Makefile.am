@@ -23,6 +23,7 @@ SUBDIRS = \
 	m4 \
 	po \
 	data \
+	gir \
 	engine \
 	icons \
 	setup \
