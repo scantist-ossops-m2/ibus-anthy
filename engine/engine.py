@@ -1159,7 +1159,79 @@ class Engine(IBus.EngineSimple):
             return False
 
         if self.__convert_mode != CONV_MODE_OFF:
-            self.__end_convert()
+            if self.__lookup_table_visible:
+                self.__lookup_table.set_cursor_pos(0)
+                candidate = UN(self.__lookup_table.get_candidate(0).get_text())
+                self.__segments[self.__cursor_pos] = 0, candidate
+                self.__lookup_table_visible = False
+            elif self.__segments[self.__cursor_pos][0] != \
+                    NTH_UNCONVERTED_CANDIDATE:
+                buf = self.__context.get_segment(self.__cursor_pos,
+                                                 NTH_UNCONVERTED_CANDIDATE)
+                self.__segments[self.__cursor_pos] = \
+                    NTH_UNCONVERTED_CANDIDATE, UN(buf)
+            #elif self._chk_mode('25'):
+                '''
+                # FIXME: Delete the last char in the active segment.
+                #
+                # If we are able to delete a char in the active segment,
+                # we also should be able to add a char in the active segment.
+                # Currently plain preedit, no segment mode, i.e.
+                # using self.__preedit_ja_string, can delete or add a char
+                # but anthy active segoment mode, i.e.
+                # using self.__segments, can not delete or add a char.
+                # Deleting a char could be easy here but adding a char is
+                # difficult because we need to update both self.__segments
+                # and self.__preedit_ja_string but self.__preedit_ja_string
+                # has no segment. To convert self.__segments to
+                # self.__preedit_ja_string, we may use the reconvert mode
+                # but no idea to convert keyvals to hiragana
+                # in self__on_key_common() with multiple key typings.
+
+                # Delete a char in the active segment
+                all_text = u''
+                nr_segments = self.__context.get_nr_segments()
+                for i in xrange(0, nr_segments):
+                    buf = self.__context.get_segment(i,
+                                                     NTH_UNCONVERTED_CANDIDATE)
+                    text = UN(buf)
+                    if i == self.__cursor_pos and len(text) > 0:
+                        text = text[:len(text) - 1]
+                    all_text += text
+
+                if all_text == u'':
+                    return
+
+                # Set self.__preedit_ja_string by anthy context.
+                self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode)
+                self.__convert_chars = self.__normalize_preedit(all_text)
+                for i in xrange(0, len(self.__convert_chars)):
+                    keyval = self.__convert_chars[i]
+                    self.__preedit_ja_string.insert(unichr(ord (keyval)))
+                self.__context.set_string(self.__convert_chars.encode('utf8'))
+
+                # Set self.__segments by anty context
+                # for editable self.__segments,
+                # save NTH_UNCONVERTED_CANDIDATE
+                nr_segments = self.__context.get_nr_segments()
+                if self.__cursor_pos >= nr_segments and \
+                   nr_segments > 0:
+                    self.__cursor_pos = nr_segments - 1
+                for i in xrange(self.__cursor_pos, nr_segments):
+                    if i == self.__cursor_pos:
+                        index = NTH_UNCONVERTED_CANDIDATE
+                    else:
+                        index = 0
+                    buf = self.__context.get_segment(i,
+                                                     index)
+                    text = UN(buf)
+                    self.__segments[i] = index, text
+
+                # Update self.__lookup_table
+                self.__fill_lookup_table()
+                '''
+            else:
+                self.__end_convert()
         else:
             self.__preedit_ja_string.remove_before()
 
