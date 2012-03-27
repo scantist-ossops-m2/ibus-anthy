@@ -57,6 +57,12 @@ class EngineFactory(IBus.Factory):
                                               self.__name_owner_changed_cb,
                                               bus)
 
+        if not hasattr(IBus.Factory, 'do_create_engine'):
+            self.connect('create-engine', self.__create_engine_cb)
+
+    def __create_engine_cb(self, factory, engine_name):
+        return self.do_create_engine(engine_name)
+
     def do_create_engine(self, engine_name):
         if engine_name == 'anthy':
             self.__id += 1

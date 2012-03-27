@@ -35,14 +35,14 @@ import factory
 class IMApp:
     def __init__(self, exec_by_ibus):
         command_line = config.LIBEXECDIR + '/ibus-engine-anthy --ibus'
-        self.__component = IBus.Component(name='org.freedesktop.IBus.Anthy',
-                                          description='Anthy Component',
-                                          version='0.1.0',
-                                          license='GPL',
-                                          author='Peng Huang <shawn.p.huang@gmail.com>',
-                                          homepage='http://code.google.com/p/ibus/',
-                                          command_line=command_line,
-                                          textdomain='ibus-anthy')
+        self.__component = IBus.Component.new('org.freedesktop.IBus.Anthy',
+                                              'Anthy Component',
+                                              '0.1.0',
+                                              'GPL',
+                                              'Peng Huang <shawn.p.huang@gmail.com>',
+                                              'http://code.google.com/p/ibus/',
+                                              command_line,
+                                              'ibus-anthy')
         engine = IBus.EngineDesc(name='anthy',
                                  longname='anthy',
                                  description='Japanese Anthy',

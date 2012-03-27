@@ -93,6 +93,34 @@ IMPORTED_EMBEDDED_DICT_DIR = 'imported_words_default.d'
 IMPORTED_EMBEDDED_DICT_PREFIX = 'ibus__'
 IMPORTED_SINGLE_DICT_PREFIX = 'imported_words_ibus__'
 
+if not hasattr(IBus, 'KEY_plus'):
+    IBus.KEY_plus = IBus.plus
+    IBus.KEY_period = IBus.period
+    IBus.KEY_slash = IBus.slash
+    IBus.KEY_Return = IBus.Return
+    IBus.KEY_equal = IBus.equal
+    IBus.KEY_asterisk = IBus.asterisk
+    IBus.KEY_comma = IBus.comma
+    IBus.KEY_space = IBus.space
+    IBus.KEY_minus = IBus.minus
+    IBus.KEY_exclam = IBus.exclam
+    IBus.KEY_asciitilde = IBus.asciitilde
+    IBus.KEY_yen = IBus.yen
+    IBus.KEY_A = IBus.A
+    IBus.KEY_Z = IBus.Z
+    IBus.KEY_a = IBus.a
+    IBus.KEY_z = IBus.z
+    IBus.KEY_0 = 48 #IBus.0
+    IBus.KEY_KP_Add = IBus.KP_Add
+    IBus.KEY_KP_Decimal  = IBus.KP_Decimal
+    IBus.KEY_KP_Divide = IBus.KP_Divide
+    IBus.KEY_KP_Enter = IBus.KP_Enter
+    IBus.KEY_KP_Equal = IBus.KP_Equal
+    IBus.KEY_KP_Multiply = IBus.KP_Multiply
+    IBus.KEY_KP_Separator = IBus.KP_Separator
+    IBus.KEY_KP_Space = IBus.KP_Space
+    IBus.KEY_KP_Subtract = IBus.KP_Subtract
+
 KP_Table = {}
 for s in dir(IBus):
     if s.startswith('KEY_KP_'):
@@ -107,7 +135,8 @@ for k, v in zip(['KEY_KP_Add', 'KEY_KP_Decimal', 'KEY_KP_Divide', 'KEY_KP_Enter'
                  'KEY_space', 'KEY_minus']):
     KP_Table[getattr(IBus, k)] = getattr(IBus, v)
 
-class Engine(IBus.EngineSimple):
+# IBus.EngineSimple is not available in ibus 1.4
+class Engine(IBus.Engine):
     __typing_mode = jastring.TYPING_MODE_ROMAJI
 
     __setup_pid = 0
@@ -537,14 +566,11 @@ class Engine(IBus.EngineSimple):
 
     def update_preedit(self, string, attrs, cursor_pos, visible):
         text = IBus.Text.new_from_string(string)
-        i = 0
-        while attrs.get(i) != None:
-            attr = attrs.get(i)
-            text.append_attribute(attr.get_attr_type(),
-                                  attr.get_value(),
-                                  attr.get_start_index(),
-                                  attr.get_end_index())
-            i += 1
+        for attr in attrs:
+            text.append_attribute(attr['type'],
+                                  attr['value'],
+                                  attr['start_index'],
+                                  attr['end_index'])
         mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
         if self.__get_ibus_version() >= 1.003 and mode == 1:
             self.update_preedit_text_with_mode(text,
@@ -1040,10 +1066,11 @@ class Engine(IBus.EngineSimple):
 
     def __update_input_chars(self):
         text, cursor = self.__get_preedit()
-        attrs = IBus.AttrList()
-        attrs.append(IBus.attr_underline_new(
-            IBus.AttrUnderline.SINGLE, 0,
-            len(text)))
+        attrs = []
+        attrs.append({'type': IBus.AttrType.UNDERLINE,
+                      'value': IBus.AttrUnderline.SINGLE,
+                      'start_index': 0,
+                      'end_index': len(text)})
 
         self.update_preedit(text,
             attrs, cursor, not self.__preedit_ja_string.is_empty())
@@ -1092,13 +1119,19 @@ class Engine(IBus.EngineSimple):
             text, cursor = self.__preedit_ja_string.get_wide_latin()
             text = text.capitalize()
         self.__convert_chars = text
-        attrs = IBus.AttrList()
-        attrs.append(IBus.attr_underline_new(
-            IBus.AttrUnderline.SINGLE, 0, len(text)))
-        attrs.append(IBus.attr_background_new(self.__rgb(200, 200, 240),
-            0, len(text)))
-        attrs.append(IBus.attr_foreground_new(self.__rgb(0, 0, 0),
-            0, len(text)))
+        attrs = []
+        attrs.append({'type': IBus.AttrType.UNDERLINE,
+                      'value': IBus.AttrUnderline.SINGLE,
+                      'start_index': 0,
+                      'end_index': len(text)})
+        attrs.append({'type': IBus.AttrType.BACKGROUND,
+                      'value': self.__rgb(200, 200, 240),
+                      'start_index': 0,
+                      'end_index': len(text)})
+        attrs.append({'type': IBus.AttrType.FOREGROUND,
+                      'value': self.__rgb(0, 0, 0),
+                      'start_index': 0,
+                      'end_index': len(text)})
         self.update_preedit(text, attrs, len(text), True)
 
         self.update_aux_string(u'',
@@ -1113,13 +1146,19 @@ class Engine(IBus.EngineSimple):
             self.__convert_chars += text
             if i < self.__cursor_pos:
                 pos += len(text)
-        attrs = IBus.AttrList()
-        attrs.append(IBus.attr_underline_new(
-            IBus.AttrUnderline.SINGLE, 0, len(self.__convert_chars)))
-        attrs.append(IBus.attr_background_new(self.__rgb(200, 200, 240),
-                pos, pos + len(self.__segments[self.__cursor_pos][1])))
-        attrs.append(IBus.attr_foreground_new(self.__rgb(0, 0, 0),
-                pos, pos + len(self.__segments[self.__cursor_pos][1])))
+        attrs = []
+        attrs.append({'type': IBus.AttrType.UNDERLINE,
+                      'value': IBus.AttrUnderline.SINGLE,
+                      'start_index': 0,
+                      'end_index': len(self.__convert_chars)})
+        attrs.append({'type': IBus.AttrType.BACKGROUND,
+                      'value': self.__rgb(200, 200, 240),
+                      'start_index': pos,
+                      'end_index': pos + len(self.__segments[self.__cursor_pos][1])})
+        attrs.append({'type': IBus.AttrType.FOREGROUND,
+                      'value': self.__rgb(0, 0, 0),
+                      'start_index': pos,
+                      'end_index': pos + len(self.__segments[self.__cursor_pos][1])})
         self.update_preedit(self.__convert_chars, attrs, pos, True)
         aux_string = u'( %d / %d )' % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
         self.update_aux_string(aux_string,
