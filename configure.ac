@@ -112,7 +112,56 @@ AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
 
 dnl - check python
-AM_PATH_PYTHON([2.5])
+dnl ibus-anthy and pygobject3 uses python2
+dnl but AM_PATH_PYTHON does not check if python3 is used
+dnl so I created IBUS_PYTHON_CHECK_VERSION2 from AM_PYTHON_CHECK_VERSION
+dnl to check both the python minimum version and 3.
+
+dnl from python.m4
+IBUS_PYTHON_MIN_VERSION=2.5
+IBUS_PYTHON_CHECK_VERSION2() {
+    ARGS="import sys
+# split strings by '.' and convert to numeric.  Append some zeros
+# because we need at least 4 digits for the hex conversion.
+# map returns an iterator in Python 3.0 and a list in 2.x
+minver = list(map(int, '$2'.split('.')))
+if [len](minver) < 4:
+    for i in list(range(0, 4 - [len](minver))): minver.append(0)
+minverhex = 0
+# xrange is not present in Python 3.0 and range returns an iterator
+for i in list(range(0, 4)): minverhex = (minverhex << 8) + minver[[i]]
+threever = [[3, 0, 0, 0]]
+threeverhex = 0
+for i in list(range(0, 4)): threeverhex = (threeverhex << 8) + threever[[i]]
+sys.exit(not (sys.hexversion >= minverhex and \\
+              sys.hexversion < threeverhex))"
+    PROG="$1"
+    PYTHON_VERSION2=`"$PROG" -c "import sys; sys.stdout.write(sys.version[[:3]])"`
+    "$PROG" -c "$ARGS"
+    return $?
+}
+
+AC_MSG_CHECKING([whether you have python2])
+HAS_PYTHON2=no
+IBUS_PYTHON_INTERPRETER_LIST='
+python python2 python2.7 python2.6 pythhon2.5
+'
+for PYTHON2 in $IBUS_PYTHON_INTERPRETER_LIST ; do
+    IBUS_PYTHON_CHECK_VERSION2 $PYTHON2 $IBUS_PYTHON_MIN_VERSION
+    if test $? -eq 0 ; then
+        HAS_PYTHON2=yes
+        break
+    fi
+done
+AC_MSG_RESULT($HAS_PYTHON2)
+
+if test x"$HAS_PYTHON2" = xyes; then
+    AC_PATH_PROG(PYTHON, $PYTHON2)
+    PYTHON_VERSION=$PYTHON_VERSION2
+fi
+
+dnl export $pyexecdir using existent $PYTHON
+AM_PATH_PYTHON([$IBUS_PYTHON_MIN_VERSION])
 
 dnl - engine-env
 AC_MSG_CHECKING([what are the enviroments for ibus-engine-anthy])
@@ -150,6 +199,9 @@ if test x"$enable_pygtk2_anthy" = xyes; then
     AC_SUBST(SWIG)
 
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
+    if test x"$PYTHON_CONFIG" = x""; then
+        AC_PATH_PROG(PYTHON_CONFIG, python-config-$PYTHON_VERSION)
+    fi
     if test x"$PYTHON_CONFIG" = x""; then
         AC_PATH_PROG(PYTHON_CONFIG, python-config)
     fi
@@ -288,7 +340,8 @@ ANTHY_GOBJECT_GIRDIR     $ANTHY_GOBJECT_TYPELIBSDIR
 LT_VERSION_INFO          $LT_VERSION_INFO
 ENV_IBUS_ENGINE          $ENV_IBUS_ENGINE
 HAVE_PYGTK2_ANTHY        $enable_pygtk2_anthy
-python-config:           $PYTHON_CONFIG
+python                   $PYTHON
+python-config            $PYTHON_CONFIG
 PYTHON_CFLAGS            $PYTHON_CFLAGS
 PYTHON_LIBS              $PYTHON_LIBS
 ANTHY_ZIPCODE_FILE       $ANTHY_ZIPCODE_FILE
