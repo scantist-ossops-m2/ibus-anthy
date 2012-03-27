@@ -254,7 +254,7 @@ class Engine(IBus.EngineSimple):
         i = 0
         while props.get(i) != None:
             prop = props.get(i)
-            self.__prop_dict[prop.props.key] = prop
+            self.__prop_dict[prop.get_key()] = prop
             i += 1
 
         input_mode_prop.set_sub_props(props)
@@ -305,7 +305,7 @@ class Engine(IBus.EngineSimple):
         i = 0
         while props.get(i) != None:
             prop = props.get(i)
-            self.__prop_dict[prop.props.key] = prop
+            self.__prop_dict[prop.get_key()] = prop
             i += 1
 
         typing_mode_prop.set_sub_props(props)
@@ -387,7 +387,7 @@ class Engine(IBus.EngineSimple):
         i = 0
         while props.get(i) != None:
             prop = props.get(i)
-            self.__prop_dict[prop.props.key] = prop
+            self.__prop_dict[prop.get_key()] = prop
             i += 1
 
         segment_mode_prop.set_sub_props(props)
@@ -449,7 +449,7 @@ class Engine(IBus.EngineSimple):
         i = 0
         while props.get(i) != None:
             prop = props.get(i)
-            self.__prop_dict[prop.props.key] = prop
+            self.__prop_dict[prop.get_key()] = prop
             i += 1
 
         dict_mode_prop.set_sub_props(props)
@@ -504,7 +504,7 @@ class Engine(IBus.EngineSimple):
         i = 0
         while props.get(i) != None:
             prop = props.get(i)
-            self.__prop_dict[prop.props.key] = prop
+            self.__prop_dict[prop.get_key()] = prop
             i += 1
 
         dict_prop.set_sub_props(props)
@@ -704,13 +704,14 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
 
-        mode, label = input_modes[prop_name]
+        mode, label_text = input_modes[prop_name]
         if self.__input_mode == mode:
             return
 
+        label = IBus.Text.new_from_string(label_text)
         self.__input_mode = mode
         prop = self.__prop_dict[u'InputMode']
-        prop.label = label
+        prop.set_label(label)
         self.update_property(prop)
 
         self.__reset()
@@ -731,11 +732,12 @@ class Engine(IBus.EngineSimple):
         if prop_name == u'TypingMode.ThumbShift':
             self._reset_thumb()
 
-        mode, label = typing_modes[prop_name]
+        mode, label_text = typing_modes[prop_name]
 
+        label = IBus.Text.new_from_string(label_text)
         Engine.__typing_mode = mode
         prop = self.__prop_dict[u'TypingMode']
-        prop.label = label
+        prop.set_label(label)
         self.update_property(prop)
 
         self.__reset()
@@ -748,13 +750,14 @@ class Engine(IBus.EngineSimple):
             jastring.TYPING_MODE_KANA : (u'TypingMode.Kana', u'か'),
             jastring.TYPING_MODE_THUMB_SHIFT : (u'TypingMode.ThumbShift', u'親'),
         }
-        prop_name, label = modes.get(Engine.__typing_mode, (None, None))
-        if prop_name == None or label == None:
+        prop_name, label_text = modes.get(Engine.__typing_mode, (None, None))
+        if prop_name == None or label_text == None:
             return
+        label = IBus.Text.new_from_string(label_text)
         _prop = self.__prop_dict[prop_name]
         _prop.set_state(IBus.PropState.CHECKED)
         self.update_property(_prop)
-        prop.label = label
+        prop.set_label(label)
         self.update_property(prop)
 
     def __segment_mode_activate(self, prop_name, state):
@@ -772,11 +775,12 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
 
-        mode, label = segment_modes[prop_name]
+        mode, label_text = segment_modes[prop_name]
 
+        label = IBus.Text.new_from_string(label_text)
         self.__segment_mode = mode
         prop = self.__prop_dict[u'SegmentMode']
-        prop.label = label
+        prop.set_label(label)
         self.update_property(prop)
 
         self.__reset()
@@ -831,7 +835,9 @@ class Engine(IBus.EngineSimple):
 
         prop = self.__prop_dict[u'DictMode']
         section = 'dict/file/' + id
-        prop.label = self.__prefs.get_value(section, 'short_label')
+        label_text = self.__prefs.get_value(section, 'short_label')
+        label = IBus.Text.new_from_string(label_text)
+        prop.set_label(label)
         self.update_property(prop)
 
     def __argb(self, a, r, g, b):
@@ -878,7 +884,7 @@ class Engine(IBus.EngineSimple):
     def __join_all_segments(self):
         while True:
             nr_segments = self.__context.get_nr_segments()
-            seg = conv_stat.nr_segments - self.__cursor_pos
+            seg = nr_segments - self.__cursor_pos
 
             if seg > 1:
                 self.__context.resize_segment(self.__cursor_pos, 1)
@@ -1265,7 +1271,9 @@ class Engine(IBus.EngineSimple):
                   INPUT_MODE_HALF_WIDTH_KATAKANA: u'_ｱ' }
 
         prop = self.__prop_dict[u'InputMode']
-        prop.label = modes[self.__input_mode]
+        label_text = modes[self.__input_mode]
+        label = IBus.Text.new_from_string(label_text)
+        prop.set_label(label)
         self.update_property(prop)
 
         self.__invalidate()
