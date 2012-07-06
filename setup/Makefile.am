@@ -21,6 +21,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+desktop_in_in_files = ibus-setup-anthy.desktop.in.in
+desktop_in_files = $(desktop_in_in_files:.in.in=.in)
+
+$(desktop_in_files): %.desktop.in: %.desktop.in.in Makefile
+	$(AM_V_GEN) sed \
+	       -e "s|\@libexecdir\@|$(libexecdir)|" \
+	       -e "s|\@pkgdatadir\@|$(pkgdatadir)|" \
+	       $< > $@.tmp && mv $@.tmp $@
+
+desktopdir=$(datadir)/applications
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+@INTLTOOL_DESKTOP_RULE@
+
 BUILT_SOURCES = \
 	_config.py \
 	anthyprefs.py \
@@ -52,10 +66,13 @@ CONFIG_CLEAN_FILES = \
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
+	$(desktop_DATA) \
+	$(desktop_in_files) \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
+	$(desktop_in_in_files) \
 	$(setup_anthy_built_in_files) \
 	$(NULL)
 

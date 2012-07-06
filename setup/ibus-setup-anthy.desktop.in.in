@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=IBus Anthy Setup
+_Comment=Set up IBus Anthy engine
+Exec=@libexecdir@/ibus-setup-anthy
+Icon=@pkgdatadir@/icons/ibus-anthy.png
+NoDisplay=true
+Type=Application
+StartupNotify=true

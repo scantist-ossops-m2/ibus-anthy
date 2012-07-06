@@ -3,5 +3,6 @@
 engine/engine.py
 engine/factory.py
 setup/anthyprefs.py.in
+setup/ibus-setup-anthy.desktop.in.in
 setup/main.py
 [type: gettext/glade]setup/setup.ui
