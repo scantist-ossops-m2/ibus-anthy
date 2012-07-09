@@ -808,11 +808,11 @@ class AnthySetup(object):
             Gtk.main_quit()
             return True
         dlg = self.__builder.get_object('quit_check')
-        dlg.set_markup('<big><b>%s</b></big>' % _('Confirm'))
-        dlg.format_secondary_text(_('Are you sure to close Setup?'))
+        dlg.set_markup('<big><b>%s</b></big>' % _("Confirm"))
+        dlg.format_secondary_text(_("Are you sure to close Setup?"))
         id = dlg.run()
         dlg.hide()
-        if id == Gtk.ResponseType.OK:
+        if id == Gtk.ResponseType.YES:
             self.prefs.commit_all()
             Gtk.main_quit()
             return True
@@ -823,11 +823,11 @@ class AnthySetup(object):
             Gtk.main_quit()
             return True
         dlg = self.__builder.get_object('quit_check_without_save')
-        dlg.set_markup('<big><b>%s</b></big>' % _('Notice!'))
-        dlg.format_secondary_text(_('Are you sure to close Setup without save configure?'))
+        dlg.set_markup('<big><b>%s</b></big>' % _("Notice!"))
+        dlg.format_secondary_text(_("Are you sure to close Setup without save configure?"))
         id = dlg.run()
         dlg.hide()
-        if id == Gtk.ResponseType.OK:
+        if id == Gtk.ResponseType.YES:
             Gtk.main_quit()
             return True
 
@@ -1317,8 +1317,8 @@ class AnthySetup(object):
 
     def on_button7_clicked(self, widget):
         dlg = self.__builder.get_object('key_input_dialog')
-        dlg.set_markup('<big><b>%s</b></big>' % _('Please press a key (or a key combination)'))
-        dlg.format_secondary_text(_('The dialog will be closed when the key is released'))
+        dlg.set_markup('<big><b>%s</b></big>' % _("Please press a key (or a key combination)"))
+        dlg.format_secondary_text(_("The dialog will be closed when the key is released"))
         id = dlg.run()
         dlg.hide()
         if id == Gtk.ResponseType.OK:
@@ -1357,8 +1357,8 @@ class AnthySetup(object):
         s = self.__builder.get_object('entry2').get_text()
         if not s or not IBus.keyval_from_name(s):
             dlg = self.__builder.get_object('invalid_keysym')
-            dlg.set_markup('<big><b>%s</b></big>' % _('Invalid keysym'))
-            dlg.format_secondary_text(_('This keysym is not valid'))
+            dlg.set_markup('<big><b>%s</b></big>' % _("Invalid keysym"))
+            dlg.format_secondary_text(_("This keysym is not valid"))
             dlg.run()
             dlg.hide()
             return True

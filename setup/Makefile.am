@@ -90,7 +90,7 @@ _config.py: _config.py.in
 		LIBEXECDIR=$(libexecdir); \
 		DATADIR=$(datadir); \
 		s=`cat $<`; \
-		eval "echo \"$${s}\""; \ 
+		eval "echo \"$${s}\""; \
 	) > $@
 
 # Need a time lag between .py and .py.in files to build .py files

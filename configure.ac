@@ -163,6 +163,33 @@ fi
 dnl export $pyexecdir using existent $PYTHON
 AM_PATH_PYTHON([$IBUS_PYTHON_MIN_VERSION])
 
+dnl - check the supported ibus version
+AC_MSG_CHECKING([if your ibus version is supported])
+IBUS_VERSION_TEST="
+def _ibus_check_version(major, minor, micro):
+    return (IBus.MAJOR_VERSION > (major) or \
+    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION > (minor)) or \
+    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION == (minor) and \
+     IBus.MICRO_VERSION >= (micro)))
+
+from gi.repository import IBus
+retval = _ibus_check_version (ibus_major_version,
+                              ibus_minor_version, 
+                              ibus_micro_version)
+if not retval:
+    print 'your ibus version %d.%d.%d is old against %d.%d.%d' \
+        % ( IBus.MAJOR_VERSION, IBus.MINOR_VERSION, IBus.MICRO_VERSION, \
+            ibus_major_version, ibus_minor_version, ibus_micro_version )
+    exit (-1)
+exit(0)
+"
+$PYTHON -c "$IBUS_VERSION_TEST"
+if test $? -eq 0; then
+AC_MSG_RESULT([yes])
+else
+AC_MSG_ERROR([no])
+fi
+
 dnl - engine-env
 AC_MSG_CHECKING([what are the enviroments for ibus-engine-anthy])
 AC_ARG_WITH(engine-env,
@@ -332,22 +359,22 @@ AC_OUTPUT
 echo "
                 IBus-Anthy version ibus_version
 
-GOBJECT2_CFLAGS          $GOBJECT2_CFLAGS
-GOBJECT2_LIBS            $GOBJECT2_LIBS
-ANTHY_GOBJECT_LIBDIR     $ANTHY_GOBJECT_LIBDIR
-ANTHY_GOBJECT_GIRDIR     $ANTHY_GOBJECT_GIRDIR
-ANTHY_GOBJECT_GIRDIR     $ANTHY_GOBJECT_TYPELIBSDIR
-LT_VERSION_INFO          $LT_VERSION_INFO
-ENV_IBUS_ENGINE          $ENV_IBUS_ENGINE
-HAVE_PYGTK2_ANTHY        $enable_pygtk2_anthy
-python                   $PYTHON
-python-config            $PYTHON_CONFIG
-PYTHON_CFLAGS            $PYTHON_CFLAGS
-PYTHON_LIBS              $PYTHON_LIBS
-ANTHY_ZIPCODE_FILE       $ANTHY_ZIPCODE_FILE
-KASUMI_EXEC_FILE         $KASUMI_EXEC_FILE
-KASUMI_ICON_FILE         $KASUMI_ICON_FILE
-HOTKEYS_XML              $HOTKEYS_XML
-SYMBOL_XML               $SYMBOL_XML
-LAYOUT_XML               $LAYOUT_XML
+GOBJECT2_CFLAGS             $GOBJECT2_CFLAGS
+GOBJECT2_LIBS               $GOBJECT2_LIBS
+ANTHY_GOBJECT_LIBDIR        $ANTHY_GOBJECT_LIBDIR
+ANTHY_GOBJECT_GIRDIR        $ANTHY_GOBJECT_GIRDIR
+ANTHY_GOBJECT_TYPELIBSDIR   $ANTHY_GOBJECT_TYPELIBSDIR
+LT_VERSION_INFO             $LT_VERSION_INFO
+ENV_IBUS_ENGINE             $ENV_IBUS_ENGINE
+HAVE_PYGTK2_ANTHY           $enable_pygtk2_anthy
+python                      $PYTHON
+python-config               $PYTHON_CONFIG
+PYTHON_CFLAGS               $PYTHON_CFLAGS
+PYTHON_LIBS                 $PYTHON_LIBS
+ANTHY_ZIPCODE_FILE          $ANTHY_ZIPCODE_FILE
+KASUMI_EXEC_FILE            $KASUMI_EXEC_FILE
+KASUMI_ICON_FILE            $KASUMI_ICON_FILE
+HOTKEYS_XML                 $HOTKEYS_XML
+SYMBOL_XML                  $SYMBOL_XML
+LAYOUT_XML                  $LAYOUT_XML
 "

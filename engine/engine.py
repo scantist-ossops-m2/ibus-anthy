@@ -206,7 +206,7 @@ class Engine(IBus.EngineSimple):
         props = IBus.PropList()
         props.append(IBus.Property(key=u'InputMode.Hiragana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_('Hiragana'))),
+                                   label=IBus.Text.new_from_string(UN(_("Hiragana"))),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,

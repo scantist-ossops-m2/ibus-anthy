@@ -2419,7 +2419,7 @@
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="message_type">question</property>
-    <property name="buttons">ok-cancel</property>
+    <property name="buttons">yes-no</property>
     <property name="text">Confirm</property>
     <property name="secondary_text">Are you sure to close Setup?</property>
     <child internal-child="vbox">
@@ -2454,7 +2454,7 @@
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="message_type">warning</property>
-    <property name="buttons">ok-cancel</property>
+    <property name="buttons">yes-no</property>
     <property name="text">Notice!</property>
     <property name="secondary_text">Are you sure to close Setup without save configure?</property>
     <child internal-child="vbox">
