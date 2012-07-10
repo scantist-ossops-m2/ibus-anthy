@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy HEAD\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2012-07-06 11:50+0900\n"
+"POT-Creation-Date: 2012-07-10 11:37+0900\n"
 "PO-Revision-Date: 2011-05-13 14:54+0900\n"
 "Last-Translator: Takao Fujiwara <takao.fujiwara1@gmail.com>\n"
 "Language-Team: Source\n"
@@ -27,8 +27,8 @@ msgstr ""
 msgid "Katakana"
 msgstr ""
 
-#: ../engine/engine.py:227
-msgid "Half width katakana"
+#: ../engine/engine.py:227 ../setup/setup.ui.h:3
+msgid "Halfwidth katakana"
 msgstr ""
 
 #: ../engine/engine.py:236 ../setup/setup.ui.h:4
@@ -76,15 +76,15 @@ msgid "Single segment"
 msgstr ""
 
 #: ../engine/engine.py:370 ../setup/setup.ui.h:17
-msgid "Immediate conversion (Multiple segment)"
+msgid "Immediate conversion (multiple segment)"
 msgstr ""
 
 #: ../engine/engine.py:379 ../setup/setup.ui.h:18
-msgid "Immediate conversion (Single segment)"
+msgid "Immediate conversion (single segment)"
 msgstr ""
 
 #: ../engine/engine.py:404
-msgid "Switch Dictionary"
+msgid "Switch dictionary"
 msgstr ""
 
 #: ../engine/engine.py:466
@@ -113,7 +113,7 @@ msgid "Add words"
 msgstr ""
 
 #: ../engine/engine.py:499
-msgid "Add words in the dictionary"
+msgid "Add words to the dictionary"
 msgstr ""
 
 #: ../setup/anthyprefs.py.in:839
@@ -157,12 +157,12 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#. Translators: "Embd" means a short word of 'embedded'.
+#. Translators: "Embd" is an abbreviation of "embedded".
 #: ../setup/main.py:163
 msgid "Embd"
 msgstr ""
 
-#. Translators: "Sgl" means a short word of 'single'.
+#. Translators: "Sgl" is an abbreviation of "single".
 #: ../setup/main.py:171
 msgid "Sgl"
 msgstr ""
@@ -199,7 +199,7 @@ msgstr ""
 msgid "_Romaji Key Table:"
 msgstr ""
 
-#: ../setup/main.py:453 ../setup/main.py:459 ../setup/setup.ui.h:86
+#: ../setup/main.py:453 ../setup/main.py:459
 msgid "_Output Chars"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgid "Your choosed file has already been added: "
 msgstr ""
 
 #: ../setup/main.py:639
-msgid "Your choosed file does not exist: "
+msgid "The file you have chosen does not exist: "
 msgstr ""
 
 #: ../setup/main.py:643
@@ -288,87 +288,85 @@ msgid "Your file path is not good: "
 msgstr ""
 
 #: ../setup/main.py:811
-msgid "Confirm"
+msgid "Confirmation"
 msgstr ""
 
-#: ../setup/main.py:812
-msgid "Are you sure to close Setup?"
-msgstr ""
-
-#: ../setup/main.py:826
-msgid "Notice!"
+#: ../setup/main.py:813
+msgid "You are about to close the setup dialog, is that OK?"
 msgstr ""
 
 #: ../setup/main.py:827
-msgid "Are you sure to close Setup without save configure?"
+msgid "Notice!"
 msgstr ""
 
-#: ../setup/main.py:932
+#: ../setup/main.py:829
+msgid ""
+"You are about to close the setup dialog without saving your changes, is that "
+"OK?"
+msgstr ""
+
+#: ../setup/main.py:934
 msgid "Please specify Input Chars"
 msgstr ""
 
-#: ../setup/main.py:935
+#: ../setup/main.py:937
 msgid "Please specify Output Chars"
 msgstr ""
 
-#: ../setup/main.py:938
+#: ../setup/main.py:940
 msgid "Please specify Left Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/main.py:941
+#: ../setup/main.py:943
 msgid "Please specify Right Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/main.py:954 ../setup/main.py:994
+#: ../setup/main.py:956 ../setup/main.py:996
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr ""
 
-#: ../setup/main.py:1054 ../setup/main.py:1140
+#: ../setup/main.py:1056 ../setup/main.py:1142
 msgid "Your file does not exist: "
 msgstr ""
 
-#: ../setup/main.py:1064
+#: ../setup/main.py:1066
 msgid "Open Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1070
+#: ../setup/main.py:1072
 msgid "Edit Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1084
+#: ../setup/main.py:1086
 msgid "Your choosed file is not correct."
 msgstr ""
 
-#: ../setup/main.py:1113
+#: ../setup/main.py:1115
 msgid "You cannot delete the system dictionary."
 msgstr ""
 
-#: ../setup/main.py:1136
+#: ../setup/main.py:1138
 msgid "Your file is not good."
 msgstr ""
 
-#: ../setup/main.py:1166
+#: ../setup/main.py:1168
 msgid "View Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1320
+#: ../setup/main.py:1322
 msgid "Please press a key (or a key combination)"
 msgstr ""
 
-#: ../setup/main.py:1321
+#: ../setup/main.py:1323
 msgid "The dialog will be closed when the key is released"
 msgstr ""
 
-#: ../setup/main.py:1340 ../setup/main.py:1360
+#: ../setup/main.py:1342 ../setup/main.py:1362
 msgid "Invalid keysym"
 msgstr ""
 
-#: ../setup/main.py:1341 ../setup/main.py:1361
+#: ../setup/main.py:1343 ../setup/main.py:1363
 msgid "This keysym is not valid"
-msgstr ""
-
-#: ../setup/setup.ui.h:3
-msgid "Half Width Katakana"
 msgstr ""
 
 #: ../setup/setup.ui.h:6
@@ -396,19 +394,19 @@ msgid "FMV KB611 key extension"
 msgstr ""
 
 #: ../setup/setup.ui.h:19
-msgid "Keep Numpad Codes"
+msgid "Keep numpad codes"
 msgstr ""
 
 #: ../setup/setup.ui.h:20
-msgid "Convert Characters"
+msgid "Convert characters"
 msgstr ""
 
 #: ../setup/setup.ui.h:21
-msgid "Do Nothing"
+msgid "Do nothing"
 msgstr ""
 
 #: ../setup/setup.ui.h:22
-msgid "Auto Convert"
+msgid "Automatically convert"
 msgstr ""
 
 #: ../setup/setup.ui.h:23
@@ -508,7 +506,7 @@ msgid "De_fault"
 msgstr ""
 
 #: ../setup/setup.ui.h:48
-msgid "Key bin_ding"
+msgid "Key Bin_ding"
 msgstr ""
 
 #: ../setup/setup.ui.h:50
@@ -544,11 +542,11 @@ msgid "Input _Method Layout:"
 msgstr ""
 
 #: ../setup/setup.ui.h:59
-msgid "Restart ibus when you change the keyboard layout."
+msgid "Restart IBus when you change the keyboard layout"
 msgstr ""
 
 #: ../setup/setup.ui.h:60
-msgid "Restart ibus when you change XKB"
+msgid "Restart IBus when you change XKB"
 msgstr ""
 
 #: ../setup/setup.ui.h:61
@@ -657,7 +655,11 @@ msgid "_Shift"
 msgstr ""
 
 #: ../setup/setup.ui.h:85
-msgid "_Input Chars"
+msgid "_Input Characters"
+msgstr ""
+
+#: ../setup/setup.ui.h:86
+msgid "_Output Characters"
 msgstr ""
 
 #: ../setup/setup.ui.h:87
@@ -689,7 +691,7 @@ msgid "Enable the _reverse conversion"
 msgstr ""
 
 #: ../setup/setup.ui.h:94
-msgid "The Anthy engine for IBus input platform"
+msgid "The Anthy engine for the IBus input platform"
 msgstr ""
 
 #: ../setup/setup.ui.h:95

@@ -159,7 +159,7 @@ class AnthySetup(object):
         column.set_expand(True)
         tv.append_column(column)
 
-        # Translators: "Embd" means a short word of 'embedded'.
+        # Translators: "Embd" is an abbreviation of "embedded".
         column = Gtk.TreeViewColumn(_("Embd"))
         renderer = Gtk.CellRendererToggle()
         renderer.set_radio(False)
@@ -167,7 +167,7 @@ class AnthySetup(object):
         column.set_cell_data_func(renderer, self.__toggle_cell_data_cb, 3)
         tv.append_column(column)
 
-        # Translators: "Sgl" means a short word of 'single'.
+        # Translators: "Sgl" is an abbreviation of "single".
         column = Gtk.TreeViewColumn(_("Sgl"))
         renderer = Gtk.CellRendererToggle()
         renderer.set_radio(False)
@@ -176,8 +176,8 @@ class AnthySetup(object):
         tv.append_column(column)
 
         '''
-        Unfortunatelly reverse conversion is too slow.
-        # Translators: "Rev" means a short word of 'reverse'.
+        Unfortunately reverse conversion is too slow.
+        # Translators: "Rev" is an abbreviation of "reverse".
         column = Gtk.TreeViewColumn(_("Rev"))
         renderer = Gtk.CellRendererToggle()
         renderer.set_radio(False)
@@ -636,7 +636,7 @@ class AnthySetup(object):
                                           Gtk.MessageType.ERROR)
                 return
             if not path.exists(file):
-                self.__run_message_dialog(_("Your choosed file does not exist: ") + file,
+                self.__run_message_dialog(_("The file you have chosen does not exist: ") + file,
                                           Gtk.MessageType.ERROR)
                 return
             if path.isdir(file):
@@ -808,8 +808,9 @@ class AnthySetup(object):
             Gtk.main_quit()
             return True
         dlg = self.__builder.get_object('quit_check')
-        dlg.set_markup('<big><b>%s</b></big>' % _("Confirm"))
-        dlg.format_secondary_text(_("Are you sure to close Setup?"))
+        dlg.set_markup('<big><b>%s</b></big>' % _("Confirmation"))
+        dlg.format_secondary_text(
+                _("You are about to close the setup dialog, is that OK?"))
         id = dlg.run()
         dlg.hide()
         if id == Gtk.ResponseType.YES:
@@ -824,7 +825,8 @@ class AnthySetup(object):
             return True
         dlg = self.__builder.get_object('quit_check_without_save')
         dlg.set_markup('<big><b>%s</b></big>' % _("Notice!"))
-        dlg.format_secondary_text(_("Are you sure to close Setup without save configure?"))
+        dlg.format_secondary_text(
+                _("You are about to close the setup dialog without saving your changes, is that OK?"))
         id = dlg.run()
         dlg.hide()
         if id == Gtk.ResponseType.YES:
