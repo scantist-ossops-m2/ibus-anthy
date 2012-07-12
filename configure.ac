@@ -270,6 +270,21 @@ AC_ARG_WITH(kasumi-icon,
            [KASUMI_ICON_FILE="$datadir/pixmaps/kasumi.png"])
 AC_SUBST(KASUMI_ICON_FILE)
 
+dnl - check private png
+AC_MSG_CHECKING([if you install the private png file])
+AC_ARG_ENABLE(private-png,
+              AS_HELP_STRING([--enable-private-png=no/yes],
+                             [Install ibus-anthy.png default=no]),
+              enable_private_png=yes,
+              enable_private_png=no)
+AC_MSG_RESULT($enable_private_png)
+
+if test x"$enable_private_png" = xyes; then
+    AM_CONDITIONAL(HAVE_PRIVATE_PNG, true)
+else
+    AM_CONDITIONAL(HAVE_PRIVATE_PNG, false)
+fi
+
 dnl - check hotkeys for ibus-anthy which is used for ibus bridge mode.
 dnl - Normally you don't need this so could be HOTKEYS="no"
 AC_ARG_WITH(hotkeys,

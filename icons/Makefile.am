@@ -20,12 +20,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-icons_DATA = \
+pngicons_DATA = \
 	ibus-anthy.png \
 	$(NULL)
 
-iconsdir = $(pkgdatadir)/icons
+if HAVE_PRIVATE_PNG
+pngiconsdir = $(pkgdatadir)/icons
+else
+pngiconsdir = /tmp
+endif
+
+scalable_icons_DATA = \
+	ibus-anthy.svg \
+	$(NULL)
+
+# You need to run gtk-update-icon-cache after the icons are installed.
+scalable_iconsdir = $(datadir)/icons/hicolor/scalable/apps/
 
 EXTRA_DIST = \
-	ibus-anthy.png \
+	$(pngicons_DATA) \
+	$(scalable_icons_DATA) \
 	$(NULL)

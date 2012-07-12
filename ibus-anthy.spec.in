@@ -65,6 +65,18 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libanthygobject-%{sub_version}.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+# recreate icon cache
+touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+
+%postun
+# recreate icon cache
+touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README

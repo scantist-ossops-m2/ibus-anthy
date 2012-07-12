@@ -88,6 +88,9 @@ class AnthySetup(object):
         icon_path = path.join(anthydir, 'icons', 'ibus-anthy.png')
         if path.exists(icon_path):
             builder.get_object('main').set_icon_from_file(icon_path)
+        else:
+            icon_path = 'ibus-anthy'
+            builder.get_object('main').set_icon_name(icon_path)
 
         for name in ['input_mode', 'typing_method', 'conversion_segment_mode',
                      'period_style', 'symbol_style', 'ten_key_mode',
@@ -217,8 +220,17 @@ class AnthySetup(object):
         except:
             pass
         if icon_path != None:
-            image = Gtk.Image.new_from_file(icon_path)
-            about_dialog.set_logo(image.get_pixbuf())
+            if icon_path[0] == '/':
+                image = Gtk.Image.new_from_file(icon_path)
+                about_dialog.set_logo(image.get_pixbuf())
+            else:
+                icon_theme = Gtk.IconTheme.get_default()
+                try:
+                    pixbuf = icon_theme.load_icon(icon_path, 48, 0)
+                    about_dialog.set_logo(pixbuf)
+                except Exception, err:
+                    print >> sys.stderr, 'Not found icon', str(err)
+                    print >> sys.stderr, 'Need to run gtk-update-icon-cache'
         content_area = about_dialog.get_content_area()
         list = content_area.get_children()
         vbox = list[0]

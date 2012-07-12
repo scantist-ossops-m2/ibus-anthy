@@ -17,7 +17,7 @@
 			<language>ja</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<icon>${pkgdatadir}/icons/ibus-anthy.png</icon>
+			<icon>ibus-anthy</icon>
 			@LAYOUT_XML@
 			<longname>Anthy</longname>
 			<description>Anthy Input Method</description>
