@@ -61,19 +61,39 @@ class AnthySetup(object):
             pass
         gettext.bindtextdomain(DOMAINNAME, config.LOCALEDIR)
         gettext.bind_textdomain_codeset(DOMAINNAME, 'UTF-8')
+
+        # IBus.Bus() calls ibus_bus_new().
+        # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
+        # via ibus_im_context_new().
+        # Then if IBus.Bus() is called after Gtk.Builder().add_from_file(),
+        # the connection delay would be happened without an async
+        # finish function.
+        ibus_address = IBus.get_address()
+        bus = None
+        if ibus_address != None:
+            bus = IBus.Bus(connect_async='True')
+
         builder_file = path.join(path.dirname(__file__), 'setup.ui')
         self.__builder = builder = Gtk.Builder()
         builder.set_translation_domain(DOMAINNAME)
         builder.add_from_file(builder_file)
 
-        if IBus.get_address() == None:
+        if ibus_address == None:
             builder.connect_signals(self)
             # self.__run_message_dialog needs self.__builder.
             self.__run_message_dialog(_("ibus is not running."),
                                       Gtk.MessageType.ERROR)
             return
 
-        self.__config = IBus.Bus().get_config()
+        if bus.is_connected():
+            self.__init_bus_connected()
+        else:
+            bus.connect('connected', self.__init_bus_connected)
+
+    def __init_bus_connected(self, bus):
+        self.__config = bus.get_config()
+        builder = self.__builder
+
         self.__thumb_kb_layout_mode = None
         self.__thumb_kb_layout = None
         self.__japanese_ordered_dict = {}
