@@ -39,6 +39,9 @@ class Prefs(object):
                        bus.get_config() if bus else  \
                        IBus.Bus().get_config()
 
+        # ibus_config_get_values enhances the performance.
+        self.__has_config_get_values = hasattr(self._config, 'get_values')
+
     def __log_handler(self, domain, level, message, data):
         if not data:
             return
@@ -115,8 +118,17 @@ class Prefs(object):
             self.fetch_section(s)
 
     def fetch_section(self, section):
-        for k in self.keys(section):
-            self.fetch_item(section, k)
+        if not self.__has_config_get_values:
+            for k in self.keys(section):
+                self.fetch_item(section, k)
+            return
+
+        s = '/'.join(
+            [s for s in '/'.join([self._prefix, section]).split('/') if s])
+        variant = self._config.get_values(s)
+        for key in variant.keys():
+            v = variant[key]
+            self.modified.setdefault(section, {})[key] = v if v != [''] else []
 
     def fetch_item(self, section, key, readonly=False):
         s = '/'.join(
