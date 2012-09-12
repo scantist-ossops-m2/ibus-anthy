@@ -224,7 +224,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'InputMode.HalfWidthKatakana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Halfwidth katakana"))),
+                                   label=IBus.Text.new_from_string(UN(_("Halfwidth Katakana"))),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
