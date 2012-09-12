@@ -42,6 +42,13 @@ class Prefs(object):
         # ibus_config_get_values enhances the performance.
         self.__has_config_get_values = hasattr(self._config, 'get_values')
 
+        # In the latest pygobject3 3.3.4 or later, g_variant_dup_strv
+        # returns the allocated strv but in the previous release,
+        # it returned the tuple of (strv, length)
+        self.__tuple_for_variant_strv = False
+        if type(GLib.Variant.new_strv([]).dup_strv()) == tuple:
+            self.__tuple_for_variant_strv = True
+
     def __log_handler(self, domain, level, message, data):
         if not data:
             return
@@ -50,17 +57,20 @@ class Prefs(object):
     def variant_to_value(self, variant):
         if type(variant) != GLib.Variant:
             return variant
-        if variant.get_type_string() == 's':
+        type_string = variant.get_type_string()
+        if type_string == 's':
             return variant.get_string()
-        elif variant.get_type_string() == 'i':
+        elif type_string == 'i':
             return variant.get_int32()
-        elif variant.get_type_string() == 'b':
+        elif type_string == 'b':
             return variant.get_boolean()
-        elif variant.get_type_string() == 'as':
-            return variant.dup_strv()[0]
+        elif type_string == 'as':
+            if self.__tuple_for_variant_strv:
+                return variant.dup_strv()[0]
+            else:
+                return variant.dup_strv()
         else:
-            print >> sys.stderr, 'Unknown variant type:', \
-                variant.get_type_string()
+            print >> sys.stderr, 'Unknown variant type:', type_string
             sys.abrt()
         return variant
 
