@@ -305,18 +305,33 @@ else
 fi
 AC_SUBST(HOTKEYS_XML)
 
+dnl - check symbol in IBus.EngineDesc
+AC_MSG_CHECKING([if IBus.EngineDesc has get_symbol])
 SYMBOL_CHAR='&#x3042;'
 SYMBOL_TEST="from gi.repository import IBus
-engine = IBus.EngineDesc(name='test')
-exit(not hasattr(engine, 'get_symbol'))
+exit(not hasattr(IBus.EngineDesc, 'get_symbol'))
 "
 $PYTHON -c "$SYMBOL_TEST"
 if test $? -eq 0; then
     SYMBOL_XML="<symbol>${SYMBOL_CHAR}</symbol>"
+    AC_MSG_RESULT([yes])
 else
     SYMBOL_XML="<!-- <symbol>${SYMBOL_CHAR}</symbol> -->"
+    AC_MSG_ERROR([ibus 1.4 or later supports symbol in IBus.EngineDesc])
 fi
 AC_SUBST(SYMBOL_XML)
+
+dnl - check symbol in IBus.Property
+AC_MSG_CHECKING([if IBus.Property has get_symbol])
+SYMBOL_TEST="from gi.repository import IBus
+exit(not hasattr(IBus.Property, 'get_symbol'))
+"
+$PYTHON -c "$SYMBOL_TEST"
+if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+else
+    AC_MSG_ERROR([ibus 1.5 or later supports symbol in IBus.Property])
+fi
 
 dnl - set ibus-anthy layout
 AC_ARG_WITH(layout,

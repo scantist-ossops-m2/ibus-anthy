@@ -86,7 +86,7 @@ class AnthySetup(object):
             return
 
         if bus.is_connected():
-            self.__init_bus_connected()
+            self.__init_bus_connected(bus)
         else:
             bus.connect('connected', self.__init_bus_connected)
 

@@ -192,11 +192,20 @@ class Engine(IBus.EngineSimple):
         anthy_props = IBus.PropList()
 
         # init input mode properties
+        symbol = 'あ'
+        '''
+        Need to split _() by line for intltool to detect them.
+        '''
+        # Translators: Specify the order of %s with your translation.
+        # It will be "Input Mode (A)" for example.
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Input mode"), 'symbol' : symbol }
         input_mode_prop = IBus.Property(key=u'InputMode',
                                         prop_type=IBus.PropType.MENU,
-                                        label=IBus.Text.new_from_string(u'あ'),
+                                        label=IBus.Text.new_from_string(label),
+                                        symbol=IBus.Text.new_from_string(symbol),
                                         icon='',
-                                        tooltip=IBus.Text.new_from_string(UN(_("Switch input mode"))),
+                                        tooltip=IBus.Text.new_from_string(_("Switch input mode")),
                                         sensitive=True,
                                         visible=True,
                                         state=IBus.PropState.UNCHECKED,
@@ -206,7 +215,7 @@ class Engine(IBus.EngineSimple):
         props = IBus.PropList()
         props.append(IBus.Property(key=u'InputMode.Hiragana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Hiragana"))),
+                                   label=IBus.Text.new_from_string(_("Hiragana")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -215,7 +224,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'InputMode.Katakana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Katakana"))),
+                                   label=IBus.Text.new_from_string(_("Katakana")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -224,7 +233,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'InputMode.HalfWidthKatakana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Halfwidth Katakana"))),
+                                   label=IBus.Text.new_from_string(_("Halfwidth Katakana")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -233,7 +242,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'InputMode.Latin',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Latin"))),
+                                   label=IBus.Text.new_from_string(_("Latin")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -242,7 +251,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'InputMode.WideLatin',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Wide Latin"))),
+                                   label=IBus.Text.new_from_string(_("Wide Latin")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -262,11 +271,15 @@ class Engine(IBus.EngineSimple):
         anthy_props.append(input_mode_prop)
 
         # typing input mode properties
+        symbol = 'R'
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Typing method"), 'symbol' : symbol }
         typing_mode_prop = IBus.Property(key=u'TypingMode',
                                          prop_type=IBus.PropType.MENU,
-                                         label=IBus.Text.new_from_string(u'R'),
+                                         label=IBus.Text.new_from_string(label),
+                                         symbol=IBus.Text.new_from_string(symbol),
                                          icon='',
-                                         tooltip=IBus.Text.new_from_string(UN(_("Switch typing mode"))),
+                                         tooltip=IBus.Text.new_from_string(_("Switch typing method")),
                                          sensitive=True,
                                          visible=True,
                                          state=IBus.PropState.UNCHECKED,
@@ -276,7 +289,7 @@ class Engine(IBus.EngineSimple):
         props = IBus.PropList()
         props.append(IBus.Property(key=u'TypingMode.Romaji',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Romaji"))),
+                                   label=IBus.Text.new_from_string(_("Romaji")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -285,7 +298,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'TypingMode.Kana',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Kana"))),
+                                   label=IBus.Text.new_from_string(_("Kana")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -294,7 +307,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'TypingMode.ThumbShift',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Thumb shift"))),
+                                   label=IBus.Text.new_from_string(_("Thumb shift")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -316,9 +329,9 @@ class Engine(IBus.EngineSimple):
         self.__set_dict_mode_props(anthy_props)
         self.__set_dict_config_props(anthy_props)
         anthy_props.append(IBus.Property(key=u'setup',
-                                         label=IBus.Text.new_from_string(UN(_("Preferences - Anthy"))),
+                                         label=IBus.Text.new_from_string(_("Preferences - Anthy")),
                                          icon=u'gtk-preferences',
-                                         tooltip=IBus.Text.new_from_string(UN(_("Configure Anthy")))))
+                                         tooltip=IBus.Text.new_from_string(_("Configure Anthy"))))
 
         return anthy_props
 
@@ -335,11 +348,15 @@ class Engine(IBus.EngineSimple):
         os.kill(os.getpid(), signum)
 
     def __set_segment_mode_props(self, anthy_props):
+        symbol = '連'
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Segment mode"), 'symbol' : symbol }
         segment_mode_prop = IBus.Property(key=u'SegmentMode',
                                           prop_type=IBus.PropType.MENU,
-                                          label=IBus.Text.new_from_string(u'連'),
+                                          label=IBus.Text.new_from_string(label),
+                                          symbol=IBus.Text.new_from_string(symbol),
                                           icon=None,
-                                          tooltip=IBus.Text.new_from_string(UN(_("Switch conversion mode"))),
+                                          tooltip=IBus.Text.new_from_string(_("Switch conversion mode")),
                                           sensitive=True,
                                           visible=True,
                                           state=IBus.PropState.UNCHECKED,
@@ -349,7 +366,7 @@ class Engine(IBus.EngineSimple):
         props = IBus.PropList()
         props.append(IBus.Property(key=u'SegmentMode.Multi',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Multiple segment"))),
+                                   label=IBus.Text.new_from_string(_("Multiple segment")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -358,7 +375,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'SegmentMode.Single',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Single segment"))),
+                                   label=IBus.Text.new_from_string(_("Single segment")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -367,7 +384,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'SegmentMode.ImmediateMulti',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Immediate conversion (multiple segment)"))),
+                                   label=IBus.Text.new_from_string(_("Immediate conversion (multiple segment)")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -376,7 +393,7 @@ class Engine(IBus.EngineSimple):
                                    sub_props=None))
         props.append(IBus.Property(key=u'SegmentMode.ImmediateSingle',
                                    prop_type=IBus.PropType.RADIO,
-                                   label=IBus.Text.new_from_string(UN(_("Immediate conversion (single segment)"))),
+                                   label=IBus.Text.new_from_string(_("Immediate conversion (single segment)")),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -397,11 +414,14 @@ class Engine(IBus.EngineSimple):
     def __set_dict_mode_props(self, anthy_props):
         short_label = self.__prefs.get_value('dict/file/embedded',
                                              'short_label')
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Dictionary mode"), 'symbol' : short_label }
         dict_mode_prop = IBus.Property(key=u'DictMode',
                                        prop_type=IBus.PropType.MENU,
-                                       label=IBus.Text.new_from_string(UN(short_label)),
+                                       label=IBus.Text.new_from_string(label),
+                                       symbol=IBus.Text.new_from_string(short_label),
                                        icon=None,
-                                       tooltip=IBus.Text.new_from_string(UN(_("Switch dictionary"))),
+                                       tooltip=IBus.Text.new_from_string(_("Switch dictionary")),
                                        sensitive=True,
                                        visible=True,
                                        state=IBus.PropState.UNCHECKED,
@@ -413,6 +433,7 @@ class Engine(IBus.EngineSimple):
                                             'long_label')
         props.append(IBus.Property(key=u'DictMode.embedded',
                                    prop_type=IBus.PropType.RADIO,
+                                   # if long_label is UTF-8
                                    label=IBus.Text.new_from_string(UN(_(long_label))),
                                    icon=None,
                                    tooltip=None,
@@ -430,6 +451,7 @@ class Engine(IBus.EngineSimple):
                 continue
             key = 'DictMode.' + id
             long_label = self.__prefs.get_value(section, 'long_label')
+            # if long_label is UTF-8
             if 'is_system' in self.__prefs.keys(section) and \
                self.__prefs.get_value(section, 'is_system'):
                 uni_long_label = UN(_(long_label))
@@ -463,19 +485,20 @@ class Engine(IBus.EngineSimple):
 
         if not path.exists(admin_command[0]):
             return
-        label = UN(_("Dictionary - Anthy"))
+        label = _("Dictionary - Anthy")
+        # if icon_path is UTF-8
         if icon_path and path.exists(icon_path):
             icon = UN(icon_path)
         else:
             # Translators: "Dic" means 'dictionary', One kanji may be good.
-            label = UN(_("Dic"))
+            label = _("Dic")
             icon = u''
 
         dict_prop = IBus.Property(key=u'setup-dict-kasumi',
                                   prop_type=IBus.PropType.MENU,
                                   label=IBus.Text.new_from_string(label),
                                   icon=icon,
-                                  tooltip=IBus.Text.new_from_string(UN(_("Configure dictionaries"))),
+                                  tooltip=IBus.Text.new_from_string(_("Configure dictionaries")),
                                   sensitive=True,
                                   visible=True,
                                   state=IBus.PropState.UNCHECKED,
@@ -485,18 +508,18 @@ class Engine(IBus.EngineSimple):
         props = IBus.PropList()
         props.append(IBus.Property(key=u'setup-dict-kasumi-admin',
                                    prop_type=IBus.PropType.NORMAL,
-                                   label=IBus.Text.new_from_string(UN(_("Edit dictionaries"))),
+                                   label=IBus.Text.new_from_string(_("Edit dictionaries")),
                                    icon=icon,
-                                   tooltip=IBus.Text.new_from_string(UN(_("Launch the dictionary tool"))),
+                                   tooltip=IBus.Text.new_from_string(_("Launch the dictionary tool")),
                                    sensitive=True,
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
         props.append(IBus.Property(key=u'setup-dict-kasumi-word',
                                    prop_type=IBus.PropType.NORMAL,
-                                   label=IBus.Text.new_from_string(UN(_("Add words"))),
+                                   label=IBus.Text.new_from_string(_("Add words")),
                                    icon=icon,
-                                   tooltip=IBus.Text.new_from_string(UN(_("Add words to the dictionary"))),
+                                   tooltip=IBus.Text.new_from_string(_("Add words to the dictionary")),
                                    sensitive=True,
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
@@ -575,6 +598,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
+        # if candidate is UTF-8
         candidate = UN(self.__lookup_table.get_candidate(index).get_text())
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -589,6 +613,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
+        # if candidate is UTF-8
         candidate = UN(self.__lookup_table.get_candidate(index).get_text())
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -604,6 +629,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
+        # if candidate is UTF-8
         candidate = UN(self.__lookup_table.get_candidate(index).get_text())
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -619,6 +645,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
+        # if candidate is UTF-8
         candidate = UN(self.__lookup_table.get_candidate(index).get_text())
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -692,11 +719,11 @@ class Engine(IBus.EngineSimple):
 
     def __input_mode_activate(self, prop_name, state):
         input_modes = {
-            u'InputMode.Hiragana' : (INPUT_MODE_HIRAGANA, u'あ'),
-            u'InputMode.Katakana' : (INPUT_MODE_KATAKANA, u'ア'),
-            u'InputMode.HalfWidthKatakana' : (INPUT_MODE_HALF_WIDTH_KATAKANA, u'_ｱ'),
-            u'InputMode.Latin' : (INPUT_MODE_LATIN, u'_A'),
-            u'InputMode.WideLatin' : (INPUT_MODE_WIDE_LATIN, u'Ａ'),
+            u'InputMode.Hiragana' : (INPUT_MODE_HIRAGANA, 'あ'),
+            u'InputMode.Katakana' : (INPUT_MODE_KATAKANA, 'ア'),
+            u'InputMode.HalfWidthKatakana' : (INPUT_MODE_HALF_WIDTH_KATAKANA, '_ｱ'),
+            u'InputMode.Latin' : (INPUT_MODE_LATIN, '_A'),
+            u'InputMode.WideLatin' : (INPUT_MODE_WIDE_LATIN, 'Ａ'),
         }
 
         if prop_name not in input_modes:
@@ -705,14 +732,16 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
 
-        mode, label_text = input_modes[prop_name]
+        mode, symbol = input_modes[prop_name]
         if self.__input_mode == mode:
             return
 
-        label = IBus.Text.new_from_string(label_text)
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Input mode"), 'symbol' : symbol }
         self.__input_mode = mode
         prop = self.__prop_dict[u'InputMode']
-        prop.set_label(label)
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
         self.__reset()
@@ -720,9 +749,9 @@ class Engine(IBus.EngineSimple):
 
     def __typing_mode_activate(self, prop_name, state):
         typing_modes = {
-            u'TypingMode.Romaji' : (jastring.TYPING_MODE_ROMAJI, u'R'),
-            u'TypingMode.Kana' : (jastring.TYPING_MODE_KANA, u'か'),
-            u'TypingMode.ThumbShift' : (jastring.TYPING_MODE_THUMB_SHIFT, u'親'),
+            u'TypingMode.Romaji' : (jastring.TYPING_MODE_ROMAJI, 'R'),
+            u'TypingMode.Kana' : (jastring.TYPING_MODE_KANA, 'か'),
+            u'TypingMode.ThumbShift' : (jastring.TYPING_MODE_THUMB_SHIFT, '親'),
         }
 
         if prop_name not in typing_modes:
@@ -733,12 +762,14 @@ class Engine(IBus.EngineSimple):
         if prop_name == u'TypingMode.ThumbShift':
             self._reset_thumb()
 
-        mode, label_text = typing_modes[prop_name]
+        mode, symbol = typing_modes[prop_name]
 
-        label = IBus.Text.new_from_string(label_text)
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Typing method"), 'symbol' : symbol }
         Engine.__typing_mode = mode
         prop = self.__prop_dict[u'TypingMode']
-        prop.set_label(label)
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
         self.__reset()
@@ -747,27 +778,29 @@ class Engine(IBus.EngineSimple):
     def __refresh_typing_mode_property(self):
         prop = self.__prop_dict[u'TypingMode']
         modes = {
-            jastring.TYPING_MODE_ROMAJI : (u'TypingMode.Romaji', u'R'),
-            jastring.TYPING_MODE_KANA : (u'TypingMode.Kana', u'か'),
-            jastring.TYPING_MODE_THUMB_SHIFT : (u'TypingMode.ThumbShift', u'親'),
+            jastring.TYPING_MODE_ROMAJI : (u'TypingMode.Romaji', 'R'),
+            jastring.TYPING_MODE_KANA : (u'TypingMode.Kana', 'か'),
+            jastring.TYPING_MODE_THUMB_SHIFT : (u'TypingMode.ThumbShift', '親'),
         }
-        prop_name, label_text = modes.get(Engine.__typing_mode, (None, None))
-        if prop_name == None or label_text == None:
+        prop_name, symbol = modes.get(Engine.__typing_mode, (None, None))
+        if prop_name == None or symbol == None:
             return
-        label = IBus.Text.new_from_string(label_text)
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Typing method"), 'symbol' : symbol }
         _prop = self.__prop_dict[prop_name]
         _prop.set_state(IBus.PropState.CHECKED)
         self.update_property(_prop)
-        prop.set_label(label)
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
     def __segment_mode_activate(self, prop_name, state):
         segment_modes = {
-            u'SegmentMode.Multi' : (SEGMENT_DEFAULT, u'連'),
-            u'SegmentMode.Single' : (SEGMENT_SINGLE, u'単'),
-            u'SegmentMode.ImmediateMulti' : (SEGMENT_IMMEDIATE, u'逐|連'),
+            u'SegmentMode.Multi' : (SEGMENT_DEFAULT, '連'),
+            u'SegmentMode.Single' : (SEGMENT_SINGLE, '単'),
+            u'SegmentMode.ImmediateMulti' : (SEGMENT_IMMEDIATE, '逐|連'),
             u'SegmentMode.ImmediateSingle' :
-                (SEGMENT_IMMEDIATE | SEGMENT_SINGLE, u'逐|単'),
+                (SEGMENT_IMMEDIATE | SEGMENT_SINGLE, '逐|単'),
         }
 
         if prop_name not in segment_modes:
@@ -776,12 +809,14 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
 
-        mode, label_text = segment_modes[prop_name]
+        mode, symbol = segment_modes[prop_name]
 
-        label = IBus.Text.new_from_string(label_text)
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Segment mode"), 'symbol' : symbol }
         self.__segment_mode = mode
         prop = self.__prop_dict[u'SegmentMode']
-        prop.set_label(label)
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
         self.__reset()
@@ -842,9 +877,11 @@ class Engine(IBus.EngineSimple):
 
         prop = self.__prop_dict[u'DictMode']
         section = 'dict/file/' + id
-        label_text = self.__prefs.get_value(section, 'short_label')
-        label = IBus.Text.new_from_string(label_text)
-        prop.set_label(label)
+        symbol = self.__prefs.get_value(section, 'short_label')
+        label = _("%(description)s (%(symbol)s)") % \
+            { 'description' : _("Dictionary mode"), 'symbol' : symbol }
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
     def __argb(self, a, r, g, b):
@@ -1273,14 +1310,13 @@ class Engine(IBus.EngineSimple):
         else:
             self.__input_mode = INPUT_MODE_HIRAGANA
 
-        modes = { INPUT_MODE_HIRAGANA: u'あ',
-                  INPUT_MODE_KATAKANA: u'ア',
-                  INPUT_MODE_HALF_WIDTH_KATAKANA: u'_ｱ' }
+        modes = { INPUT_MODE_HIRAGANA: 'あ',
+                  INPUT_MODE_KATAKANA: 'ア',
+                  INPUT_MODE_HALF_WIDTH_KATAKANA: '_ｱ' }
 
         prop = self.__prop_dict[u'InputMode']
-        label_text = modes[self.__input_mode]
-        label = IBus.Text.new_from_string(label_text)
-        prop.set_label(label)
+        label = modes[self.__input_mode]
+        prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
         self.__invalidate()

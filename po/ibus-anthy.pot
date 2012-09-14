@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy HEAD\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2012-09-11 19:09+0900\n"
+"POT-Creation-Date: 2012-09-14 11:38+0900\n"
 "PO-Revision-Date: 2011-05-13 14:54+0900\n"
 "Last-Translator: Takao Fujiwara <takao.fujiwara1@gmail.com>\n"
 "Language-Team: Source\n"
@@ -15,104 +15,129 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../engine/engine.py:199
+#. Translators: Specify the order of %s with your translation.
+#. It will be "Input Mode (A)" for example.
+#: ../engine/engine.py:201 ../engine/engine.py:275 ../engine/engine.py:352
+#: ../engine/engine.py:417 ../engine/engine.py:739 ../engine/engine.py:767
+#: ../engine/engine.py:788 ../engine/engine.py:814 ../engine/engine.py:881
+#, python-format
+msgid "%(description)s (%(symbol)s)"
+msgstr ""
+
+#: ../engine/engine.py:202 ../engine/engine.py:740
+msgid "Input mode"
+msgstr ""
+
+#: ../engine/engine.py:208
 msgid "Switch input mode"
 msgstr ""
 
-#: ../engine/engine.py:209 ../setup/setup.ui.h:1
+#: ../engine/engine.py:218 ../setup/setup.ui.h:1
 msgid "Hiragana"
 msgstr ""
 
-#: ../engine/engine.py:218 ../setup/setup.ui.h:2
+#: ../engine/engine.py:227 ../setup/setup.ui.h:2
 msgid "Katakana"
 msgstr ""
 
-#: ../engine/engine.py:227 ../setup/setup.ui.h:3
+#: ../engine/engine.py:236 ../setup/setup.ui.h:3
 msgid "Halfwidth Katakana"
 msgstr ""
 
-#: ../engine/engine.py:236 ../setup/setup.ui.h:4
+#: ../engine/engine.py:245 ../setup/setup.ui.h:4
 msgid "Latin"
 msgstr ""
 
-#: ../engine/engine.py:245 ../setup/setup.ui.h:5
+#: ../engine/engine.py:254 ../setup/setup.ui.h:5
 msgid "Wide Latin"
 msgstr ""
 
-#: ../engine/engine.py:269
-msgid "Switch typing mode"
+#: ../engine/engine.py:276 ../engine/engine.py:768 ../engine/engine.py:789
+msgid "Typing method"
 msgstr ""
 
-#: ../engine/engine.py:279 ../setup/setup.ui.h:12
+#: ../engine/engine.py:282
+msgid "Switch typing method"
+msgstr ""
+
+#: ../engine/engine.py:292 ../setup/setup.ui.h:12
 msgid "Romaji"
 msgstr ""
 
-#: ../engine/engine.py:288 ../setup/setup.ui.h:13
+#: ../engine/engine.py:301 ../setup/setup.ui.h:13
 msgid "Kana"
 msgstr ""
 
-#: ../engine/engine.py:297 ../setup/setup.ui.h:14
+#: ../engine/engine.py:310 ../setup/setup.ui.h:14
 msgid "Thumb shift"
 msgstr ""
 
-#: ../engine/engine.py:319
+#: ../engine/engine.py:332
 msgid "Preferences - Anthy"
 msgstr ""
 
-#: ../engine/engine.py:321
+#: ../engine/engine.py:334
 msgid "Configure Anthy"
 msgstr ""
 
-#: ../engine/engine.py:342
+#: ../engine/engine.py:353 ../engine/engine.py:815
+msgid "Segment mode"
+msgstr ""
+
+#: ../engine/engine.py:359
 msgid "Switch conversion mode"
 msgstr ""
 
-#: ../engine/engine.py:352 ../setup/setup.ui.h:15
+#: ../engine/engine.py:369 ../setup/setup.ui.h:15
 msgid "Multiple segment"
 msgstr ""
 
-#: ../engine/engine.py:361 ../setup/setup.ui.h:16
+#: ../engine/engine.py:378 ../setup/setup.ui.h:16
 msgid "Single segment"
 msgstr ""
 
-#: ../engine/engine.py:370 ../setup/setup.ui.h:17
+#: ../engine/engine.py:387 ../setup/setup.ui.h:17
 msgid "Immediate conversion (multiple segment)"
 msgstr ""
 
-#: ../engine/engine.py:379 ../setup/setup.ui.h:18
+#: ../engine/engine.py:396 ../setup/setup.ui.h:18
 msgid "Immediate conversion (single segment)"
 msgstr ""
 
-#: ../engine/engine.py:404
+#: ../engine/engine.py:418 ../engine/engine.py:882
+msgid "Dictionary mode"
+msgstr ""
+
+#: ../engine/engine.py:424
 msgid "Switch dictionary"
 msgstr ""
 
-#: ../engine/engine.py:466
+#: ../engine/engine.py:488
 msgid "Dictionary - Anthy"
 msgstr ""
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:471
+#: ../engine/engine.py:494
 msgid "Dic"
 msgstr ""
 
-#: ../engine/engine.py:478
+#: ../engine/engine.py:501
 msgid "Configure dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:488
+#: ../engine/engine.py:511
 msgid "Edit dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:490
+#: ../engine/engine.py:513
 msgid "Launch the dictionary tool"
 msgstr ""
 
-#: ../engine/engine.py:497
+#: ../engine/engine.py:520
 msgid "Add words"
 msgstr ""
 
-#: ../engine/engine.py:499
+#: ../engine/engine.py:522
 msgid "Add words to the dictionary"
 msgstr ""
 
