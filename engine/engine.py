@@ -1210,7 +1210,8 @@ class Engine(IBus.EngineSimple):
 
         if self.__convert_mode != CONV_MODE_OFF:
             if self.__lookup_table_visible:
-                self.__lookup_table.set_cursor_pos(0)
+                if self.__lookup_table.get_number_of_candidates() > 0:
+                    self.__lookup_table.set_cursor_pos(0)
                 candidate = UN(self.__lookup_table.get_candidate(0).get_text())
                 self.__segments[self.__cursor_pos] = 0, candidate
                 self.__lookup_table_visible = False
@@ -2361,7 +2362,7 @@ class Engine(IBus.EngineSimple):
             self.__context.set_string(text.encode ('utf-8'))
 
         self.__lookup_table.clear()
-        self.__lookup_table.show_cursor (False)
+        self.__lookup_table.set_cursor_visible(False)
         self.__lookup_table_visible = False
         self.update_aux_string(u'', IBus.AttrList(),
             self.__lookup_table_visible)
