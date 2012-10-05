@@ -75,10 +75,20 @@ PYGTK2_ANTHY_GEN =
 endif
 
 libexec_SCRIPTS = ibus-engine-anthy
-engine_DATA = anthy.xml
-enginedir = $(datadir)/ibus/component
+component_DATA = anthy.xml
+componentdir = $(datadir)/ibus/component
+engine_DATA = default.xml
+enginedir = $(pkgdatadir)/engine
 
 anthy.xml: anthy.xml.in
+	( \
+		libexecdir=${libexecdir}; \
+		pkgdatadir=${pkgdatadir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
+default.xml: default.xml.in
 	( \
 		libexecdir=${libexecdir}; \
 		pkgdatadir=${pkgdatadir}; \
@@ -91,6 +101,8 @@ _config.py: _config.py.in
 		PKGDATADIR=$(pkgdatadir); \
 		LIBEXECDIR=$(libexecdir); \
 		DATADIR=$(datadir); \
+		LAYOUT=$(LAYOUT); \
+		SYMBOL_CHAR_INT=$(SYMBOL_CHAR_INT); \
 		s=`cat $<`; \
 		eval "echo \"$${s}\""; \
 	) > $@
@@ -107,6 +119,7 @@ EXTRA_DIST = \
 	$(engine_anthy_built_in_files) \
 	$(PYGTK2_ANTHY_RAW) \
 	anthy.xml.in.in \
+	default.xml.in.in \
 	ibus-engine-anthy.in \
 	$(NULL)
 
@@ -114,6 +127,7 @@ CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(PYGTK2_ANTHY_GEN) \
 	anthy.xml \
+	default.xml \
 	*.pyc \
 	$(NULL)
 

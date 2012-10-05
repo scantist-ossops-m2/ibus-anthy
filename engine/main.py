@@ -44,13 +44,15 @@ class IMApp:
                                           command_line=command_line,
                                           textdomain='ibus-anthy')
         engine = IBus.EngineDesc(name='anthy',
-                                 longname='anthy',
-                                 description='Japanese Anthy',
+                                 longname='Anthy',
+                                 description='Anthy Input Method',
                                  language='ja',
                                  license='GPL',
                                  author='Peng Huang <shawn.p.huang@gmail.com>',
                                  icon='ibus-anthy',
-                                 layout='en')
+                                 layout=config.LAYOUT,
+                                 symbol=config.SYMBOL_CHAR,
+                                 rank=99)
         self.__component.add_engine(engine)
         self.__mainloop = GObject.MainLoop()
         self.__bus = IBus.Bus()
@@ -71,10 +73,36 @@ class IMApp:
 def launch_engine(exec_by_ibus):
     IMApp(exec_by_ibus).run()
 
+def get_userhome():
+    if 'HOME' not in os.environ:
+        import pwd
+        userhome = pwd.getpwuid(os.getuid()).pw_dir
+    else:
+        userhome = os.environ['HOME']
+    userhome = userhome.rstrip('/')
+    return userhome
+
+def print_xml():
+    user_config = os.path.join(get_userhome(), '.config',
+                               'ibus-anthy', 'engines.xml')
+    system_config = os.path.join(config.PKGDATADIR, 'engine', 'default.xml')
+    xml = None
+    for f in [user_config, system_config]:
+        if os.path.exists(f):
+            xml = f
+            break
+    if xml == None:
+        print >> sys.stderr, 'Not exist: %s' % system_config
+        return
+    file = open(xml, 'r')
+    print file.read()
+    file.close()
+
 def print_help(out, v = 0):
     print >> out, '-i, --ibus             executed by ibus.'
     print >> out, '-h, --help             show this message.'
     print >> out, '-d, --daemonize        daemonize ibus.'
+    print >> out, '-x, --xml              print engine xml.'
     sys.exit(v)
 
 def main():
@@ -85,9 +113,10 @@ def main():
 
     exec_by_ibus = False
     daemonize = False
+    xml = False
 
-    shortopt = 'ihd'
-    longopt = ['ibus', 'helpn', 'daemonize']
+    shortopt = 'ihdx'
+    longopt = ['ibus', 'help', 'daemonize', 'xml']
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
@@ -101,6 +130,8 @@ def main():
             daemonize = True
         elif o in ('-i', '--ibus'):
             exec_by_ibus = True
+        elif o in ('-x', '--xml'):
+            xml = True
         else:
             print >> sys.stderr, 'Unknown argument: %s' % o
             print_help(sys.stderr, 1)
@@ -108,6 +139,10 @@ def main():
     if daemonize:
         if os.fork():
             sys.exit()
+
+    if xml:
+        print_xml()
+        return
 
     launch_engine(exec_by_ibus)
 

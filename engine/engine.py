@@ -27,6 +27,8 @@ import signal
 import sys
 from gettext import dgettext
 
+from main import get_userhome
+
 try:
     from locale import getpreferredencoding
 except:
@@ -1633,16 +1635,6 @@ class Engine(IBus.EngineSimple):
             cls.__thumb.reset()
 
     @classmethod
-    def _get_userhome(cls):
-        if 'HOME' not in environ:
-            import pwd
-            userhome = pwd.getpwuid(os.getuid()).pw_dir
-        else:
-            userhome = environ['HOME']
-        userhome = userhome.rstrip('/')
-        return userhome
-
-    @classmethod
     def _get_quoted_id(cls, file):
         id = file
         has_mbcs = False
@@ -1686,10 +1678,10 @@ class Engine(IBus.EngineSimple):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
-            directory = cls._get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
             name = IMPORTED_EMBEDDED_DICT_PREFIX + id
         elif link_mode == LINK_DICT_SINGLE:
-            directory = cls._get_userhome() + '/.anthy'
+            directory = get_userhome() + '/.anthy'
             name = IMPORTED_SINGLE_DICT_PREFIX + id
         else:
             return
@@ -1718,10 +1710,10 @@ class Engine(IBus.EngineSimple):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
-            directory = cls._get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
             name = IMPORTED_EMBEDDED_DICT_PREFIX + id
         elif link_mode == LINK_DICT_SINGLE:
-            directory = cls._get_userhome() + '/.anthy'
+            directory = get_userhome() + '/.anthy'
             name = IMPORTED_SINGLE_DICT_PREFIX + id
         else:
             return

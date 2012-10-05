@@ -10,20 +10,10 @@
 	<homepage>http://code.google.com/p/ibus</homepage>
 	<textdomain>ibus-anthy</textdomain>
 
-	<!-- for static engines -->
-	<engines>
-		<engine>
-			<name>anthy</name>
-			<language>ja</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<icon>ibus-anthy</icon>
-			@LAYOUT_XML@
-			<longname>Anthy</longname>
-			<description>Anthy Input Method</description>
-			<rank>99</rank>
-			@HOTKEYS_XML@
-			@SYMBOL_XML@
-		</engine>
-	</engines>
+	<!-- for engines -->
+	<observed-paths>
+		<path>~/.config/ibus-anthy/engines.xml</path>
+		<path>${pkgdatadir}/engine/default.xml</path>
+	</observed-paths>
+	<engines exec=\"${libexecdir}/ibus-engine-anthy --xml\" />
 </component>

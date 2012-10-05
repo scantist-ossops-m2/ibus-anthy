@@ -308,6 +308,7 @@ AC_SUBST(HOTKEYS_XML)
 dnl - check symbol in IBus.EngineDesc
 AC_MSG_CHECKING([if IBus.EngineDesc has get_symbol])
 SYMBOL_CHAR='&#x3042;'
+SYMBOL_CHAR_INT=0x3042
 SYMBOL_TEST="from gi.repository import IBus
 exit(not hasattr(IBus.EngineDesc, 'get_symbol'))
 "
@@ -319,6 +320,7 @@ else
     SYMBOL_XML="<!-- <symbol>${SYMBOL_CHAR}</symbol> -->"
     AC_MSG_ERROR([ibus 1.4 or later supports symbol in IBus.EngineDesc])
 fi
+AC_SUBST(SYMBOL_CHAR_INT)
 AC_SUBST(SYMBOL_XML)
 
 dnl - check symbol in IBus.Property
@@ -341,10 +343,10 @@ AC_ARG_WITH(layout,
            [LAYOUT="$withval"],
            [LAYOUT="jp"])
 if test x"$LAYOUT" = x; then
-    LAYOUT_XML="<layout>jp</layout>"
-else
-    LAYOUT_XML="<layout>${LAYOUT}</layout>"
+    LAYOUT="jp"
 fi
+LAYOUT_XML="<layout>${LAYOUT}</layout>"
+AC_SUBST(LAYOUT)
 AC_SUBST(LAYOUT_XML)
 
 dnl libtool versioning
@@ -379,6 +381,7 @@ gir/Makefile
 engine/Makefile
 engine/ibus-engine-anthy
 engine/anthy.xml.in
+engine/default.xml.in
 setup/Makefile
 setup/ibus-setup-anthy
 icons/Makefile

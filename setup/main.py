@@ -34,6 +34,7 @@ except:
 
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import IBus
 
@@ -143,6 +144,14 @@ class AnthySetup(object):
         for k in self.prefs.keys(sec):
             ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
         tv.set_model(ls)
+
+        self.__keymap = None
+        treeview = self.__builder.get_object('keymap:treeview_custom_table')
+        treeview.append_column(Gtk.TreeViewColumn('',
+                                                  Gtk.CellRendererText(),
+                                                  text=0))
+        GObject.idle_add(self.__update_keymap_label,
+                         priority = GObject.PRIORITY_LOW)
 
         self.__thumb_kb_layout_mode = builder.get_object('thumb:keyboard_layout_mode')
         self.__thumb_kb_layout = builder.get_object('thumb:keyboard_layout')
@@ -820,6 +829,91 @@ class AnthySetup(object):
         active = l.get_value(iter, id)
         renderer.set_property('active', active)
 
+    def __get_engine_file(self):
+        user_config = path.join(self.__get_userhome(), '.config',
+                                'ibus-anthy', 'engines.xml')
+        system_config = path.join(config.PKGDATADIR, 'engine', 'default.xml')
+        engine_file = None
+        for f in [user_config, system_config]:
+            if path.exists(f):
+                engine_file = f
+                break
+        if engine_file == None:
+            self.__run_message_dialog(_("The engine xml file does not exist: ") + system_config,
+                                      Gtk.MessageType.ERROR)
+            return None
+        return engine_file
+
+    def __get_keymap(self):
+        engine_file = self.__get_engine_file()
+        if engine_file == None:
+            return None
+
+        import xml.dom.minidom
+        dom = xml.dom.minidom.parse(engine_file)
+        keymap = dom.getElementsByTagName('layout')[0].childNodes[0].data
+        if type(keymap) == unicode:
+            keymap = str(keymap)
+        return keymap
+
+    def __save_keymap(self):
+        engine_file = self.__get_engine_file()
+        if engine_file == None:
+            return None
+
+        import xml.dom.minidom
+        dom = xml.dom.minidom.parse(engine_file)
+        node = dom.getElementsByTagName('layout')[0].childNodes[0]
+        node.data = self.__keymap
+        node = dom.getElementsByTagName('symbol')[0].childNodes[0]
+        # unicode will causes UnicodeEncodeError in write stream.
+        if type(node.data) == unicode:
+            node.data = node.data.encode('utf-8')
+
+        user_config = path.join(self.__get_userhome(), '.config',
+                                'ibus-anthy', 'engines.xml')
+        dir = path.dirname(user_config)
+        if not path.exists(dir):
+            os.makedirs(dir, 0700)
+        f = open(user_config, 'w')
+        dom.writexml(f, '', '', '', 'utf-8')
+        f.close()
+        os.chmod(user_config, 0600)
+        self.__keymap = None
+        self.__run_message_dialog(_("Anthy keyboard layout is changed. "
+                                    "Please restart ibus to reload the layout."))
+
+    def __update_keymap_label(self):
+        prefs = self.prefs
+        keymap = self.__get_keymap()
+        if keymap == None:
+            return
+        self.__keymap = keymap
+        keymap_list = prefs.get_value('common', 'keyboard_layouts')
+        if keymap != None and not keymap in keymap_list:
+            keymap_list.append(keymap)
+        index = -1
+        if keymap != None:
+            index = keymap_list.index(keymap)
+        model = Gtk.ListStore(str)
+        for k in keymap_list:
+            if k == 'default':
+                k = _("Default")
+            model.append([k])
+        treeview = self.__builder.get_object('keymap:treeview_custom_table')
+        treeview.set_model(model)
+        if index >= 0:
+            iter = model.get_iter(index)
+            treeview.get_selection().select_iter(iter)
+        treeview.get_selection().connect_after('changed',
+                                               self.on_selection_keymap_changed,
+                                               0)
+
+    def __save_preferences(self):
+        self.prefs.commit_all()
+        if self.__keymap != None:
+            self.__save_keymap()
+
     def on_selection_changed(self, widget, id):
         set_sensitive = lambda a, b: self.__builder.get_object(a).set_sensitive(b)
         flg = True if widget.get_selected()[1] else False
@@ -829,6 +923,16 @@ class AnthySetup(object):
     def on_selection_custom_key_table_changed(self, widget, id):
         button = self.__builder.get_object('button_remove_custom_key')
         button.set_sensitive(True)
+
+    def on_selection_keymap_changed(self, widget, id):
+        ls, it = widget.get_selected()
+        keymap = ls[it][0]
+        if keymap == _("Default"):
+            keymap = 'default'
+        if self.__keymap == keymap:
+            return
+        self.__keymap = keymap
+        self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_main_delete(self, widget, event):
         self.on_btn_cancel_clicked(widget)
@@ -846,7 +950,7 @@ class AnthySetup(object):
         id = dlg.run()
         dlg.hide()
         if id == Gtk.ResponseType.YES:
-            self.prefs.commit_all()
+            self.__save_preferences()
             Gtk.main_quit()
             return True
 
@@ -866,7 +970,7 @@ class AnthySetup(object):
             return True
 
     def on_btn_apply_clicked(self, widget):
-        self.prefs.commit_all()
+        self.__save_preferences()
         widget.set_sensitive(False)
 
     def on_cb_changed(self, widget):

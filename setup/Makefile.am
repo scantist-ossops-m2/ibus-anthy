@@ -89,6 +89,8 @@ _config.py: _config.py.in
 		PKGDATADIR=$(pkgdatadir); \
 		LIBEXECDIR=$(libexecdir); \
 		DATADIR=$(datadir); \
+		LAYOUT=$(LAYOUT); \
+		SYMBOL_CHAR_INT=$(SYMBOL_CHAR_INT); \
 		s=`cat $<`; \
 		eval "echo \"$${s}\""; \
 	) > $@
