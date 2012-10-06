@@ -20,15 +20,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+if HAVE_PRIVATE_PNG
 pngicons_DATA = \
 	ibus-anthy.png \
 	$(NULL)
-
-if HAVE_PRIVATE_PNG
-pngiconsdir = $(pkgdatadir)/icons
 else
-pngiconsdir = /tmp
+pngicons_files = \
+	ibus-anthy.png \
+	$(NULL)
 endif
+
+pngiconsdir = $(pkgdatadir)/icons
 
 scalable_icons_DATA = \
 	ibus-anthy.svg \
@@ -39,5 +41,6 @@ scalable_iconsdir = $(datadir)/icons/hicolor/scalable/apps/
 
 EXTRA_DIST = \
 	$(pngicons_DATA) \
+	$(pngicons_files) \
 	$(scalable_icons_DATA) \
 	$(NULL)

@@ -245,9 +245,9 @@ _config = {
         'keyboard_layouts': [
             'default', 'jp', 'us',
             # XKB options requires ibus 1.5.
-            'jp[ctrl:swapcaps]', 'us[ctrl:swapcaps]',
-            'jp[ctrl:swapcaps,compose:rctrl]',
-            'us[ctrl:swapcaps,compose:rctrl]',
+            #'jp[ctrl:swapcaps]', 'us[ctrl:swapcaps]',
+            #'jp[ctrl:swapcaps,compose:rctrl]',
+            #'us[ctrl:swapcaps,compose:rctrl]',
         ],
     },
 
