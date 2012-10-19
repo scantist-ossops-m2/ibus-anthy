@@ -110,7 +110,10 @@ for k, v in zip(['KEY_KP_Add', 'KEY_KP_Decimal', 'KEY_KP_Divide', 'KEY_KP_Enter'
     KP_Table[getattr(IBus, k)] = getattr(IBus, v)
 
 class Engine(IBus.EngineSimple):
-    __typing_mode = jastring.TYPING_MODE_ROMAJI
+    __input_mode = None
+    __typing_mode = None
+    __segment_mode = None
+    __dict_mode = None
 
     __setup_pid = 0
     __prefs = None
@@ -127,9 +130,6 @@ class Engine(IBus.EngineSimple):
 
         # init state
         self.__idle_id = 0
-        self.__input_mode = INPUT_MODE_HIRAGANA
-        self.__segment_mode = SEGMENT_DEFAULT
-        self.__dict_mode = 0
         self.__prop_dict = {}
         try:
             self.__is_utf8 = (getpreferredencoding().lower() == 'utf-8')
@@ -148,16 +148,16 @@ class Engine(IBus.EngineSimple):
                                                    round=True)
         self.__prop_list = self.__init_props()
 
-        mode = self.__prefs.get_value('common', 'input_mode')
+        mode = Engine.__input_mode
         mode = 'InputMode.' + ['Hiragana', 'Katakana', 'HalfWidthKatakana',
                                'Latin', 'WideLatin'][mode]
         self.__input_mode_activate(mode, IBus.PropState.CHECKED)
 
-        mode = self.__prefs.get_value('common', 'typing_method')
+        mode = Engine.__typing_mode
         mode = 'TypingMode.' + ['Romaji', 'Kana', 'ThumbShift'][mode]
         self.__typing_mode_activate(mode, IBus.PropState.CHECKED)
 
-        mode = self.__prefs.get_value('common', 'conversion_segment_mode')
+        mode = Engine.__segment_mode
         mode = 'SegmentMode.' + ['Multi', 'Single',
                                  'ImmediateMulti', 'ImmediateSingle'][mode]
         self.__segment_mode_activate(mode, IBus.PropState.CHECKED)
@@ -191,6 +191,18 @@ class Engine(IBus.EngineSimple):
             self.__idle_id = 0
 
     def __init_props(self):
+        # The class method is kept even if the engine is switched.
+        if Engine.__input_mode == None:
+            # The config value is readonly for initial engine and
+            # the engine keeps the class method in the memory.
+            Engine.__input_mode = INPUT_MODE_HIRAGANA
+            Engine.__input_mode = self.__prefs.get_value('common',
+                                                         'input_mode')
+        if Engine.__typing_mode == None:
+            Engine.__typing_mode = jastring.TYPING_MODE_ROMAJI
+            Engine.__typing_mode = self.__prefs.get_value('common',
+                                                          'typing_method')
+
         anthy_props = IBus.PropList()
 
         # init input mode properties
@@ -261,7 +273,7 @@ class Engine(IBus.EngineSimple):
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
 
-        props.get(self.__input_mode).set_state(IBus.PropState.CHECKED)
+        props.get(Engine.__input_mode).set_state(IBus.PropState.CHECKED)
 
         i = 0
         while props.get(i) != None:
@@ -333,7 +345,9 @@ class Engine(IBus.EngineSimple):
         anthy_props.append(IBus.Property(key=u'setup',
                                          label=IBus.Text.new_from_string(_("Preferences - Anthy")),
                                          icon=u'gtk-preferences',
-                                         tooltip=IBus.Text.new_from_string(_("Configure Anthy"))))
+                                         tooltip=IBus.Text.new_from_string(_("Configure Anthy")),
+                                         sensitive=True,
+                                         visible=True))
 
         return anthy_props
 
@@ -350,6 +364,10 @@ class Engine(IBus.EngineSimple):
         os.kill(os.getpid(), signum)
 
     def __set_segment_mode_props(self, anthy_props):
+        if Engine.__segment_mode == None:
+            Engine.__segment_mode = SEGMENT_DEFAULT
+            Engine.__segment_mode = self.__prefs.get_value('common',
+                                                           'conversion_segment_mode')
         symbol = '連'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
@@ -402,7 +420,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.get(self.__segment_mode).set_state(IBus.PropState.CHECKED)
+        props.get(Engine.__segment_mode).set_state(IBus.PropState.CHECKED)
 
         i = 0
         while props.get(i) != None:
@@ -414,6 +432,9 @@ class Engine(IBus.EngineSimple):
         anthy_props.append(segment_mode_prop)
 
     def __set_dict_mode_props(self, anthy_props):
+        if Engine.__dict_mode == None:
+            Engine.__dict_mode = 0
+
         short_label = self.__prefs.get_value('dict/file/embedded',
                                              'short_label')
         label = _("%(description)s (%(symbol)s)") % \
@@ -469,7 +490,7 @@ class Engine(IBus.EngineSimple):
                                        state=IBus.PropState.UNCHECKED,
                                        sub_props=None))
 
-        props.get(self.__dict_mode).set_state(IBus.PropState.CHECKED)
+        props.get(Engine.__dict_mode).set_state(IBus.PropState.CHECKED)
 
         i = 0
         while props.get(i) != None:
@@ -735,12 +756,12 @@ class Engine(IBus.EngineSimple):
         self.update_property(self.__prop_dict[prop_name])
 
         mode, symbol = input_modes[prop_name]
-        if self.__input_mode == mode:
+        if Engine.__input_mode == mode:
             return
 
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Input mode"), 'symbol' : symbol }
-        self.__input_mode = mode
+        Engine.__input_mode = mode
         prop = self.__prop_dict[u'InputMode']
         prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
@@ -815,7 +836,7 @@ class Engine(IBus.EngineSimple):
 
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
-        self.__segment_mode = mode
+        Engine.__segment_mode = mode
         prop = self.__prop_dict[u'SegmentMode']
         prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
@@ -864,13 +885,13 @@ class Engine(IBus.EngineSimple):
 
         if id == 'embedded':
             dict_name = 'default'
-            self.__dict_mode = 0
+            Engine.__dict_mode = 0
         else:
             if file not in single_files:
                 print >> sys.stderr, "Index error ", file, single_files
                 return
             dict_name = 'ibus__' + id
-            self.__dict_mode = single_files.index(file) + 1
+            Engine.__dict_mode = single_files.index(file) + 1
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
         self.__context.init_personality()
@@ -948,7 +969,7 @@ class Engine(IBus.EngineSimple):
 
     # begine convert
     def __begin_anthy_convert(self):
-        if self.__segment_mode & SEGMENT_IMMEDIATE:
+        if Engine.__segment_mode & SEGMENT_IMMEDIATE:
             self.__end_anthy_convert()
         if self.__convert_mode == CONV_MODE_ANTHY:
             return
@@ -959,7 +980,7 @@ class Engine(IBus.EngineSimple):
 
         text = self.__normalize_preedit(text)
         self.__context.set_string(text.encode('utf8'))
-        if self.__segment_mode & SEGMENT_SINGLE:
+        if Engine.__segment_mode & SEGMENT_SINGLE:
             self.__join_all_segments()
         nr_segments = self.__context.get_nr_segments()
 
@@ -968,7 +989,7 @@ class Engine(IBus.EngineSimple):
             text = UN(buf)
             self.__segments.append((0, text))
 
-        if self.__segment_mode & SEGMENT_IMMEDIATE:
+        if Engine.__segment_mode & SEGMENT_IMMEDIATE:
             self.__cursor_pos = nr_segments - 1
         else:
             self.__cursor_pos = 0
@@ -1024,10 +1045,10 @@ class Engine(IBus.EngineSimple):
             self.__lookup_table.append_candidate(IBus.Text.new_from_string(dict_dest))
 
     def __fill_lookup_table_dict_mode(self):
-        if self.__dict_mode <= 0:
+        if Engine.__dict_mode <= 0:
             return
         single_files = self.__get_single_dict_files()
-        file = single_files[self.__dict_mode - 1]
+        file = single_files[Engine.__dict_mode - 1]
         if file == None:
             return
         id = self._get_dict_id_from_file(file)
@@ -1070,13 +1091,13 @@ class Engine(IBus.EngineSimple):
 
 #    def __get_preedit(self):
     def __get_preedit(self, commit=False):
-        if self.__input_mode == INPUT_MODE_HIRAGANA:
+        if Engine.__input_mode == INPUT_MODE_HIRAGANA:
 #            text, cursor = self.__preedit_ja_string.get_hiragana()
             text, cursor = self.__preedit_ja_string.get_hiragana(commit)
-        elif self.__input_mode == INPUT_MODE_KATAKANA:
+        elif Engine.__input_mode == INPUT_MODE_KATAKANA:
 #            text, cursor = self.__preedit_ja_string.get_katakana()
             text, cursor = self.__preedit_ja_string.get_katakana(commit)
-        elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
+        elif Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
 #            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
             text, cursor = self.__preedit_ja_string.get_half_width_katakana(commit)
         else:
@@ -1307,18 +1328,18 @@ class Engine(IBus.EngineSimple):
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__end_anthy_convert()
 
-        if self.__input_mode >= INPUT_MODE_HIRAGANA and \
-           self.__input_mode < INPUT_MODE_HALF_WIDTH_KATAKANA:
-            self.__input_mode += 1
+        if Engine.__input_mode >= INPUT_MODE_HIRAGANA and \
+           Engine.__input_mode < INPUT_MODE_HALF_WIDTH_KATAKANA:
+            Engine.__input_mode += 1
         else:
-            self.__input_mode = INPUT_MODE_HIRAGANA
+            Engine.__input_mode = INPUT_MODE_HIRAGANA
 
         modes = { INPUT_MODE_HIRAGANA: 'あ',
                   INPUT_MODE_KATAKANA: 'ア',
                   INPUT_MODE_HALF_WIDTH_KATAKANA: '_ｱ' }
 
         prop = self.__prop_dict[u'InputMode']
-        label = modes[self.__input_mode]
+        label = modes[Engine.__input_mode]
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -1355,14 +1376,14 @@ class Engine(IBus.EngineSimple):
         return True'''
 
     '''def __on_key_space(self, wide=False):
-        if self.__input_mode == INPUT_MODE_WIDE_LATIN or wide:
+        if Engine.__input_mode == INPUT_MODE_WIDE_LATIN or wide:
             # Input Wide space U+3000
             wide_char = symbol_rule[unichr(IBus.KEY_space)]
             self.__commit_string(wide_char)
             return True
 
         if self.__preedit_ja_string.is_empty():
-            if self.__input_mode in (INPUT_MODE_HIRAGANA, INPUT_MODE_KATAKANA):
+            if Engine.__input_mode in (INPUT_MODE_HIRAGANA, INPUT_MODE_KATAKANA):
                 # Input Wide space U+3000
                 wide_char = symbol_rule[unichr(IBus.KEY_space)]
                 self.__commit_string(wide_char)
@@ -1498,13 +1519,13 @@ class Engine(IBus.EngineSimple):
 
     def __on_key_common(self, keyval, state=0):
 
-        if self.__input_mode == INPUT_MODE_LATIN:
+        if Engine.__input_mode == INPUT_MODE_LATIN:
             # Input Latin chars
             char = unichr(keyval)
             self.__commit_string(char)
             return True
 
-        elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
+        elif Engine.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
             char = unichr(keyval)
             wide_char = None#symbol_rule.get(char, None)
@@ -1514,7 +1535,7 @@ class Engine(IBus.EngineSimple):
             return True
 
         # Input Japanese
-        if self.__segment_mode & SEGMENT_IMMEDIATE:
+        if Engine.__segment_mode & SEGMENT_IMMEDIATE:
             # Commit nothing
             pass
         elif self.__convert_mode == CONV_MODE_ANTHY:
@@ -1532,7 +1553,7 @@ class Engine(IBus.EngineSimple):
             shift = False
         self.__preedit_ja_string.set_shift(shift)
         self.__preedit_ja_string.insert(unichr(keyval))
-        if self.__segment_mode & SEGMENT_IMMEDIATE:
+        if Engine.__segment_mode & SEGMENT_IMMEDIATE:
             self.__begin_anthy_convert()
         self.__invalidate()
         return True
@@ -1939,8 +1960,8 @@ class Engine(IBus.EngineSimple):
         return True
 
     def __process_key_event_internal2(self, keyval, keycode, state):
-        if self.__typing_mode == jastring.TYPING_MODE_THUMB_SHIFT and \
-           self.__input_mode not in [INPUT_MODE_LATIN, INPUT_MODE_WIDE_LATIN]:
+        if Engine.__typing_mode == jastring.TYPING_MODE_THUMB_SHIFT and \
+           Engine.__input_mode not in [INPUT_MODE_LATIN, INPUT_MODE_WIDE_LATIN]:
             return self.process_key_event_thumb(keyval, keycode, state)
 
         is_press = (state & IBus.ModifierType.RELEASE_MASK) == 0
@@ -2018,7 +2039,7 @@ class Engine(IBus.EngineSimple):
         return True
 
     def __cmd_on_off(self, keyval, state):
-        if self.__input_mode == INPUT_MODE_LATIN:
+        if Engine.__input_mode == INPUT_MODE_LATIN:
             return self.__set_input_mode(u'InputMode.Hiragana')
         else:
             return self.__set_input_mode(u'InputMode.Latin')
@@ -2031,7 +2052,7 @@ class Engine(IBus.EngineSimple):
             INPUT_MODE_LATIN: u'InputMode.WideLatin',
             INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
         }
-        return self.__set_input_mode(modes[self.__input_mode])
+        return self.__set_input_mode(modes[Engine.__input_mode])
 
     def __cmd_circle_kana_mode(self, keyval, state):
         modes = {
@@ -2041,7 +2062,7 @@ class Engine(IBus.EngineSimple):
             INPUT_MODE_LATIN: u'InputMode.Hiragana',
             INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
         }
-        return self.__set_input_mode(modes[self.__input_mode])
+        return self.__set_input_mode(modes[Engine.__input_mode])
 
     def __cmd_latin_mode(self, keyval, state):
         return self.__set_input_mode(u'InputMode.Latin')
@@ -2079,11 +2100,11 @@ class Engine(IBus.EngineSimple):
             return False
 
         single_files = self.__get_single_dict_files()
-        new_mode = self.__dict_mode + 1
+        new_mode = Engine.__dict_mode + 1
         if new_mode > len(single_files):
             new_mode = 0
-        self.__dict_mode = new_mode
-        prop_name = self.__dict_mode_get_prop_name(self.__dict_mode)
+        Engine.__dict_mode = new_mode
+        prop_name = self.__dict_mode_get_prop_name(Engine.__dict_mode)
         if prop_name == None:
             return False
         self.__dict_mode_activate(prop_name,
@@ -2093,16 +2114,16 @@ class Engine(IBus.EngineSimple):
     #edit_keys
     def __cmd_insert_space(self, keyval, state):
         if (self.__prefs.get_value('common', 'half_width_space') or
-            self.__input_mode in [INPUT_MODE_LATIN,
-                                  INPUT_MODE_HALF_WIDTH_KATAKANA]):
+            Engine.__input_mode in [INPUT_MODE_LATIN,
+                                    INPUT_MODE_HALF_WIDTH_KATAKANA]):
             return self.__cmd_insert_half_space(keyval, state)
         else:
             return self.__cmd_insert_wide_space(keyval, state)
 
     def __cmd_insert_alternate_space(self, keyval, state):
         if (self.__prefs.get_value('common', 'half_width_space') or
-            self.__input_mode in [INPUT_MODE_LATIN,
-                                  INPUT_MODE_HALF_WIDTH_KATAKANA]):
+            Engine.__input_mode in [INPUT_MODE_LATIN,
+                                    INPUT_MODE_HALF_WIDTH_KATAKANA]):
             return self.__cmd_insert_wide_space(keyval, state)
         else:
             return self.__cmd_insert_half_space(keyval, state)
@@ -2311,11 +2332,11 @@ class Engine(IBus.EngineSimple):
             return True
 
     def __move_cursor_char_length(self, length):
-        if self.__input_mode == INPUT_MODE_HIRAGANA:
+        if Engine.__input_mode == INPUT_MODE_HIRAGANA:
             self.__preedit_ja_string.move_cursor_hiragana_length(length)
-        elif self.__input_mode == INPUT_MODE_KATAKANA:
+        elif Engine.__input_mode == INPUT_MODE_KATAKANA:
             self.__preedit_ja_string.move_cursor_katakana_length(length)
-        elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
+        elif Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
             self.__preedit_ja_string.move_cursor_half_with_katakana_length(length)
         else:
             self.__preedit_ja_string.move_cursor(length)
