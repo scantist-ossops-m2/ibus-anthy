@@ -30,6 +30,7 @@ _UNFINISHED_HIRAGANA = set(u'かきくけこさしすせそたちつてとはひ
 
 class KanaSegment(segment.Segment):
     _prefs = None
+    _kana_typing_rule_method = 'jp'
     _kana_typing_rule_section = None
     
     def __init__(self, enchars=u'', jachars=u''):
@@ -45,7 +46,8 @@ class KanaSegment(segment.Segment):
             return
         method = prefs.get_value('kana_typing_rule', 'method')
         if method == None:
-            method = 'default'
+            method = 'jp'
+        cls._kana_typing_rule_method = method
         cls._kana_typing_rule_section = 'kana_typing_rule/' + method
         if cls._kana_typing_rule_section not in prefs.sections():
             cls._kana_typing_rule_section = None
@@ -86,7 +88,10 @@ class KanaSegment(segment.Segment):
             return []
         if self._jachars:
             text = self._jachars + enchar
-            jachars = kana_voiced_consonant_rule.get(text, None)
+            if self._kana_typing_rule_method == 'us':
+                jachars = kana_voiced_consonant_us_rule.get(text, None)
+            else:
+                jachars = kana_voiced_consonant_rule.get(text, None)
             if jachars:
                 self._enchars = self._enchars + enchar
                 self._jachars = jachars

@@ -427,6 +427,12 @@ class AnthySetup(object):
             entry_left.show()
             label_right.show()
             entry_right.show()
+        elif mode == 'kana':
+            hbox_combo.show()
+            label_left.hide()
+            entry_left.hide()
+            label_right.hide()
+            entry_right.hide()
         else:
             hbox_combo.hide()
             label_left.hide()
@@ -494,7 +500,8 @@ class AnthySetup(object):
             dlg.set_title(_("Customize Kana Key Table"))
             label.set_label(_("_Kana Key Table:"))
             label_output.set_label(_("_Output Chars"))
-            list_labels = [['default', _("Default")]]
+            list_labels = [['jp', _("Japanese Keyboard Layout")],
+                           ['us', _("U.S. Keyboard Layout")]]
             self.__show_dialog_custom_key_table_extention(mode)
         elif mode == 'thumb':
             dlg.set_title(_("Customize Thumb Shift Key Table"))
@@ -530,7 +537,7 @@ class AnthySetup(object):
         if mode == 'kana':
             method = prefs.get_value('kana_typing_rule', 'method')
             if method == None:
-                method = 'default'
+                method = 'jp'
             tv = self.__get_kana_treeview_custom_key_table(method)
         if mode == 'thumb':
             method = prefs.get_value('thumb_typing_rule', 'method')
@@ -539,7 +546,15 @@ class AnthySetup(object):
             tv = self.__get_thumb_treeview_custom_key_table(method)
 
         self.__connect_dialog_custom_key_table_buttons(mode)
-        combobox.set_active(0)
+
+        id = 0
+        # thumb uses all tables so the default is always 0.
+        if mode != 'thumb':
+            for index, labels in enumerate(list_labels):
+                if labels[0] == method:
+                    id = index
+                    break
+        combobox.set_active(id)
         combobox.connect('changed', self.on_cb_custom_key_table_changed, mode)
 
         id = dlg.run()
@@ -995,6 +1010,12 @@ class AnthySetup(object):
             set_sensitive(name, flg)
 
     def on_selection_custom_key_table_changed(self, widget, id):
+        l, i = widget.get_selected()
+        # if 'combobox_custom_key_table' is changed,
+        # 'treeview_custom_key_table' also receives this signal
+        # but no selection.
+        if i == None:
+            return
         button = self.__builder.get_object('button_remove_custom_key')
         button.set_sensitive(True)
 
@@ -1054,6 +1075,7 @@ class AnthySetup(object):
         self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_cb_custom_key_table_changed(self, widget, user_data):
+        prefs = self.prefs
         tv = self.__builder.get_object('treeview_custom_key_table')
         mode = user_data
         id = widget.get_active()
@@ -1067,8 +1089,11 @@ class AnthySetup(object):
         if mode == 'romaji':
             tv = self.__get_romaji_treeview_custom_key_table(method)
         elif mode == 'kana':
+            prefs.set_value('kana_typing_rule', 'method', method)
+            self.__builder.get_object('btn_apply').set_sensitive(True)
             tv = self.__get_kana_treeview_custom_key_table(method)
         elif mode == 'thumb':
+            # thumb uses all tables so do not save the method.
             tv = self.__get_thumb_treeview_custom_key_table(method)
 
     def on_sb_changed(self, widget):
