@@ -1051,7 +1051,7 @@
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">Keyboad _layout:</property>
                                     <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">keymap:treeview_custom_table</property>
+                                    <property name="mnemonic_widget">keymap:combobox_custom_table</property>
                                   </object>
                                   <packing>
                                     <property name="x_options">GTK_FILL</property>
@@ -1062,21 +1062,14 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkScrolledWindow" id="scrolledwindow320">
+                                  <object class="GtkComboBox" id="keymap:combobox_custom_table">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="border_width">1</property>
-                                    <property name="width_request">120</property>
-                                    <property name="height_request">90</property>
-                                    <property name="hscrollbar_policy">automatic</property>
-                                    <property name="vscrollbar_policy">automatic</property>
-                                    <property name="shadow_type">in</property>
                                     <child>
-                                      <object class="GtkTreeView" id="keymap:treeview_custom_table">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="headers_visible">False</property>
-                                      </object>
+                                      <object class="GtkCellRendererText" id="renderer330"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
                                     </child>
                                   </object>
                                   <packing>

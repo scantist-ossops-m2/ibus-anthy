@@ -146,10 +146,6 @@ class AnthySetup(object):
         tv.set_model(ls)
 
         self.__keymap = None
-        treeview = self.__builder.get_object('keymap:treeview_custom_table')
-        treeview.append_column(Gtk.TreeViewColumn('',
-                                                  Gtk.CellRendererText(),
-                                                  text=0))
         GObject.idle_add(self.__update_keymap_label,
                          priority = GObject.PRIORITY_LOW)
 
@@ -845,30 +841,107 @@ class AnthySetup(object):
         return engine_file
 
     def __get_keymap(self):
+        keymap = ''
+        layout = ''
+        variant = ''
+        option = ''
         engine_file = self.__get_engine_file()
         if engine_file == None:
             return None
 
         import xml.dom.minidom
         dom = xml.dom.minidom.parse(engine_file)
-        keymap = dom.getElementsByTagName('layout')[0].childNodes[0].data
-        if type(keymap) == unicode:
-            keymap = str(keymap)
+        nodes = dom.getElementsByTagName('layout')[0].childNodes
+        if len(nodes) > 0:
+            layout = nodes[0].data
+        if type(layout) == unicode:
+            layout = str(layout)
+        if layout != '':
+            keymap = layout.strip()
+        nodes = dom.getElementsByTagName('layout_variant')[0].childNodes
+        if len(nodes) > 0:
+            variant = nodes[0].data
+        if type(variant) == unicode:
+            variat = str(variant)
+        if variant != '':
+            keymap += '(' + varaint.strip() + ')'
+        nodes = dom.getElementsByTagName('layout_option')[0].childNodes
+        if len(nodes) > 0:
+            option = nodes[0].data
+        if type(option) == unicode:
+            option = str(option)
+        if option != '':
+            keymap += '[' + option.strip() + ']'
         return keymap
+
+    def __parse_keymap(self, keymap):
+        layout = None
+        variant = None
+        option = None
+
+        length = keymap.find('(')
+        if length >= 0:
+            if layout == None:
+                layout = keymap[0:length]
+            keymap = keymap[length + 1:]
+            length = keymap.find(')')
+            if length > 0:
+                variant = keymap[0:length]
+                keymap = keymap[length + 1:]
+            else:
+                print >> sys.stderr, 'Invalid keymap', keymap
+                return ('', '', '')
+        length = keymap.find('[')
+        if length >= 0:
+            if layout == None:
+                layout = keymap[0:length]
+            keymap = keymap[length + 1:]
+            length = keymap.find(']')
+            if length > 0:
+                option = keymap[0:length]
+                keymap = keymap[length + 1:]
+            else:
+                print >> sys.stderr, 'Invalid keymap', keymap
+                return ('', '', '')
+
+        if layout == None:
+            layout = keymap
+        if layout == None:
+            layout = ''
+        if variant == None:
+            variant = ''
+        if option == None:
+            option = ''
+        return (layout, variant, option)
 
     def __save_keymap(self):
         engine_file = self.__get_engine_file()
         if engine_file == None:
             return None
 
+        (layout, variant, option) = self.__parse_keymap(self.__keymap)
+
         import xml.dom.minidom
         dom = xml.dom.minidom.parse(engine_file)
-        node = dom.getElementsByTagName('layout')[0].childNodes[0]
-        node.data = self.__keymap
-        node = dom.getElementsByTagName('symbol')[0].childNodes[0]
+        nodes = dom.getElementsByTagName('layout')[0].childNodes
+        if len(nodes) == 0:
+            nodes.append(dom.createTextNode(layout))
+        else:
+            nodes[0].data = layout
+        nodes = dom.getElementsByTagName('layout_variant')[0].childNodes
+        if len(nodes) == 0:
+            nodes.append(dom.createTextNode(variant))
+        else:
+            nodes[0].data = variant
+        nodes = dom.getElementsByTagName('layout_option')[0].childNodes
+        if len(nodes) == 0:
+            nodes.append(dom.createTextNode(option))
+        else:
+            nodes[0].data = option
+        nodes = dom.getElementsByTagName('symbol')[0].childNodes
         # unicode will causes UnicodeEncodeError in write stream.
-        if type(node.data) == unicode:
-            node.data = node.data.encode('utf-8')
+        if len(nodes) > 0 and type(nodes[0].data) == unicode:
+            nodes[0].data = nodes[0].data.encode('utf-8')
 
         user_config = path.join(self.__get_userhome(), '.config',
                                 'ibus-anthy', 'engines.xml')
@@ -888,7 +961,8 @@ class AnthySetup(object):
         keymap = self.__get_keymap()
         if keymap == None:
             return
-        self.__keymap = keymap
+        if keymap == '':
+            keymap = 'default'
         keymap_list = prefs.get_value('common', 'keyboard_layouts')
         if keymap != None and not keymap in keymap_list:
             keymap_list.append(keymap)
@@ -900,14 +974,14 @@ class AnthySetup(object):
             if k == 'default':
                 k = _("Default")
             model.append([k])
-        treeview = self.__builder.get_object('keymap:treeview_custom_table')
-        treeview.set_model(model)
+        combobox = self.__builder.get_object('keymap:combobox_custom_table')
+        combobox.set_model(model)
+        combobox.set_active(0)
         if index >= 0:
-            iter = model.get_iter(index)
-            treeview.get_selection().select_iter(iter)
-        treeview.get_selection().connect_after('changed',
-                                               self.on_selection_keymap_changed,
-                                               0)
+            combobox.set_active(index)
+        combobox.connect_after('changed',
+                               self.on_cb_keymap_changed,
+                               0)
 
     def __save_preferences(self):
         self.prefs.commit_all()
@@ -923,16 +997,6 @@ class AnthySetup(object):
     def on_selection_custom_key_table_changed(self, widget, id):
         button = self.__builder.get_object('button_remove_custom_key')
         button.set_sensitive(True)
-
-    def on_selection_keymap_changed(self, widget, id):
-        ls, it = widget.get_selected()
-        keymap = ls[it][0]
-        if keymap == _("Default"):
-            keymap = 'default'
-        if self.__keymap == keymap:
-            return
-        self.__keymap = keymap
-        self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_main_delete(self, widget, event):
         self.on_btn_cancel_clicked(widget)
@@ -976,6 +1040,17 @@ class AnthySetup(object):
     def on_cb_changed(self, widget):
         section, key = self.__get_section_key(Gtk.Buildable.get_name(widget))
         self.prefs.set_value(section, key, widget.get_active())
+        self.__builder.get_object('btn_apply').set_sensitive(True)
+
+    def on_cb_keymap_changed(self, widget, id):
+        it = widget.get_active()
+        model = widget.get_model()
+        keymap = model[it][0]
+        if keymap == _("Default"):
+            keymap = 'default'
+        if self.__keymap == keymap:
+            return
+        self.__keymap = keymap
         self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_cb_custom_key_table_changed(self, widget, user_data):

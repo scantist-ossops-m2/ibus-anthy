@@ -7,6 +7,8 @@
 		<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 		<icon>ibus-anthy</icon>
 		@LAYOUT_XML@
+		<layout_variant></layout_variant>
+		<layout_option></layout_option>
 		<longname>Anthy</longname>
 		<description>Anthy Input Method</description>
 		<rank>99</rank>

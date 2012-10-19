@@ -335,6 +335,18 @@ else
     AC_MSG_ERROR([ibus 1.5 or later supports symbol in IBus.Property])
 fi
 
+dnl - check XKB option in IBus.EngineDesc
+AC_MSG_CHECKING([if IBus.EngineDesc has get_layout_option])
+LAYOUT_OPTION_TEST="from gi.repository import IBus
+exit(not hasattr(IBus.EngineDesc, 'get_layout_option'))
+"
+$PYTHON -c "$LAYOUT_OPTION_TEST"
+if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+else
+    AC_MSG_ERROR([ibus 1.5 or later supports layout_option in IBus.EngineDesc])
+fi
+
 dnl - set ibus-anthy layout
 AC_ARG_WITH(layout,
            [AC_HELP_STRING([--with-layout=LAYOUT],
