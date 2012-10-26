@@ -49,21 +49,35 @@ TYPING_MODE_KANA, \
 TYPING_MODE_THUMB_SHIFT = range(3)
 
 class JaString:
+    _prefs = None
+
     def __init__(self, mode=TYPING_MODE_ROMAJI):
-        self.__mode = mode
-        self.reset()
-        romaji.RomajiSegment._init_romaji_typing_rule(self._prefs)
-        kana.KanaSegment._init_kana_typing_rule(self._prefs)
-        thumb.ThumbShiftSegment._init_thumb_typing_rule(self._prefs)
+        self._init_mode(mode)
 
-    def reset(self):
-        self.__cursor = 0
-        self.__segments = list()
-        self.__shift = False
+    @classmethod
+    def _init_mode(cls, mode):
+        cls.__mode = mode
+        cls.__cursor = 0
+        cls.__segments = list()
+        cls.__shift = False
+        if mode == TYPING_MODE_ROMAJI:
+            romaji.RomajiSegment._init_romaji_typing_rule(cls._prefs)
+        elif mode == TYPING_MODE_KANA:
+            kana.KanaSegment._init_kana_typing_rule(cls._prefs)
+        elif mode == TYPING_MODE_THUMB_SHIFT:
+            thumb.ThumbShiftSegment._init_thumb_typing_rule(cls._prefs)
 
-    def set_mode(self, mode):
-        self.__mode = mode
-        self.reset()
+    @classmethod
+    def SET_PREFS(cls, prefs):
+        cls._prefs = prefs
+
+    @classmethod
+    def RESET(cls, prefs, section, name, value):
+        cls._prefs = prefs
+        if section.startswith('kana_typing_rule'):
+            mode = TYPING_MODE_KANA
+            kana.KanaSegment.RESET(prefs, section, name, value)
+            cls._init_mode(mode)
 
     def set_shift(self, shift):
         self.__shift = shift

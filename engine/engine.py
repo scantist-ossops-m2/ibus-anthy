@@ -1567,7 +1567,7 @@ class Engine(IBus.EngineSimple):
 
         cls.__keybind = cls._mk_keybind()
 
-        jastring.JaString._prefs = cls.__prefs
+        jastring.JaString.SET_PREFS(cls.__prefs)
 
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, variant):
@@ -1614,6 +1614,8 @@ class Engine(IBus.EngineSimple):
             if base_sec not in cls.__prefs.sections():
                 cls._fetch_dict_values(base_sec)
             cls.__prefs.set_value(base_sec, name, value)
+        elif base_sec.startswith('kana_typing_rule'):
+            jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
         elif base_sec:
             cls.__prefs.set_value(base_sec, name, value)
         else:

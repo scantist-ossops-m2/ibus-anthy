@@ -351,15 +351,21 @@ class AnthySetup(object):
         for key in prefs.keys(section):
             key = prefs.str(key)
             value = prefs.get_value(section, key)
+            ch = prefs.typing_from_config_key(key)
+            if ch == '':
+                continue
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
-                rule[key] = prefs.str(value)
+                rule[ch] = prefs.str(value)
         for key in prefs.get_value(section_base, 'newkeys'):
             key = prefs.str(key)
             value = self.prefs.get_value_direct(section, key)
+            ch = prefs.typing_from_config_key(key)
+            if ch == '':
+                continue
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
-                rule[key] = prefs.str(value)
+                rule[ch] = prefs.str(value)
         for key, value in sorted(rule.items(), \
             cmp = self.__japanese_tuple_sort):
             ls.append(['kana', key, value])
@@ -1191,6 +1197,11 @@ class AnthySetup(object):
         if section_base == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
+        if type == 'kana':
+            gkey = prefs.typing_to_config_key(key)
+            if gkey == '':
+                return
+            key = gkey
         section = section_base + '/' + method
         if key not in prefs.keys(section):
             # ibus does not support gconf_client_all_entries().
@@ -1233,6 +1244,11 @@ class AnthySetup(object):
             return
         section = section_base + '/' + method
         newkeys = prefs.get_value(section_base, 'newkeys')
+        if type == 'kana':
+            gkey = prefs.typing_to_config_key(key)
+            if gkey == '':
+                return
+            key = gkey
         if key in newkeys:
             newkeys.remove(key)
             prefs.set_value(section_base, 'newkeys', newkeys)

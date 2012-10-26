@@ -30,9 +30,9 @@ _UNFINISHED_HIRAGANA = set(u'かきくけこさしすせそたちつてとはひ
 
 class KanaSegment(segment.Segment):
     _prefs = None
-    _kana_typing_rule_method = 'jp'
     _kana_typing_rule_section = None
-    
+    _kana_voiced_consonant_rule = None
+
     def __init__(self, enchars=u'', jachars=u''):
         if not jachars:
             jachars = self.__get_kana_typing_rule(enchars, u'')
@@ -44,13 +44,61 @@ class KanaSegment(segment.Segment):
         if prefs == None:
             cls._kana_typing_rule_section = None
             return
-        method = prefs.get_value('kana_typing_rule', 'method')
+        if cls._kana_typing_rule_section == None:
+            cls._init_kana_typing_method()
+        if cls._kana_voiced_consonant_rule == None and \
+           cls._kana_typing_rule_section != None:
+            cls._init_kana_voiced_consonant_rule()
+
+    @classmethod
+    def _init_kana_typing_method(cls, method=None):
+        prefs = cls._prefs
+        if method == None:
+            method = prefs.get_value('kana_typing_rule', 'method')
         if method == None:
             method = 'jp'
-        cls._kana_typing_rule_method = method
         cls._kana_typing_rule_section = 'kana_typing_rule/' + method
         if cls._kana_typing_rule_section not in prefs.sections():
             cls._kana_typing_rule_section = None
+
+    @classmethod
+    def _init_kana_voiced_consonant_rule(cls):
+        prefs = cls._prefs
+        # Create kana_voiced_consonant_rule dynamically.
+        # E.g. 't' + '@' on jp kbd becomes Hiragana GA
+        # 't' + '[' on us kbd becomes Hiragana GA
+        # If the customized table provides U+309b with other chars,
+        # it needs to be detected dynamically.
+        cls._kana_voiced_consonant_rule = {}
+        section = cls._kana_typing_rule_section
+        for gkey in prefs.keys(section):
+            value = prefs.get_value(section, gkey)
+            key = prefs.typing_from_config_key(gkey)
+            if key == '':
+                continue
+            if value == unichr(0x309b).encode('utf-8'):
+                for no_voiced, voiced in \
+                        kana_voiced_consonant_no_rule.items():
+                    rule = no_voiced + key.decode('utf-8')
+                    cls._kana_voiced_consonant_rule[rule] = voiced
+            if value == unichr(0x309c).encode('utf-8'):
+                for no_voiced, voiced in \
+                        kana_semi_voiced_consonant_no_rule.items():
+                    rule = no_voiced + key.decode('utf-8')
+                    cls._kana_voiced_consonant_rule[rule] = voiced
+
+    @classmethod
+    def RESET(cls, prefs, section, name, value):
+        cls._prefs = prefs
+        if section == 'kana_typing_rule' and name == 'method' and \
+           value != None:
+            cls._kana_typing_rule_section = None
+            cls._kana_voiced_consonant_rule = None
+            cls._init_kana_typing_method(value)
+        elif section.startswith('kana_typing_rule/'):
+            # Probably it's better to restart ibus by manual
+            # instead of saving the emitted values from config.
+            cls._kana_voiced_consonant_rule = None
 
     def __get_kana_typing_rule(self, enchars, retval=None):
         prefs = self._prefs
@@ -64,6 +112,10 @@ class KanaSegment(segment.Segment):
             except:
                 print >> sys.stderr, \
                     'Failed to encode UTF-8:', enchars
+            gkey = prefs.typing_to_config_key(enchars)
+            if gkey == '':
+                return None
+            enchars = gkey
             if enchars in prefs.keys(section):
                 value = prefs.unicode(prefs.str(prefs.get_value(section, enchars)))
             else:
@@ -88,10 +140,8 @@ class KanaSegment(segment.Segment):
             return []
         if self._jachars:
             text = self._jachars + enchar
-            if self._kana_typing_rule_method == 'us':
-                jachars = kana_voiced_consonant_us_rule.get(text, None)
-            else:
-                jachars = kana_voiced_consonant_rule.get(text, None)
+            if self._kana_voiced_consonant_rule != None:
+                jachars = self._kana_voiced_consonant_rule.get(text, None)
             if jachars:
                 self._enchars = self._enchars + enchar
                 self._jachars = jachars
