@@ -267,10 +267,16 @@ class ThumbShiftKeyboard:
             prefs = self.__prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                self.__set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                self.__set_bus_table(ch, value)
             for k in prefs.get_value(section_base, 'newkeys'):
                 value = prefs.get_value_direct(section, k)
-                self.__set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                self.__set_bus_table(ch, value)
         else:
             for k in _table.keys():
                 self.__table[ord(k)] = _table_static[k]
@@ -317,10 +323,16 @@ class ThumbShiftKeyboard:
             prefs = self.__prefs
             for k in prefs.keys(sub_section):
                 value = prefs.get_value(sub_section, k)
-                self.__set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                self.__set_bus_table(ch, value)
             for k in prefs.get_value(section_base, method + '_newkeys'):
                 value = prefs.get_value_direct(sub_section, k)
-                self.__set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                self.__set_bus_table(ch, value)
         else:
             for k in sub_table.keys():
                 self.__table[ord(unicode(k))] = sub_table[k]
@@ -547,10 +559,16 @@ class ThumbShiftSegment(segment.Segment):
             prefs = cls._prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                cls._set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                cls._set_bus_table(ch, value)
             for k in prefs.get_value(section_base, 'newkeys'):
                 value = prefs.get_value_direct(section, k)
-                cls._set_bus_table(k, value)
+                ch = prefs.typing_from_config_key(k)
+                if ch == '':
+                    continue
+                cls._set_bus_table(ch, value)
         else:
             for k in _table.keys():
                 for c in _table_static[k]:
