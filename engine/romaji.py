@@ -65,12 +65,15 @@ class RomajiSegment(segment.Segment):
             except:
                 print >> sys.stderr, \
                     'Failed to encode UTF-8:', enchars
-            if enchars in prefs.keys(section):
+            gkey = prefs.typing_to_config_key(enchars)
+            if gkey == '':
+                return None
+            if gkey in prefs.keys(section):
                 value = prefs.unicode(prefs.str(
-                    prefs.get_value(section, enchars)))
+                    prefs.get_value(section, gkey)))
             else:
                 prefs.set_no_key_warning(True)
-                value = prefs.get_value_direct(section, enchars)
+                value = prefs.get_value_direct(section, gkey)
                 prefs.set_no_key_warning(False)
                 if value != None:
                     value = prefs.unicode(prefs.str(value))
