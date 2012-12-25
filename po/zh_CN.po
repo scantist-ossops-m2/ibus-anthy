@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2012-10-05 21:25+0900\n"
+"POT-Creation-Date: 2012-12-25 15:37+0900\n"
 "PO-Revision-Date: 2008-08-21 21:37+0800\n"
 "Last-Translator: Peng Huang <shawn.p.huang@gmail.com>\n"
 "Language-Team: Peng Huang <shawn.p.huang@gmail.com>\n"
@@ -17,150 +17,151 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../engine/engine.py:193 ../setup/main.py:377
+msgid "Preferences - Anthy"
+msgstr ""
+
+#: ../engine/engine.py:195
+msgid "Configure Anthy"
+msgstr ""
+
 #. Translators: Specify the order of %s with your translation.
 #. It will be "Input Mode (A)" for example.
-#: ../engine/engine.py:203 ../engine/engine.py:277 ../engine/engine.py:354
-#: ../engine/engine.py:419 ../engine/engine.py:741 ../engine/engine.py:769
-#: ../engine/engine.py:790 ../engine/engine.py:816 ../engine/engine.py:883
+#: ../engine/engine.py:232 ../engine/engine.py:320 ../engine/engine.py:387
+#: ../engine/engine.py:463 ../engine/engine.py:791 ../engine/engine.py:819
+#: ../engine/engine.py:843 ../engine/engine.py:869 ../engine/engine.py:936
 #, python-format
 msgid "%(description)s (%(symbol)s)"
 msgstr ""
 
-#: ../engine/engine.py:204 ../engine/engine.py:742
+#: ../engine/engine.py:233 ../engine/engine.py:792 ../setup/main.py:362
 #, fuzzy
 msgid "Input mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:210
+#: ../engine/engine.py:239
 msgid "Switch input mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:220 ../setup/setup.ui.h:1
+#: ../engine/engine.py:249 ../setup/setup.ui.h:1
 msgid "Hiragana"
 msgstr "平假名"
 
-#: ../engine/engine.py:229 ../setup/setup.ui.h:2
+#: ../engine/engine.py:258 ../setup/setup.ui.h:2
 msgid "Katakana"
 msgstr "片假名"
 
-#: ../engine/engine.py:238 ../setup/setup.ui.h:3
+#: ../engine/engine.py:267 ../setup/setup.ui.h:3
 msgid "Halfwidth Katakana"
 msgstr "半角片假名"
 
-#: ../engine/engine.py:247 ../setup/setup.ui.h:4
+#: ../engine/engine.py:276 ../setup/setup.ui.h:4
 msgid "Latin"
 msgstr "英数"
 
-#: ../engine/engine.py:256 ../setup/setup.ui.h:5
+#: ../engine/engine.py:285 ../setup/setup.ui.h:5
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../engine/engine.py:278 ../engine/engine.py:770 ../engine/engine.py:791
+#: ../engine/engine.py:321 ../engine/engine.py:820 ../engine/engine.py:844
+#: ../setup/main.py:365
 msgid "Typing method"
 msgstr ""
 
-#: ../engine/engine.py:284
+#: ../engine/engine.py:327
 #, fuzzy
 msgid "Switch typing method"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:294 ../setup/setup.ui.h:12
+#: ../engine/engine.py:337 ../setup/setup.ui.h:12
 msgid "Romaji"
 msgstr ""
 
-#: ../engine/engine.py:303 ../setup/setup.ui.h:13
+#: ../engine/engine.py:346 ../setup/setup.ui.h:13
 #, fuzzy
 msgid "Kana"
 msgstr "片假名"
 
-#: ../engine/engine.py:312 ../setup/setup.ui.h:14
+#: ../engine/engine.py:355 ../setup/setup.ui.h:14
 msgid "Thumb shift"
 msgstr ""
 
-#: ../engine/engine.py:334
-msgid "Preferences - Anthy"
-msgstr ""
-
-#: ../engine/engine.py:336
-msgid "Configure Anthy"
-msgstr ""
-
-#: ../engine/engine.py:355 ../engine/engine.py:817
+#: ../engine/engine.py:388 ../engine/engine.py:870 ../setup/main.py:368
 msgid "Segment mode"
 msgstr ""
 
-#: ../engine/engine.py:361
+#: ../engine/engine.py:394
 #, fuzzy
 msgid "Switch conversion mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:371 ../setup/setup.ui.h:15
+#: ../engine/engine.py:404 ../setup/setup.ui.h:15
 msgid "Multiple segment"
 msgstr ""
 
-#: ../engine/engine.py:380 ../setup/setup.ui.h:16
+#: ../engine/engine.py:413 ../setup/setup.ui.h:16
 msgid "Single segment"
 msgstr ""
 
-#: ../engine/engine.py:389 ../setup/setup.ui.h:17
+#: ../engine/engine.py:422 ../setup/setup.ui.h:17
 msgid "Immediate conversion (multiple segment)"
 msgstr ""
 
-#: ../engine/engine.py:398 ../setup/setup.ui.h:18
+#: ../engine/engine.py:431 ../setup/setup.ui.h:18
 msgid "Immediate conversion (single segment)"
 msgstr ""
 
-#: ../engine/engine.py:420 ../engine/engine.py:884
+#: ../engine/engine.py:464 ../engine/engine.py:937 ../setup/main.py:371
 #, fuzzy
 msgid "Dictionary mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:426
+#: ../engine/engine.py:470
 msgid "Switch dictionary"
 msgstr ""
 
-#: ../engine/engine.py:490
+#: ../engine/engine.py:542 ../setup/main.py:374
 msgid "Dictionary - Anthy"
 msgstr ""
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:496
+#: ../engine/engine.py:548
 msgid "Dic"
 msgstr ""
 
-#: ../engine/engine.py:503
+#: ../engine/engine.py:555
 msgid "Configure dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:513
+#: ../engine/engine.py:565
 msgid "Edit dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:515
+#: ../engine/engine.py:567
 msgid "Launch the dictionary tool"
 msgstr ""
 
-#: ../engine/engine.py:522
+#: ../engine/engine.py:574
 msgid "Add words"
 msgstr ""
 
-#: ../engine/engine.py:524
+#: ../engine/engine.py:576
 msgid "Add words to the dictionary"
 msgstr ""
 
-#: ../setup/anthyprefs.py.in:848
+#: ../setup/anthyprefs.py.in:1089 ../setup/setup.ui.h:35
 msgid "General"
 msgstr ""
 
-#: ../setup/anthyprefs.py.in:859
+#: ../setup/anthyprefs.py.in:1100
 msgid "Zip Code Conversion"
 msgstr ""
 
-#: ../setup/anthyprefs.py.in:871
+#: ../setup/anthyprefs.py.in:1112
 msgid "Symbol"
 msgstr ""
 
-#: ../setup/anthyprefs.py.in:882
+#: ../setup/anthyprefs.py.in:1123
 msgid "Old Character Style"
 msgstr ""
 
@@ -177,237 +178,249 @@ msgstr ""
 msgid "ibus is not running."
 msgstr ""
 
-#: ../setup/main.py:134
+#: ../setup/main.py:139
+msgid "Menu label"
+msgstr ""
+
+#: ../setup/main.py:158
 msgid "Command"
 msgstr ""
 
-#: ../setup/main.py:138
+#: ../setup/main.py:162
 msgid "Shortcut"
 msgstr ""
 
-#: ../setup/main.py:187
+#: ../setup/main.py:207
 msgid "Description"
 msgstr ""
 
 #. Translators: "Embd" is an abbreviation of "embedded".
-#: ../setup/main.py:195
+#: ../setup/main.py:215
 msgid "Embd"
 msgstr ""
 
 #. Translators: "Sgl" is an abbreviation of "single".
-#: ../setup/main.py:203
+#: ../setup/main.py:223
 msgid "Sgl"
 msgstr ""
 
-#: ../setup/main.py:341 ../setup/main.py:370
+#: ../setup/main.py:407 ../setup/main.py:442
 msgid "Input Chars"
 msgstr ""
 
-#: ../setup/main.py:343 ../setup/main.py:372
+#: ../setup/main.py:409 ../setup/main.py:444
 msgid "Output Chars"
 msgstr ""
 
-#: ../setup/main.py:411
+#: ../setup/main.py:489
 msgid "Input"
 msgstr ""
 
-#: ../setup/main.py:413
+#: ../setup/main.py:491
 msgid "Single"
 msgstr ""
 
-#: ../setup/main.py:415
+#: ../setup/main.py:493
 msgid "Left"
 msgstr ""
 
-#: ../setup/main.py:417
+#: ../setup/main.py:495
 msgid "Right"
 msgstr ""
 
-#: ../setup/main.py:492
+#: ../setup/main.py:576
 msgid "Customize Romaji Key Table"
 msgstr ""
 
-#: ../setup/main.py:493 ../setup/setup.ui.h:49
+#: ../setup/main.py:577 ../setup/setup.ui.h:51
 msgid "_Romaji Key Table:"
 msgstr ""
 
-#: ../setup/main.py:494 ../setup/main.py:500
+#: ../setup/main.py:578 ../setup/main.py:584
 msgid "_Output Chars"
 msgstr ""
 
-#: ../setup/main.py:495 ../setup/main.py:501 ../setup/main.py:901
-#: ../setup/main.py:930 ../setup/setup.ui.h:26
+#: ../setup/main.py:579 ../setup/main.py:1072 ../setup/main.py:1152
+#: ../setup/setup.ui.h:26
 msgid "Default"
 msgstr ""
 
-#: ../setup/main.py:498
+#: ../setup/main.py:582
 msgid "Customize Kana Key Table"
 msgstr ""
 
-#: ../setup/main.py:499 ../setup/setup.ui.h:51
+#: ../setup/main.py:583 ../setup/setup.ui.h:53
 msgid "_Kana Key Table:"
 msgstr ""
 
-#: ../setup/main.py:504
+#: ../setup/main.py:585
+msgid "Japanese Keyboard Layout"
+msgstr ""
+
+#: ../setup/main.py:586
+msgid "U.S. Keyboard Layout"
+msgstr ""
+
+#: ../setup/main.py:589
 msgid "Customize Thumb Shift Key Table"
 msgstr ""
 
-#: ../setup/main.py:505
+#: ../setup/main.py:590
 msgid "_Thumb Shift Key Table:"
 msgstr ""
 
-#: ../setup/main.py:506
+#: ../setup/main.py:591
 msgid "Single _Output Chars"
 msgstr ""
 
-#: ../setup/main.py:507
+#: ../setup/main.py:592
 msgid "Base"
 msgstr ""
 
-#: ../setup/main.py:508
+#: ../setup/main.py:593
 msgid "NICOLA-J key extension"
 msgstr ""
 
-#: ../setup/main.py:509
+#: ../setup/main.py:594
 msgid "NICOLA-A key extension"
 msgstr ""
 
-#: ../setup/main.py:510
+#: ../setup/main.py:595
 msgid "NICOLA-F key extension"
 msgstr ""
 
-#: ../setup/main.py:511
+#: ../setup/main.py:596
 msgid "FMV KB231-J key extension"
 msgstr ""
 
-#: ../setup/main.py:512
+#: ../setup/main.py:597
 msgid "FMV KB231-A key extension"
 msgstr ""
 
-#: ../setup/main.py:513
+#: ../setup/main.py:598
 msgid "FMV KB231-F key extension"
 msgstr ""
 
-#: ../setup/main.py:514
+#: ../setup/main.py:599
 msgid "FMV KB611-J key extension"
 msgstr ""
 
-#: ../setup/main.py:515
+#: ../setup/main.py:600
 msgid "FMV KB611-A key extension"
 msgstr ""
 
-#: ../setup/main.py:516
+#: ../setup/main.py:601
 msgid "FMV KB611-F key extension"
 msgstr ""
 
-#: ../setup/main.py:676
+#: ../setup/main.py:769
 msgid "Your choosed file has already been added: "
 msgstr ""
 
-#: ../setup/main.py:680
+#: ../setup/main.py:773
 msgid "The file you have chosen does not exist: "
 msgstr ""
 
-#: ../setup/main.py:684
+#: ../setup/main.py:777
 msgid "Your choosed file is a directory: "
 msgstr ""
 
-#: ../setup/main.py:688
+#: ../setup/main.py:781
 msgid "You cannot add dictionaries in the anthy private directory: "
 msgstr ""
 
-#: ../setup/main.py:695
+#: ../setup/main.py:788
 msgid "Your file path is not good: "
 msgstr ""
 
-#: ../setup/main.py:842
+#: ../setup/main.py:935
 msgid "The engine xml file does not exist: "
 msgstr ""
 
-#: ../setup/main.py:883
+#: ../setup/main.py:1053
 msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
 msgstr ""
 
-#: ../setup/main.py:947
+#: ../setup/main.py:1114
 msgid "Confirmation"
 msgstr ""
 
-#: ../setup/main.py:949
+#: ../setup/main.py:1116
 msgid "You are about to close the setup dialog, is that OK?"
 msgstr ""
 
-#: ../setup/main.py:963
+#: ../setup/main.py:1130
 msgid "Notice!"
 msgstr ""
 
-#: ../setup/main.py:965
+#: ../setup/main.py:1132
 msgid ""
 "You are about to close the setup dialog without saving your changes, is that "
 "OK?"
 msgstr ""
 
-#: ../setup/main.py:1070
+#: ../setup/main.py:1252
 msgid "Please specify Input Chars"
 msgstr ""
 
-#: ../setup/main.py:1073
+#: ../setup/main.py:1255
 msgid "Please specify Output Chars"
 msgstr ""
 
-#: ../setup/main.py:1076
+#: ../setup/main.py:1258
 msgid "Please specify Left Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/main.py:1079
+#: ../setup/main.py:1261
 msgid "Please specify Right Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/main.py:1092 ../setup/main.py:1132
+#: ../setup/main.py:1274 ../setup/main.py:1318
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr ""
 
-#: ../setup/main.py:1192 ../setup/main.py:1278
+#: ../setup/main.py:1383 ../setup/main.py:1469
 msgid "Your file does not exist: "
 msgstr ""
 
-#: ../setup/main.py:1202
+#: ../setup/main.py:1393
 msgid "Open Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1208
+#: ../setup/main.py:1399
 msgid "Edit Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1222
+#: ../setup/main.py:1413
 msgid "Your choosed file is not correct."
 msgstr ""
 
-#: ../setup/main.py:1251
+#: ../setup/main.py:1442
 msgid "You cannot delete the system dictionary."
 msgstr ""
 
-#: ../setup/main.py:1274
+#: ../setup/main.py:1465
 msgid "Your file is not good."
 msgstr ""
 
-#: ../setup/main.py:1304
+#: ../setup/main.py:1495
 msgid "View Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:1458
+#: ../setup/main.py:1649
 msgid "Please press a key (or a key combination)"
 msgstr ""
 
-#: ../setup/main.py:1459
+#: ../setup/main.py:1650
 msgid "The dialog will be closed when the key is released"
 msgstr ""
 
-#: ../setup/main.py:1478 ../setup/main.py:1498
+#: ../setup/main.py:1669 ../setup/main.py:1689
 msgid "Invalid keysym"
 msgstr ""
 
-#: ../setup/main.py:1479 ../setup/main.py:1499
+#: ../setup/main.py:1670 ../setup/main.py:1690
 msgid "This keysym is not valid"
 msgstr ""
 
@@ -492,259 +505,265 @@ msgid "<b>Initial Setting</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:34
-msgid "_Period Style:"
-msgstr ""
-
-#: ../setup/setup.ui.h:35
-msgid "Symbo_l Style:"
+msgid "<b>Menu Visibility on Status Icon</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:36
-msgid "Numpad _Key Type:"
+msgid "_Period Style:"
 msgstr ""
 
 #: ../setup/setup.ui.h:37
-msgid "_Behavior on Period:"
+msgid "Symbo_l Style:"
 msgstr ""
 
 #: ../setup/setup.ui.h:38
-msgid "Behavior on _Focus Out:"
+msgid "Numpad _Key Type:"
 msgstr ""
 
 #: ../setup/setup.ui.h:39
-msgid "<b>Behavior</b>"
+msgid "_Behavior on Period:"
 msgstr ""
 
 #: ../setup/setup.ui.h:40
-msgid "Convert _numbers with the one column width"
+msgid "Behavior on _Focus Out:"
 msgstr ""
 
 #: ../setup/setup.ui.h:41
-msgid "Candidate _Window Page Size:"
+msgid "<b>Behavior</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:42
-msgid "Convert _symbols with the one column width"
+msgid "Convert _numbers with the one column width"
 msgstr ""
 
 #: ../setup/setup.ui.h:43
-msgid "Con_vert spaces with the one column width"
+msgid "Candidate _Window Page Size:"
 msgstr ""
 
 #: ../setup/setup.ui.h:44
-msgid "<b>Other</b>"
+msgid "Convert _symbols with the one column width"
 msgstr ""
 
 #: ../setup/setup.ui.h:45
-msgid "_General"
+msgid "Con_vert spaces with the one column width"
 msgstr ""
 
 #: ../setup/setup.ui.h:46
-msgid "_Shortcut Type:"
+msgid "<b>Other</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:47
-msgid "De_fault"
+msgid "Conversion"
 msgstr ""
 
 #: ../setup/setup.ui.h:48
-msgid "Key Bin_ding"
+msgid "_Shortcut Type:"
+msgstr ""
+
+#: ../setup/setup.ui.h:49
+msgid "De_fault"
 msgstr ""
 
 #: ../setup/setup.ui.h:50
-msgid "<b>Romaji</b>"
+msgid "Key Binding"
 msgstr ""
 
 #: ../setup/setup.ui.h:52
-msgid "<b>Kana</b>"
-msgstr ""
-
-#: ../setup/setup.ui.h:53
-msgid "Keyboad _layout:"
+msgid "<b>Romaji</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:54
-msgid "<b>Keyboard layout</b>"
+msgid "<b>Kana</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:55
-msgid "_Typing Method"
+msgid "Keyboad _layout:"
 msgstr ""
 
 #: ../setup/setup.ui.h:56
-msgid "_Left Thumb Shift Key:"
+msgid "<b>Keyboard layout</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:57
-msgid "Right _Thumb Shift Key:"
-msgstr ""
+#, fuzzy
+msgid "Typing Method"
+msgstr "切换输入模式"
 
 #: ../setup/setup.ui.h:58
-msgid "Adjust _input method layout to system keyboard layout"
+msgid "_Left Thumb Shift Key:"
 msgstr ""
 
 #: ../setup/setup.ui.h:59
-msgid "Adjust IM layout to XKB layout"
+msgid "Right _Thumb Shift Key:"
 msgstr ""
 
 #: ../setup/setup.ui.h:60
-msgid "Input _Method Layout:"
+msgid "Adjust _input method layout to system keyboard layout"
 msgstr ""
 
 #: ../setup/setup.ui.h:61
-msgid "Restart IBus when you change the keyboard layout"
+msgid "Adjust IM layout to XKB layout"
 msgstr ""
 
 #: ../setup/setup.ui.h:62
-msgid "Restart IBus when you change XKB"
+msgid "Input _Method Layout:"
 msgstr ""
 
 #: ../setup/setup.ui.h:63
+msgid "Restart IBus when you change the keyboard layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:64
+msgid "Restart IBus when you change XKB"
+msgstr ""
+
+#: ../setup/setup.ui.h:65
 msgid ""
 "Strongly recommend to enable \"Use system keyboard layout\" check button in "
 "\"Advanced\" tab using 'ibus-setup' command"
 msgstr ""
 
-#: ../setup/setup.ui.h:64
+#: ../setup/setup.ui.h:66
 msgid "_Additional Key Arrangement:"
 msgstr ""
 
-#: ../setup/setup.ui.h:65
+#: ../setup/setup.ui.h:67
 msgid ""
 "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with "
 "Thumb Shift key"
 msgstr ""
 
-#: ../setup/setup.ui.h:66
+#: ../setup/setup.ui.h:68
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
 "Key Arrangement\" since this option changes input method layout only in case "
 "input method is turned on."
 msgstr ""
 
-#: ../setup/setup.ui.h:67
+#: ../setup/setup.ui.h:69
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
 msgstr ""
 
-#: ../setup/setup.ui.h:68
+#: ../setup/setup.ui.h:70
 msgid "_Enable semi-voiced sound mark with Shift key"
 msgstr ""
 
-#: ../setup/setup.ui.h:69
+#: ../setup/setup.ui.h:71
 msgid "Seion + Shift can output Handakuon"
 msgstr ""
 
-#: ../setup/setup.ui.h:70
+#: ../setup/setup.ui.h:72
 msgid "Thumb _Shift Key Table:"
 msgstr ""
 
-#: ../setup/setup.ui.h:71
+#: ../setup/setup.ui.h:73
 msgid "<b>Thumb Shift Layout</b>"
 msgstr ""
 
-#: ../setup/setup.ui.h:72
-msgid "Thumb S_hift"
-msgstr ""
-
-#: ../setup/setup.ui.h:73
-msgid "_Edit Dictionary Command:"
-msgstr ""
-
 #: ../setup/setup.ui.h:74
-msgid "_Add Word Command:"
+msgid "Thumb Shift"
 msgstr ""
 
 #: ../setup/setup.ui.h:75
-msgid "<b>Default Dictionary Configuration</b>"
+msgid "_Edit Dictionary Command:"
 msgstr ""
 
 #: ../setup/setup.ui.h:76
-msgid "_View"
+msgid "_Add Word Command:"
 msgstr ""
 
 #: ../setup/setup.ui.h:77
-msgid "You can change the order on language bar"
+msgid "<b>Default Dictionary Configuration</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:78
-msgid "<b>Extended Dictionaries</b>"
+msgid "_View"
 msgstr ""
 
 #: ../setup/setup.ui.h:79
-msgid "Dictionar_y"
+msgid "You can change the order on language bar"
 msgstr ""
 
 #: ../setup/setup.ui.h:80
-msgid "Abo_ut"
+msgid "<b>Extended Dictionaries</b>"
 msgstr ""
 
 #: ../setup/setup.ui.h:81
-msgid "Edit Shortcut"
-msgstr ""
+#, fuzzy
+msgid "Dictionary"
+msgstr "切换输入模式"
 
 #: ../setup/setup.ui.h:82
-msgid "Key Code:"
+msgid "About"
 msgstr ""
 
 #: ../setup/setup.ui.h:83
-msgid "Modifier:"
+msgid "Edit Shortcut"
 msgstr ""
 
 #: ../setup/setup.ui.h:84
-msgid "A_lternate"
+msgid "Key Code:"
 msgstr ""
 
 #: ../setup/setup.ui.h:85
-msgid "Co_ntrol"
+msgid "Modifier:"
 msgstr ""
 
 #: ../setup/setup.ui.h:86
-msgid "_Shift"
+msgid "A_lternate"
 msgstr ""
 
 #: ../setup/setup.ui.h:87
-msgid "_Input Characters"
+msgid "Co_ntrol"
 msgstr ""
 
 #: ../setup/setup.ui.h:88
-msgid "_Output Characters"
+msgid "_Shift"
 msgstr ""
 
 #: ../setup/setup.ui.h:89
-msgid "_Left Thumb Shift"
+msgid "_Input Characters"
 msgstr ""
 
 #: ../setup/setup.ui.h:90
-msgid "_Right Thumb Shift"
+msgid "_Output Characters"
 msgstr ""
 
 #: ../setup/setup.ui.h:91
-msgid "_Short Label:"
+msgid "_Left Thumb Shift"
 msgstr ""
 
 #: ../setup/setup.ui.h:92
-msgid "_Description:"
+msgid "_Right Thumb Shift"
 msgstr ""
 
 #: ../setup/setup.ui.h:93
-msgid "_Use your dictionary alone with switching dictionaries"
+msgid "_Short Label:"
 msgstr ""
 
 #: ../setup/setup.ui.h:94
-msgid "_Embed your dictionary in the system dictionary"
+msgid "_Description:"
 msgstr ""
 
 #: ../setup/setup.ui.h:95
-msgid "Enable the _reverse conversion"
+msgid "_Use your dictionary alone with switching dictionaries"
 msgstr ""
 
 #: ../setup/setup.ui.h:96
-msgid "The Anthy engine for the IBus input platform"
+msgid "_Embed your dictionary in the system dictionary"
 msgstr ""
 
 #: ../setup/setup.ui.h:97
+msgid "Enable the _reverse conversion"
+msgstr ""
+
+#: ../setup/setup.ui.h:98
+msgid "The Anthy engine for the IBus input platform"
+msgstr ""
+
+#: ../setup/setup.ui.h:99
 msgid "translator_credits"
 msgstr ""
 

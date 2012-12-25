@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2012-10-05 21:38+0900\n"
+"POT-Creation-Date: 2012-12-25 15:37+0900\n"
 "PO-Revision-Date: 2012-07-10 11:37+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -17,145 +17,146 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../engine/engine.py:193 ../setup/main.py:377
+msgid "Preferences - Anthy"
+msgstr "設定 - Anthy"
+
+#: ../engine/engine.py:195
+msgid "Configure Anthy"
+msgstr "Anthy を構成します"
+
 #. Translators: Specify the order of %s with your translation.
 #. It will be "Input Mode (A)" for example.
-#: ../engine/engine.py:203 ../engine/engine.py:277 ../engine/engine.py:354
-#: ../engine/engine.py:419 ../engine/engine.py:741 ../engine/engine.py:769
-#: ../engine/engine.py:790 ../engine/engine.py:816 ../engine/engine.py:883
+#: ../engine/engine.py:232 ../engine/engine.py:320 ../engine/engine.py:387
+#: ../engine/engine.py:463 ../engine/engine.py:791 ../engine/engine.py:819
+#: ../engine/engine.py:843 ../engine/engine.py:869 ../engine/engine.py:936
 #, python-format
 msgid "%(description)s (%(symbol)s)"
 msgstr "%(description)s (%(symbol)s)"
 
-#: ../engine/engine.py:204 ../engine/engine.py:742
+#: ../engine/engine.py:233 ../engine/engine.py:792 ../setup/main.py:362
 msgid "Input mode"
 msgstr "入力モード"
 
-#: ../engine/engine.py:210
+#: ../engine/engine.py:239
 msgid "Switch input mode"
 msgstr "入力モードを切り替えます"
 
-#: ../engine/engine.py:220 ../setup/setup.ui.h:1
+#: ../engine/engine.py:249 ../setup/setup.ui.h:1
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: ../engine/engine.py:229 ../setup/setup.ui.h:2
+#: ../engine/engine.py:258 ../setup/setup.ui.h:2
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: ../engine/engine.py:238 ../setup/setup.ui.h:3
+#: ../engine/engine.py:267 ../setup/setup.ui.h:3
 msgid "Halfwidth Katakana"
 msgstr "半角カタカナ"
 
-#: ../engine/engine.py:247 ../setup/setup.ui.h:4
+#: ../engine/engine.py:276 ../setup/setup.ui.h:4
 msgid "Latin"
 msgstr "英数"
 
-#: ../engine/engine.py:256 ../setup/setup.ui.h:5
+#: ../engine/engine.py:285 ../setup/setup.ui.h:5
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../engine/engine.py:278 ../engine/engine.py:770 ../engine/engine.py:791
+#: ../engine/engine.py:321 ../engine/engine.py:820 ../engine/engine.py:844
+#: ../setup/main.py:365
 msgid "Typing method"
 msgstr "入力タイプ"
 
-#: ../engine/engine.py:284
+#: ../engine/engine.py:327
 msgid "Switch typing method"
 msgstr "入力タイプを切り替えます"
 
-#: ../engine/engine.py:294 ../setup/setup.ui.h:12
+#: ../engine/engine.py:337 ../setup/setup.ui.h:12
 msgid "Romaji"
 msgstr "ローマ字"
 
-#: ../engine/engine.py:303 ../setup/setup.ui.h:13
+#: ../engine/engine.py:346 ../setup/setup.ui.h:13
 msgid "Kana"
 msgstr "かな"
 
-#: ../engine/engine.py:312 ../setup/setup.ui.h:14
+#: ../engine/engine.py:355 ../setup/setup.ui.h:14
 msgid "Thumb shift"
 msgstr "親指シフト"
 
-#: ../engine/engine.py:334
-msgid "Preferences - Anthy"
-msgstr "設定 - Anthy"
-
-#: ../engine/engine.py:336
-msgid "Configure Anthy"
-msgstr "Anthy を構成します"
-
-#: ../engine/engine.py:355 ../engine/engine.py:817
+#: ../engine/engine.py:388 ../engine/engine.py:870 ../setup/main.py:368
 msgid "Segment mode"
 msgstr "文節モード"
 
-#: ../engine/engine.py:361
+#: ../engine/engine.py:394
 msgid "Switch conversion mode"
 msgstr "変換モードを切り替えます"
 
-#: ../engine/engine.py:371 ../setup/setup.ui.h:15
+#: ../engine/engine.py:404 ../setup/setup.ui.h:15
 msgid "Multiple segment"
 msgstr "連文節"
 
-#: ../engine/engine.py:380 ../setup/setup.ui.h:16
+#: ../engine/engine.py:413 ../setup/setup.ui.h:16
 msgid "Single segment"
 msgstr "単文節"
 
-#: ../engine/engine.py:389 ../setup/setup.ui.h:17
+#: ../engine/engine.py:422 ../setup/setup.ui.h:17
 msgid "Immediate conversion (multiple segment)"
 msgstr "逐次変換 (連文節)"
 
-#: ../engine/engine.py:398 ../setup/setup.ui.h:18
+#: ../engine/engine.py:431 ../setup/setup.ui.h:18
 msgid "Immediate conversion (single segment)"
 msgstr "逐次変換 (単文節)"
 
-#: ../engine/engine.py:420 ../engine/engine.py:884
+#: ../engine/engine.py:464 ../engine/engine.py:937 ../setup/main.py:371
 msgid "Dictionary mode"
 msgstr "辞書モード"
 
-#: ../engine/engine.py:426
+#: ../engine/engine.py:470
 msgid "Switch dictionary"
 msgstr "辞書を切り替えます"
 
-#: ../engine/engine.py:490
+#: ../engine/engine.py:542 ../setup/main.py:374
 msgid "Dictionary - Anthy"
 msgstr "辞書 - Anthy"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:496
+#: ../engine/engine.py:548
 msgid "Dic"
 msgstr "辞"
 
-#: ../engine/engine.py:503
+#: ../engine/engine.py:555
 msgid "Configure dictionaries"
 msgstr "辞書を構成します"
 
-#: ../engine/engine.py:513
+#: ../engine/engine.py:565
 msgid "Edit dictionaries"
 msgstr "辞書を編集する"
 
-#: ../engine/engine.py:515
+#: ../engine/engine.py:567
 msgid "Launch the dictionary tool"
 msgstr "辞書ツールを起動する"
 
-#: ../engine/engine.py:522
+#: ../engine/engine.py:574
 msgid "Add words"
 msgstr "単語を追加する"
 
-#: ../engine/engine.py:524
+#: ../engine/engine.py:576
 msgid "Add words to the dictionary"
 msgstr "辞書に単語を追加する"
 
-#: ../setup/anthyprefs.py.in:848
+#: ../setup/anthyprefs.py.in:1089 ../setup/setup.ui.h:35
 msgid "General"
 msgstr "一般"
 
-#: ../setup/anthyprefs.py.in:859
+#: ../setup/anthyprefs.py.in:1100
 msgid "Zip Code Conversion"
 msgstr "郵便番号変換"
 
-#: ../setup/anthyprefs.py.in:871
+#: ../setup/anthyprefs.py.in:1112
 msgid "Symbol"
 msgstr "記号"
 
-#: ../setup/anthyprefs.py.in:882
+#: ../setup/anthyprefs.py.in:1123
 msgid "Old Character Style"
 msgstr "旧字体"
 
@@ -172,240 +173,252 @@ msgstr "IBus Anthy エンジンの設定"
 msgid "ibus is not running."
 msgstr "ibus が起動していません。"
 
-#: ../setup/main.py:134
+#: ../setup/main.py:139
+msgid "Menu label"
+msgstr "メニューラベル"
+
+#: ../setup/main.py:158
 msgid "Command"
 msgstr "コマンド"
 
-#: ../setup/main.py:138
+#: ../setup/main.py:162
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: ../setup/main.py:187
+#: ../setup/main.py:207
 msgid "Description"
 msgstr "説明"
 
 #. Translators: "Embd" is an abbreviation of "embedded".
-#: ../setup/main.py:195
+#: ../setup/main.py:215
 msgid "Embd"
 msgstr "組"
 
 #. Translators: "Sgl" is an abbreviation of "single".
-#: ../setup/main.py:203
+#: ../setup/main.py:223
 msgid "Sgl"
 msgstr "単"
 
-#: ../setup/main.py:341 ../setup/main.py:370
+#: ../setup/main.py:407 ../setup/main.py:442
 msgid "Input Chars"
 msgstr "入力文字"
 
-#: ../setup/main.py:343 ../setup/main.py:372
+#: ../setup/main.py:409 ../setup/main.py:444
 msgid "Output Chars"
 msgstr "出力文字"
 
-#: ../setup/main.py:411
+#: ../setup/main.py:489
 msgid "Input"
 msgstr "入力"
 
-#: ../setup/main.py:413
+#: ../setup/main.py:491
 msgid "Single"
 msgstr "単"
 
-#: ../setup/main.py:415
+#: ../setup/main.py:493
 msgid "Left"
 msgstr "左"
 
-#: ../setup/main.py:417
+#: ../setup/main.py:495
 msgid "Right"
 msgstr "右"
 
-#: ../setup/main.py:492
+#: ../setup/main.py:576
 msgid "Customize Romaji Key Table"
 msgstr "ローマ字キーテーブルのカスタマイズ"
 
-#: ../setup/main.py:493 ../setup/setup.ui.h:49
+#: ../setup/main.py:577 ../setup/setup.ui.h:51
 msgid "_Romaji Key Table:"
 msgstr "ローマ字キーテーブル(_R):"
 
-#: ../setup/main.py:494 ../setup/main.py:500
+#: ../setup/main.py:578 ../setup/main.py:584
 msgid "_Output Chars"
 msgstr "出力文字(_O)"
 
-#: ../setup/main.py:495 ../setup/main.py:501 ../setup/main.py:901
-#: ../setup/main.py:930 ../setup/setup.ui.h:26
+#: ../setup/main.py:579 ../setup/main.py:1072 ../setup/main.py:1152
+#: ../setup/setup.ui.h:26
 msgid "Default"
 msgstr "デフォルト"
 
-#: ../setup/main.py:498
+#: ../setup/main.py:582
 msgid "Customize Kana Key Table"
 msgstr "かなキーテーブルのカスタマイズ"
 
-#: ../setup/main.py:499 ../setup/setup.ui.h:51
+#: ../setup/main.py:583 ../setup/setup.ui.h:53
 msgid "_Kana Key Table:"
 msgstr "かなキーテーブル(_K):"
 
-#: ../setup/main.py:504
+#: ../setup/main.py:585
+msgid "Japanese Keyboard Layout"
+msgstr "日本語キーボードレイアウト"
+
+#: ../setup/main.py:586
+msgid "U.S. Keyboard Layout"
+msgstr "U.S. キーボードレイアウト"
+
+#: ../setup/main.py:589
 msgid "Customize Thumb Shift Key Table"
 msgstr "親指シフトキーテーブルのカスタマイズ"
 
-#: ../setup/main.py:505
+#: ../setup/main.py:590
 msgid "_Thumb Shift Key Table:"
 msgstr "親指シフトキーテーブル(_T):"
 
-#: ../setup/main.py:506
+#: ../setup/main.py:591
 msgid "Single _Output Chars"
 msgstr "単出力文字(_O)"
 
-#: ../setup/main.py:507
+#: ../setup/main.py:592
 msgid "Base"
 msgstr "基本"
 
-#: ../setup/main.py:508
+#: ../setup/main.py:593
 msgid "NICOLA-J key extension"
 msgstr "NICOLA-J キー拡張"
 
-#: ../setup/main.py:509
+#: ../setup/main.py:594
 msgid "NICOLA-A key extension"
 msgstr "NICOLA-A キー拡張"
 
-#: ../setup/main.py:510
+#: ../setup/main.py:595
 msgid "NICOLA-F key extension"
 msgstr "NICOLA-F キー拡張"
 
-#: ../setup/main.py:511
+#: ../setup/main.py:596
 msgid "FMV KB231-J key extension"
 msgstr "FMV KB231-J キー拡張"
 
-#: ../setup/main.py:512
+#: ../setup/main.py:597
 msgid "FMV KB231-A key extension"
 msgstr "FMV KB231-A キー拡張"
 
-#: ../setup/main.py:513
+#: ../setup/main.py:598
 msgid "FMV KB231-F key extension"
 msgstr "FMV KB231-F キー拡張"
 
-#: ../setup/main.py:514
+#: ../setup/main.py:599
 msgid "FMV KB611-J key extension"
 msgstr "FMV KB611-J キー拡張"
 
-#: ../setup/main.py:515
+#: ../setup/main.py:600
 msgid "FMV KB611-A key extension"
 msgstr "FMV KB611-A キー拡張"
 
-#: ../setup/main.py:516
+#: ../setup/main.py:601
 msgid "FMV KB611-F key extension"
 msgstr "FMV KB611-F キー拡張"
 
-#: ../setup/main.py:676
+#: ../setup/main.py:769
 msgid "Your choosed file has already been added: "
 msgstr "選択したファイルはすでに追加されています: "
 
-#: ../setup/main.py:680
+#: ../setup/main.py:773
 msgid "The file you have chosen does not exist: "
 msgstr "選択したファイルは存在しません: "
 
-#: ../setup/main.py:684
+#: ../setup/main.py:777
 msgid "Your choosed file is a directory: "
 msgstr "選択したファイルはディレクトリです: "
 
-#: ../setup/main.py:688
+#: ../setup/main.py:781
 msgid "You cannot add dictionaries in the anthy private directory: "
 msgstr "Anthy 私用ディレクトリにあるファイルを追加することはできません: "
 
-#: ../setup/main.py:695
+#: ../setup/main.py:788
 msgid "Your file path is not good: "
 msgstr "ファイルパスはよくないです: "
 
-#: ../setup/main.py:842
+#: ../setup/main.py:935
 msgid "The engine xml file does not exist: "
 msgstr "エンジン xml ファイルは存在しません: "
 
-#: ../setup/main.py:883
+#: ../setup/main.py:1053
 msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
 msgstr ""
 "Anthy キーボードレイアウトが変更されました。レイアウトを再読み込みするために "
 "ibus を再起動してください。"
 
-#: ../setup/main.py:947
+#: ../setup/main.py:1114
 msgid "Confirmation"
 msgstr "確認"
 
-#: ../setup/main.py:949
+#: ../setup/main.py:1116
 msgid "You are about to close the setup dialog, is that OK?"
 msgstr "この設定ツールを終了します。よろしいですか？"
 
-#: ../setup/main.py:963
+#: ../setup/main.py:1130
 msgid "Notice!"
 msgstr "注意！"
 
-#: ../setup/main.py:965
+#: ../setup/main.py:1132
 msgid ""
 "You are about to close the setup dialog without saving your changes, is that "
 "OK?"
 msgstr "変更を保存せずに終了します。よろしいですか？"
 
-#: ../setup/main.py:1070
+#: ../setup/main.py:1252
 msgid "Please specify Input Chars"
 msgstr "入力文字を指定してください"
 
-#: ../setup/main.py:1073
+#: ../setup/main.py:1255
 msgid "Please specify Output Chars"
 msgstr "出力文字を指定してください"
 
-#: ../setup/main.py:1076
+#: ../setup/main.py:1258
 msgid "Please specify Left Thumb Shift Chars"
 msgstr "左親指シフト文字を指定してください"
 
-#: ../setup/main.py:1079
+#: ../setup/main.py:1261
 msgid "Please specify Right Thumb Shift Chars"
 msgstr "右親指シフト文字を指定してください"
 
-#: ../setup/main.py:1092 ../setup/main.py:1132
+#: ../setup/main.py:1274 ../setup/main.py:1318
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr ""
 "カスタムキーがどのセクションにも割り当てられていません。たぶんバグです。"
 
-#: ../setup/main.py:1192 ../setup/main.py:1278
+#: ../setup/main.py:1383 ../setup/main.py:1469
 msgid "Your file does not exist: "
 msgstr "ファイルは存在しません: "
 
-#: ../setup/main.py:1202
+#: ../setup/main.py:1393
 msgid "Open Dictionary File"
 msgstr "辞書ファイルを開く"
 
-#: ../setup/main.py:1208
+#: ../setup/main.py:1399
 msgid "Edit Dictionary File"
 msgstr "辞書ファイルの編集"
 
-#: ../setup/main.py:1222
+#: ../setup/main.py:1413
 msgid "Your choosed file is not correct."
 msgstr "選択したファイルは正しくありません。"
 
-#: ../setup/main.py:1251
+#: ../setup/main.py:1442
 msgid "You cannot delete the system dictionary."
 msgstr "システム辞書を削除することはできません。"
 
-#: ../setup/main.py:1274
+#: ../setup/main.py:1465
 msgid "Your file is not good."
 msgstr "ファイルは良くないです。"
 
-#: ../setup/main.py:1304
+#: ../setup/main.py:1495
 msgid "View Dictionary File"
 msgstr "辞書ファイルの表示"
 
-#: ../setup/main.py:1458
+#: ../setup/main.py:1649
 msgid "Please press a key (or a key combination)"
 msgstr "キーを入力してください"
 
-#: ../setup/main.py:1459
+#: ../setup/main.py:1650
 msgid "The dialog will be closed when the key is released"
 msgstr "このダイアログはキーリリース時に閉じられます"
 
-#: ../setup/main.py:1478 ../setup/main.py:1498
+#: ../setup/main.py:1669 ../setup/main.py:1689
 msgid "Invalid keysym"
 msgstr "無効なキーシンボル"
 
-#: ../setup/main.py:1479 ../setup/main.py:1499
+#: ../setup/main.py:1670 ../setup/main.py:1690
 msgid "This keysym is not valid"
 msgstr "このキーシンボルは有効ではありません"
 
@@ -490,115 +503,119 @@ msgid "<b>Initial Setting</b>"
 msgstr "<b>初期値の設定</b>"
 
 #: ../setup/setup.ui.h:34
+msgid "<b>Menu Visibility on Status Icon</b>"
+msgstr "<b>ステータスアイコン上のメニューの表示</b>"
+
+#: ../setup/setup.ui.h:36
 msgid "_Period Style:"
 msgstr "句読点スタイル(_P):"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Symbo_l Style:"
 msgstr "記号スタイル(_L):"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Numpad _Key Type:"
 msgstr "テンキータイプ(_K):"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "_Behavior on Period:"
 msgstr "句読点入力時の動作(_B):"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Behavior on _Focus Out:"
 msgstr "フォーカスアウト時の動作(_F):"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "<b>Behavior</b>"
 msgstr "<b>動作</b>"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Convert _numbers with the one column width"
 msgstr "数字を半角で変換する(_N)"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Candidate _Window Page Size:"
 msgstr "候補ウインドウの項目数(_W):"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "Convert _symbols with the one column width"
 msgstr "記号を半角で変換する(_S)"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 msgid "Con_vert spaces with the one column width"
 msgstr "空白を半角で変換する(_V)"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "<b>Other</b>"
 msgstr "<b>その他</b>"
 
-#: ../setup/setup.ui.h:45
-msgid "_General"
-msgstr "一般(_G)"
+#: ../setup/setup.ui.h:47
+msgid "Conversion"
+msgstr "変換"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:48
 msgid "_Shortcut Type:"
 msgstr "ショートカットタイプ(_S):"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "De_fault"
 msgstr "デフォルト(_F)"
 
-#: ../setup/setup.ui.h:48
-msgid "Key Bin_ding"
-msgstr "キー割り当て(_D)"
-
 #: ../setup/setup.ui.h:50
+msgid "Key Binding"
+msgstr "キー割り当て"
+
+#: ../setup/setup.ui.h:52
 msgid "<b>Romaji</b>"
 msgstr "<b>ローマ字</b>"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:54
 msgid "<b>Kana</b>"
 msgstr "<b>かな</b>"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:55
 msgid "Keyboad _layout:"
 msgstr "キーボードレイアウト(_L):"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "<b>Keyboard layout</b>"
 msgstr "<b>キーボードレイアウト</b>"
 
-#: ../setup/setup.ui.h:55
-msgid "_Typing Method"
-msgstr "入力タイプ(_T)"
+#: ../setup/setup.ui.h:57
+msgid "Typing Method"
+msgstr "入力タイプ"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 msgid "_Left Thumb Shift Key:"
 msgstr "左親指シフトキー(_L):"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:59
 msgid "Right _Thumb Shift Key:"
 msgstr "右親指シフトキー(_T):"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:60
 msgid "Adjust _input method layout to system keyboard layout"
 msgstr ""
 "インプットメソッドレイアウトをシステムキーボードレイアウトに合わせる(_I)"
 
-#: ../setup/setup.ui.h:59
+#: ../setup/setup.ui.h:61
 msgid "Adjust IM layout to XKB layout"
 msgstr "IM レイアウトを XKB レイアウトに合わせる"
 
-#: ../setup/setup.ui.h:60
+#: ../setup/setup.ui.h:62
 msgid "Input _Method Layout:"
 msgstr "インプットメソッドレイアウト(_M):"
 
-#: ../setup/setup.ui.h:61
+#: ../setup/setup.ui.h:63
 msgid "Restart IBus when you change the keyboard layout"
 msgstr "キーボードレイアウトを変更するときは IBus をリスタートしてください"
 
-#: ../setup/setup.ui.h:62
+#: ../setup/setup.ui.h:64
 msgid "Restart IBus when you change XKB"
 msgstr "XKB を変更するときは IBus を再起動してください"
 
-#: ../setup/setup.ui.h:63
+#: ../setup/setup.ui.h:65
 msgid ""
 "Strongly recommend to enable \"Use system keyboard layout\" check button in "
 "\"Advanced\" tab using 'ibus-setup' command"
@@ -606,11 +623,11 @@ msgstr ""
 "'ibus-setup' コマンドを使用して「詳細」 タブにある「システムキーボードを使用"
 "する」を有功にすることを強く推奨します"
 
-#: ../setup/setup.ui.h:64
+#: ../setup/setup.ui.h:66
 msgid "_Additional Key Arrangement:"
 msgstr "追加のキー割り当て(_A):"
 
-#: ../setup/setup.ui.h:65
+#: ../setup/setup.ui.h:67
 msgid ""
 "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with "
 "Thumb Shift key"
@@ -618,7 +635,7 @@ msgstr ""
 "親指シフトキーで '&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' 等を入力すること"
 "が可能です"
 
-#: ../setup/setup.ui.h:66
+#: ../setup/setup.ui.h:68
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
 "Key Arrangement\" since this option changes input method layout only in case "
@@ -628,7 +645,7 @@ msgstr ""
 "のみを変更するので「追加のキー割り当て」のためにシステムキーボードレイアウト"
 "を再構成する必要はありません。"
 
-#: ../setup/setup.ui.h:67
+#: ../setup/setup.ui.h:69
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
@@ -636,122 +653,122 @@ msgstr ""
 "このオプションは IM オンで IM レイアウトのみを変更するので XKB を再構成する必"
 "要はありません。"
 
-#: ../setup/setup.ui.h:68
+#: ../setup/setup.ui.h:70
 msgid "_Enable semi-voiced sound mark with Shift key"
 msgstr "シフトキーで半濁点を可能にする(_E)"
 
-#: ../setup/setup.ui.h:69
+#: ../setup/setup.ui.h:71
 msgid "Seion + Shift can output Handakuon"
 msgstr "清音 + シフトで半濁音を出力することが可能です"
 
-#: ../setup/setup.ui.h:70
+#: ../setup/setup.ui.h:72
 msgid "Thumb _Shift Key Table:"
 msgstr "親指シフトキーテーブル(_S):"
 
-#: ../setup/setup.ui.h:71
+#: ../setup/setup.ui.h:73
 msgid "<b>Thumb Shift Layout</b>"
 msgstr "<b>親指シフトレイアウト</b>"
 
-#: ../setup/setup.ui.h:72
-msgid "Thumb S_hift"
-msgstr "親指シフト(_H)"
+#: ../setup/setup.ui.h:74
+msgid "Thumb Shift"
+msgstr "親指シフト"
 
-#: ../setup/setup.ui.h:73
+#: ../setup/setup.ui.h:75
 msgid "_Edit Dictionary Command:"
 msgstr "辞書の編集コマンド(_E):"
 
-#: ../setup/setup.ui.h:74
+#: ../setup/setup.ui.h:76
 msgid "_Add Word Command:"
 msgstr "単語の追加コマンド(_A):"
 
-#: ../setup/setup.ui.h:75
+#: ../setup/setup.ui.h:77
 msgid "<b>Default Dictionary Configuration</b>"
 msgstr "<b>デフォルト辞書の構成</b>"
 
-#: ../setup/setup.ui.h:76
+#: ../setup/setup.ui.h:78
 msgid "_View"
 msgstr "表示(_V)"
 
-#: ../setup/setup.ui.h:77
+#: ../setup/setup.ui.h:79
 msgid "You can change the order on language bar"
 msgstr "言語バー上で順序を変更することが可能です"
 
-#: ../setup/setup.ui.h:78
+#: ../setup/setup.ui.h:80
 msgid "<b>Extended Dictionaries</b>"
 msgstr "<b>拡張辞書</b>"
 
-#: ../setup/setup.ui.h:79
-msgid "Dictionar_y"
-msgstr "辞書(_Y)"
-
-#: ../setup/setup.ui.h:80
-msgid "Abo_ut"
-msgstr "情報(_U)"
-
 #: ../setup/setup.ui.h:81
+msgid "Dictionary"
+msgstr "辞書"
+
+#: ../setup/setup.ui.h:82
+msgid "About"
+msgstr "情報"
+
+#: ../setup/setup.ui.h:83
 msgid "Edit Shortcut"
 msgstr "ショートカットの編集"
 
-#: ../setup/setup.ui.h:82
+#: ../setup/setup.ui.h:84
 msgid "Key Code:"
 msgstr "キーコード:"
 
-#: ../setup/setup.ui.h:83
+#: ../setup/setup.ui.h:85
 msgid "Modifier:"
 msgstr "キー修飾:"
 
-#: ../setup/setup.ui.h:84
+#: ../setup/setup.ui.h:86
 msgid "A_lternate"
 msgstr "A_lt"
 
-#: ../setup/setup.ui.h:85
+#: ../setup/setup.ui.h:87
 msgid "Co_ntrol"
 msgstr "Co_ntrol"
 
-#: ../setup/setup.ui.h:86
+#: ../setup/setup.ui.h:88
 msgid "_Shift"
 msgstr "_Shift"
 
-#: ../setup/setup.ui.h:87
+#: ../setup/setup.ui.h:89
 msgid "_Input Characters"
 msgstr "入力文字(_I)"
 
-#: ../setup/setup.ui.h:88
+#: ../setup/setup.ui.h:90
 msgid "_Output Characters"
 msgstr "出力文字(_O)"
 
-#: ../setup/setup.ui.h:89
+#: ../setup/setup.ui.h:91
 msgid "_Left Thumb Shift"
 msgstr "左親指シフト(_L)"
 
-#: ../setup/setup.ui.h:90
+#: ../setup/setup.ui.h:92
 msgid "_Right Thumb Shift"
 msgstr "右親指シフト(_R)"
 
-#: ../setup/setup.ui.h:91
+#: ../setup/setup.ui.h:93
 msgid "_Short Label:"
 msgstr "短ラベル(_S):"
 
-#: ../setup/setup.ui.h:92
+#: ../setup/setup.ui.h:94
 msgid "_Description:"
 msgstr "説明(_D):"
 
-#: ../setup/setup.ui.h:93
+#: ../setup/setup.ui.h:95
 msgid "_Use your dictionary alone with switching dictionaries"
 msgstr "辞書を切り替えることで選択した辞書を単独で使用する(_U)"
 
-#: ../setup/setup.ui.h:94
+#: ../setup/setup.ui.h:96
 msgid "_Embed your dictionary in the system dictionary"
 msgstr "システム辞書にユーザー辞書を組み込む(_E)"
 
-#: ../setup/setup.ui.h:95
+#: ../setup/setup.ui.h:97
 msgid "Enable the _reverse conversion"
 msgstr "逆変換を可能にする(_R)"
 
-#: ../setup/setup.ui.h:96
+#: ../setup/setup.ui.h:98
 msgid "The Anthy engine for the IBus input platform"
 msgstr "IBus 入力プラットフォーム用 Anthy エンジン"
 
-#: ../setup/setup.ui.h:97
+#: ../setup/setup.ui.h:99
 msgid "translator_credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
