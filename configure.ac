@@ -270,6 +270,19 @@ AC_ARG_WITH(kasumi-icon,
            [KASUMI_ICON_FILE="$datadir/pixmaps/kasumi.png"])
 AC_SUBST(KASUMI_ICON_FILE)
 
+dnl - check preference icon name
+# Replaced the legacy icon gtk-preferences with preferences-desktop
+# because the icon is included in gnome-icon-theme-legacy package.
+# The following fix would be needed for old non-GNOME desktops.
+# https://github.com/ibus/ibus/commit/dd6acfa5013b
+# Otherwise you can specify the preference icon for your desktop.
+AC_ARG_WITH(icon-preference,
+           [AC_HELP_STRING([--with-icon-preference=ICON_NAME],
+                           [preference icon name.])],
+           [ICON_PREFERENCE="$withval"],
+           [ICON_PREFERENCE='preferences-desktop'])
+AC_SUBST(ICON_PREFERENCE)
+
 dnl - check private png
 AC_MSG_CHECKING([if you install the private png file])
 AC_ARG_ENABLE(private-png,
@@ -419,6 +432,7 @@ PYTHON_LIBS                 $PYTHON_LIBS
 ANTHY_ZIPCODE_FILE          $ANTHY_ZIPCODE_FILE
 KASUMI_EXEC_FILE            $KASUMI_EXEC_FILE
 KASUMI_ICON_FILE            $KASUMI_ICON_FILE
+ICON_PREFERENCE             $ICON_PREFERENCE
 HOTKEYS_XML                 $HOTKEYS_XML
 SYMBOL_XML                  $SYMBOL_XML
 LAYOUT_XML                  $LAYOUT_XML

@@ -344,7 +344,7 @@ class Engine(IBus.EngineSimple):
         self.__set_dict_config_props(anthy_props)
         anthy_props.append(IBus.Property(key=u'setup',
                                          label=IBus.Text.new_from_string(_("Preferences - Anthy")),
-                                         icon=u'gtk-preferences',
+                                         icon=config.ICON_PREFERENCE,
                                          tooltip=IBus.Text.new_from_string(_("Configure Anthy")),
                                          sensitive=True,
                                          visible=True))
@@ -1561,7 +1561,8 @@ class Engine(IBus.EngineSimple):
 #=======================================================================
     @classmethod
     def CONFIG_RELOADED(cls, bus):
-        print 'RELOADED'
+        if config.DEBUG:
+            print 'RELOADED'
         if not cls.__prefs:
             cls.__prefs = AnthyPrefs(bus)
 
@@ -1571,7 +1572,8 @@ class Engine(IBus.EngineSimple):
 
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, variant):
-        print 'VALUE_CHAMGED =', section, name, variant
+        if config.DEBUG:
+            print 'VALUE_CHAMGED =', section, name, variant
 
         if not section.startswith('engine/anthy'):
             # This value is used for IBus.config.set_value only.
@@ -1859,7 +1861,8 @@ class Engine(IBus.EngineSimple):
         def cmd_exec(keyval, state=0):
             key = self._mk_key(keyval, state)
             for cmd in self.__keybind.get(key, []):
-                print 'cmd =', cmd
+                if config.DEBUG:
+                    print 'cmd =', cmd
                 try:
                     if getattr(self, cmd)(keyval, state):
                         return True
@@ -1982,7 +1985,8 @@ class Engine(IBus.EngineSimple):
 
         key = self._mk_key(keyval, state)
         for cmd in self.__keybind.get(key, []):
-            print 'cmd =', cmd
+            if config.DEBUG:
+                print 'cmd =', cmd
             try:
                 if getattr(self, cmd)(keyval, state):
                     return True

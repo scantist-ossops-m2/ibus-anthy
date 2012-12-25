@@ -103,6 +103,7 @@ _config.py: _config.py.in
 		DATADIR=$(datadir); \
 		LAYOUT=$(LAYOUT); \
 		SYMBOL_CHAR_INT=$(SYMBOL_CHAR_INT); \
+		ICON_PREFERENCE=$(ICON_PREFERENCE); \
 		s=`cat $<`; \
 		eval "echo \"$${s}\""; \
 	) > $@

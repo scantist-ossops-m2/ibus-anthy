@@ -368,6 +368,11 @@ _config = {
             'jp[ctrl:swapcaps]', 'us[ctrl:swapcaps]',
             'jp[ctrl:swapcaps,compose:rctrl]',
             'us[ctrl:swapcaps,compose:rctrl]',
+            'jp[japan:kana_lock]',
+            'jp[japan:nicola_f_bs]',
+            'jp[japan:nicola_f_bs,ctrl:swapcaps]',
+            'jp[japan:hztg_escape]',
+            'jp[japan:hztg_escape,ctrl:swapcaps]',
         ],
     },
 
