@@ -346,6 +346,13 @@ _config = {
         'typing_method': 0,
         'conversion_segment_mode': 0,
 
+        'show-input-mode': True,
+        'show-typing-method': False,
+        'show-segment-mode': False,
+        'show-dict-mode': True,
+        'show-dict-config': False,
+        'show-preferences': True,
+
         'period_style': 0,
         'symbol_style': 1,
         'ten_key_mode': 1,

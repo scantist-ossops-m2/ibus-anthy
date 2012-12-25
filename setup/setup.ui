@@ -30,7 +30,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="model10">
+  <object class="GtkListStore" id="model51">
     <columns>
       <column type="gchararray"/>
     </columns>
@@ -207,18 +207,18 @@
                 <property name="visible">True</property>
                 <property name="border_width">8</property>
                 <child>
-                  <object class="GtkFrame" id="frame1">
+                  <object class="GtkFrame" id="frame11">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment1">
+                      <object class="GtkAlignment" id="alignment11">
                         <property name="visible">True</property>
                         <property name="top_padding">8</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="table1">
+                          <object class="GtkTable" id="table11">
                             <property name="visible">True</property>
                             <property name="n_rows">3</property>
                             <property name="n_columns">2</property>
@@ -344,18 +344,87 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame2">
+                  <object class="GtkFrame" id="frame12">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment2">
+                      <object class="GtkAlignment" id="alignment12">
                         <property name="visible">True</property>
                         <property name="top_padding">8</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="table2">
+                          <object class="GtkVBox" id="vbox12">
+                            <property name="visible">True</property>
+                            <property name="border_width">4</property>
+                            <property name="spacing">4</property>
+                            <child>
+                              <object class="GtkScrolledWindow" id="scrolledwindow12">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="height_request">200</property>
+                                <property name="hscrollbar_policy">automatic</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <property name="shadow_type">in</property>
+                                <child>
+                                  <object class="GtkTreeView" id="menu_visible:treeview">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="label152">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Menu Visibility on Status Icon&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">General</property>
+                <property name="mnemonic_widget">vbox1</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <property name="border_width">8</property>
+                <child>
+                  <object class="GtkFrame" id="frame21">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <object class="GtkAlignment" id="alignment21">
+                        <property name="visible">True</property>
+                        <property name="top_padding">8</property>
+                        <property name="bottom_padding">8</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkTable" id="table21">
                             <property name="visible">True</property>
                             <property name="n_rows">5</property>
                             <property name="n_columns">2</property>
@@ -537,7 +606,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label152">
+                      <object class="GtkLabel" id="label201">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Behavior&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -547,22 +616,22 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame3">
+                  <object class="GtkFrame" id="frame22">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment3">
+                      <object class="GtkAlignment" id="alignment22">
                         <property name="visible">True</property>
                         <property name="top_padding">8</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="table3">
+                          <object class="GtkTable" id="table22">
                             <property name="visible">True</property>
                             <property name="n_rows">4</property>
                             <property name="column_spacing">8</property>
@@ -660,7 +729,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label153">
+                      <object class="GtkLabel" id="label211">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Other&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -670,24 +739,24 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_General</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">vbox1</property>
+                <property name="label" translatable="yes">Conversion</property>
+                <property name="mnemonic_widget">vbox2</property>
               </object>
               <packing>
+                <property name="position">1</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
                 <property name="border_width">4</property>
                 <property name="spacing">4</property>
@@ -736,7 +805,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow1">
+                  <object class="GtkScrolledWindow" id="scrolledwindow31">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
@@ -757,7 +826,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHButtonBox" id="hbuttonbox1">
+                  <object class="GtkHButtonBox" id="hbuttonbox31">
                     <property name="visible">True</property>
                     <property name="spacing">4</property>
                     <property name="layout_style">end</property>
@@ -769,7 +838,7 @@
                         <property name="receives_default">False</property>
                         <signal handler="on_btn_default_clicked" name="clicked"/>
                         <child>
-                          <object class="GtkAlignment" id="alignment4">
+                          <object class="GtkAlignment" id="alignment31">
                             <property name="visible">True</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
@@ -837,49 +906,48 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Key Bin_ding</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">vbox2</property>
+                <property name="label" translatable="yes">Key Binding</property>
+                <property name="mnemonic_widget">vbox3</property>
               </object>
               <packing>
-                <property name="position">1</property>
+                <property name="position">2</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="vbox3">
+              <object class="GtkBox" id="vbox4">
                 <property name="visible">True</property>
                 <property name="border_width">8</property>
                 <property name="spacing">4</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="frame31">
+                  <object class="GtkFrame" id="frame41">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment31">
+                      <object class="GtkAlignment" id="alignment41">
                         <property name="visible">True</property>
                         <property name="top_padding">0</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="vbox31">
+                          <object class="GtkBox" id="vbox41">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkTable" id="table31">
+                              <object class="GtkTable" id="table41">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">8</property>
                                 <property name="row_spacing">4</property>
                                 <child>
-                                  <object class="GtkLabel" id="label302">
+                                  <object class="GtkLabel" id="label402">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">_Romaji Key Table:</property>
                                     <property name="use_underline">True</property>
@@ -922,7 +990,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label301">
+                      <object class="GtkLabel" id="label401">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Romaji&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -939,31 +1007,31 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame32">
+                  <object class="GtkFrame" id="frame42">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment32">
+                      <object class="GtkAlignment" id="alignment42">
                         <property name="visible">True</property>
                         <property name="top_padding">0</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="vbox32">
+                          <object class="GtkBox" id="vbox42">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkTable" id="table32">
+                              <object class="GtkTable" id="table42">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">8</property>
                                 <property name="row_spacing">4</property>
                                 <child>
-                                  <object class="GtkLabel" id="label312">
+                                  <object class="GtkLabel" id="label412">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">_Kana Key Table:</property>
                                     <property name="use_underline">True</property>
@@ -1006,7 +1074,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label311">
+                      <object class="GtkLabel" id="label411">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Kana&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1023,31 +1091,31 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame33">
+                  <object class="GtkFrame" id="frame43">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment33">
+                      <object class="GtkAlignment" id="alignment43">
                         <property name="visible">True</property>
                         <property name="top_padding">0</property>
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="vbox33">
+                          <object class="GtkBox" id="vbox43">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkTable" id="table33">
+                              <object class="GtkTable" id="table43">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">8</property>
                                 <property name="row_spacing">4</property>
                                 <child>
-                                  <object class="GtkLabel" id="label322">
+                                  <object class="GtkLabel" id="label422">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">Keyboad _layout:</property>
                                     <property name="use_underline">True</property>
@@ -1091,7 +1159,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label321">
+                      <object class="GtkLabel" id="label421">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Keyboard layout&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1110,25 +1178,24 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_Typing Method</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">vbox3</property>
+                <property name="label" translatable="yes">Typing Method</property>
+                <property name="mnemonic_widget">vbox4</property>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="vbox4">
+              <object class="GtkBox" id="vbox5">
                 <property name="visible">True</property>
                 <property name="border_width">8</property>
                 <property name="spacing">4</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="frame4">
+                  <object class="GtkFrame" id="frame51">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
@@ -1139,14 +1206,14 @@
                         <property name="bottom_padding">8</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="vbox41">
+                          <object class="GtkBox" id="vbox51">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <property name="orientation">vertical</property>
                             <child>
 
-                              <object class="GtkTable" id="table5">
+                              <object class="GtkTable" id="table51">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">3</property>
@@ -1268,7 +1335,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox9">
+                              <object class="GtkHBox" id="hbox51">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
@@ -1289,7 +1356,7 @@
                                   <object class="GtkComboBox" id="thumb:keyboard_layout">
                                     <property name="visible">True</property>
                                     <signal handler="on_cb_changed" name="changed"/>
-                                    <property name="model">model10</property>
+                                    <property name="model">model51</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer10"/>
                                       <attributes>
@@ -1309,7 +1376,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox10">
+                              <object class="GtkHBox" id="hbox52">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
@@ -1422,7 +1489,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox12">
+                              <object class="GtkHBox" id="hbox53">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
@@ -1477,7 +1544,7 @@
 
                             </child>
                             <child>
-                              <object class="GtkTable" id="table6">
+                              <object class="GtkTable" id="table52">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">2</property>
@@ -1545,46 +1612,45 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label4">
+              <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Thumb S_hift</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">vbox4</property>
+                <property name="label" translatable="yes">Thumb Shift</property>
+                <property name="mnemonic_widget">vbox5</property>
               </object>
               <packing>
-                <property name="position">3</property>
+                <property name="position">4</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox5">
+              <object class="GtkVBox" id="vbox6">
                 <property name="visible">True</property>
                 <property name="border_width">8</property>
                 <property name="spacing">4</property>
                 <child>
-                  <object class="GtkFrame" id="frame5">
+                  <object class="GtkFrame" id="frame61">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment6">
+                      <object class="GtkAlignment" id="alignment61">
                         <property name="visible">True</property>
                         <property name="top_padding">4</property>
                         <property name="left_padding">0</property>
                         <child>
-                          <object class="GtkVBox" id="vbox51">
+                          <object class="GtkVBox" id="vbox61">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <child>
-                              <object class="GtkTable" id="table7">
+                              <object class="GtkTable" id="table61">
                                 <property name="visible">True</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">3</property>
                                 <property name="column_spacing">8</property>
                                 <property name="row_spacing">4</property>
                                 <child>
-                                  <object class="GtkLabel" id="label501">
+                                  <object class="GtkLabel" id="label601">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">_Edit Dictionary Command:</property>
                                     <property name="use_underline">True</property>
@@ -1635,7 +1701,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label502">
+                                  <object class="GtkLabel" id="label602">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">_Add Word Command:</property>
                                     <property name="use_underline">True</property>
@@ -1706,7 +1772,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label50">
+                      <object class="GtkLabel" id="label60">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Default Dictionary Configuration&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1719,22 +1785,22 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame6">
+                  <object class="GtkFrame" id="frame71">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment7">
+                      <object class="GtkAlignment" id="alignment71">
                         <property name="visible">True</property>
                         <property name="top_padding">4</property>
                         <property name="left_padding">0</property>
                         <child>
-                          <object class="GtkVBox" id="vbox52">
+                          <object class="GtkVBox" id="vbox71">
                             <property name="visible">True</property>
                             <property name="border_width">4</property>
                             <property name="spacing">4</property>
                             <child>
-                              <object class="GtkScrolledWindow" id="scrolledwindow2">
+                              <object class="GtkScrolledWindow" id="scrolledwindow71">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="height_request">220</property>
@@ -1745,9 +1811,6 @@
                                   <object class="GtkTreeView" id="dict:view">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <signal handler="on_shortcut_click_event" name="button_press_event"/>
-                                    <signal handler="on_shortcut_click_event" name="button_release_event"/>
-                                    <signal handler="on_shortcut_key_release_event" name="key_release_event"/>
                                   </object>
                                 </child>
                               </object>
@@ -1756,7 +1819,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHButtonBox" id="hbuttonbox2">
+                              <object class="GtkHButtonBox" id="hbuttonbox71">
                                 <property name="visible">True</property>
                                 <property name="spacing">4</property>
                                 <property name="layout_style">end</property>
@@ -1832,7 +1895,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHButtonBox" id="hbuttonbox3">
+                              <object class="GtkHButtonBox" id="hbuttonbox72">
                                 <property name="visible">True</property>
                                 <property name="spacing">4</property>
                                 <property name="layout_style">end</property>
@@ -1882,7 +1945,7 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label51">
+                      <object class="GtkLabel" id="label71">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Extended Dictionaries&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
@@ -1897,14 +1960,13 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label5">
+              <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Dictionar_y</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">vbox5</property>
+                <property name="label" translatable="yes">Dictionary</property>
+                <property name="mnemonic_widget">vbox6</property>
               </object>
               <packing>
-                <property name="position">4</property>
+                <property name="position">5</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -1919,14 +1981,13 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label6">
+              <object class="GtkLabel" id="label7">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Abo_ut</property>
-                <property name="use_underline">True</property>
+                <property name="label" translatable="yes">About</property>
                 <property name="mnemonic_widget">about_vbox</property>
               </object>
               <packing>
-                <property name="position">5</property>
+                <property name="position">6</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
@@ -2013,12 +2074,12 @@
       <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <child>
-          <object class="GtkVBox" id="vbox20">
+          <object class="GtkVBox" id="vbox101">
             <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow3">
+              <object class="GtkScrolledWindow" id="scrolledwindow101">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="border_width">1</property>
@@ -2026,7 +2087,7 @@
                 <property name="vscrollbar_policy">automatic</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkTreeView" id="treeview2">
+                  <object class="GtkTreeView" id="es:treeview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="headers_visible">False</property>
@@ -2038,11 +2099,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox6">
+              <object class="GtkHBox" id="hbox101">
                 <property name="visible">True</property>
                 <property name="spacing">8</property>
                 <child>
-                  <object class="GtkLabel" id="label70">
+                  <object class="GtkLabel" id="label1001">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Key Code:</property>
                   </object>
@@ -2053,23 +2114,23 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry2">
+                  <object class="GtkEntry" id="es:entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <signal handler="on_entry2_changed" name="changed"/>
+                    <signal handler="on_es_entry_changed" name="changed"/>
                   </object>
                   <packing>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button7">
+                  <object class="GtkButton" id="es:button_run_input">
                     <property name="label">...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <signal handler="on_button7_clicked" name="clicked"/>
+                    <signal handler="on_es_button_run_input_clicked" name="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2085,11 +2146,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox7">
+              <object class="GtkHBox" id="hbox102">
                 <property name="visible">True</property>
                 <property name="spacing">8</property>
                 <child>
-                  <object class="GtkLabel" id="label71">
+                  <object class="GtkLabel" id="label1002">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Modifier:</property>
                   </object>
@@ -2100,10 +2161,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox8">
+                  <object class="GtkHBox" id="hbox103">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkCheckButton" id="checkbutton7">
+                      <object class="GtkCheckButton" id="es:checkbutton_alt">
                         <property name="label" translatable="yes">A_lternate</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -2116,7 +2177,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="checkbutton6">
+                      <object class="GtkCheckButton" id="es:checkbutton_ctrl">
                         <property name="label" translatable="yes">Co_ntrol</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -2129,7 +2190,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="checkbutton8">
+                      <object class="GtkCheckButton" id="es:checkbutton_shift">
                         <property name="label" translatable="yes">_Shift</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -2154,12 +2215,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox4">
+              <object class="GtkHButtonBox" id="hbuttonbox101">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
                 <child>
-                  <object class="GtkButton" id="button4">
+                  <object class="GtkButton" id="es:button_add">
                     <property name="label">gtk-add</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
@@ -2167,7 +2228,7 @@
                     <property name="can_default">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
-                    <signal handler="on_button4_clicked" name="clicked"/>
+                    <signal handler="on_es_button_add_clicked" name="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2176,14 +2237,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button5">
+                  <object class="GtkButton" id="es:button_refresh">
                     <property name="label">gtk-refresh</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="can_default">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
-                    <signal handler="on_button5_clicked" name="clicked"/>
+                    <signal handler="on_es_button_refresh_clicked" name="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2192,7 +2253,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button6">
+                  <object class="GtkButton" id="es:button_del">
                     <property name="label">gtk-delete</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
@@ -2200,7 +2261,7 @@
                     <property name="can_default">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
-                    <signal handler="on_button6_clicked" name="clicked"/>
+                    <signal handler="on_es_button_del_clicked" name="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2225,7 +2286,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="cancelbutton2">
+              <object class="GtkButton" id="cancelbutton101">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2240,7 +2301,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="okbutton2">
+              <object class="GtkButton" id="okbutton101">
                 <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2264,8 +2325,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">cancelbutton2</action-widget>
-      <action-widget response="-5">okbutton2</action-widget>
+      <action-widget response="-6">cancelbutton101</action-widget>
+      <action-widget response="-5">okbutton101</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialog_custom_key_table">
@@ -2642,14 +2703,14 @@
     <property name="no_show_all">True</property>
     <property name="spacing">10</property>
     <child>
-      <object class="GtkTable" id="table10">
+      <object class="GtkTable" id="table1000">
         <property name="visible">True</property>
         <property name="n_rows">2</property>
         <property name="n_columns">2</property>
         <property name="column_spacing">8</property>
         <property name="row_spacing">4</property>
         <child>
-          <object class="GtkLabel" id="label80">
+          <object class="GtkLabel" id="label10001">
             <property name="visible">True</property>
             <property name="label" translatable="yes">_Short Label:</property>
             <property name="use_underline">True</property>
@@ -2673,7 +2734,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label81">
+          <object class="GtkLabel" id="label10002">
             <property name="visible">True</property>
             <property name="label" translatable="yes">_Description:</property>
             <property name="use_underline">True</property>

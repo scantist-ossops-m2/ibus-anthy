@@ -148,20 +148,7 @@ class Engine(IBus.EngineSimple):
                                                    round=True)
         self.__prop_list = self.__init_props()
 
-        mode = Engine.__input_mode
-        mode = 'InputMode.' + ['Hiragana', 'Katakana', 'HalfWidthKatakana',
-                               'Latin', 'WideLatin'][mode]
-        self.__input_mode_activate(mode, IBus.PropState.CHECKED)
-
-        mode = Engine.__typing_mode
-        mode = 'TypingMode.' + ['Romaji', 'Kana', 'ThumbShift'][mode]
-        self.__typing_mode_activate(mode, IBus.PropState.CHECKED)
-
-        mode = Engine.__segment_mode
-        mode = 'SegmentMode.' + ['Multi', 'Single',
-                                 'ImmediateMulti', 'ImmediateSingle'][mode]
-        self.__segment_mode_activate(mode, IBus.PropState.CHECKED)
-
+        self.__init_signal()
         # use reset to init values
         self.__reset()
 
@@ -191,6 +178,39 @@ class Engine(IBus.EngineSimple):
             self.__idle_id = 0
 
     def __init_props(self):
+        anthy_props = IBus.PropList()
+
+        self.__set_input_mode_props(anthy_props)
+        self.__set_typing_method_props(anthy_props)
+        self.__set_segment_mode_props(anthy_props)
+        self.__set_dict_mode_props(anthy_props)
+        self.__set_dict_config_props(anthy_props)
+
+        if not self.__prefs.get_value('common', 'show-preferences'):
+            return anthy_props
+
+        anthy_props.append(IBus.Property(key=u'setup',
+                                         label=IBus.Text.new_from_string(_("Preferences - Anthy")),
+                                         icon=config.ICON_PREFERENCE,
+                                         tooltip=IBus.Text.new_from_string(_("Configure Anthy")),
+                                         sensitive=True,
+                                         visible=True))
+
+        return anthy_props
+
+    def __init_signal(self):
+        signal.signal(signal.SIGHUP, self.__signal_cb)
+        signal.signal(signal.SIGINT, self.__signal_cb)
+        signal.signal(signal.SIGQUIT, self.__signal_cb)
+        signal.signal(signal.SIGABRT, self.__signal_cb)
+        signal.signal(signal.SIGTERM, self.__signal_cb)
+
+    def __signal_cb(self, signum, object):
+        self.__remove_dict_files()
+        signal.signal(signum, signal.SIG_DFL)
+        os.kill(os.getpid(), signum)
+
+    def __set_input_mode_props(self, anthy_props):
         # The class method is kept even if the engine is switched.
         if Engine.__input_mode == None:
             # The config value is readonly for initial engine and
@@ -198,12 +218,9 @@ class Engine(IBus.EngineSimple):
             Engine.__input_mode = INPUT_MODE_HIRAGANA
             Engine.__input_mode = self.__prefs.get_value('common',
                                                          'input_mode')
-        if Engine.__typing_mode == None:
-            Engine.__typing_mode = jastring.TYPING_MODE_ROMAJI
-            Engine.__typing_mode = self.__prefs.get_value('common',
-                                                          'typing_method')
 
-        anthy_props = IBus.PropList()
+        if not self.__prefs.get_value('common', 'show-input-mode'):
+            return
 
         # init input mode properties
         symbol = 'あ'
@@ -284,6 +301,20 @@ class Engine(IBus.EngineSimple):
         input_mode_prop.set_sub_props(props)
         anthy_props.append(input_mode_prop)
 
+        mode = Engine.__input_mode
+        mode = 'InputMode.' + ['Hiragana', 'Katakana', 'HalfWidthKatakana',
+                               'Latin', 'WideLatin'][mode]
+        self.__input_mode_activate(mode, IBus.PropState.CHECKED)
+
+    def __set_typing_method_props(self, anthy_props):
+        if Engine.__typing_mode == None:
+            Engine.__typing_mode = jastring.TYPING_MODE_ROMAJI
+            Engine.__typing_mode = self.__prefs.get_value('common',
+                                                          'typing_method')
+
+        if not self.__prefs.get_value('common', 'show-typing-method'):
+            return
+
         # typing input mode properties
         symbol = 'R'
         label = _("%(description)s (%(symbol)s)") % \
@@ -339,35 +370,19 @@ class Engine(IBus.EngineSimple):
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
 
-        self.__set_segment_mode_props(anthy_props)
-        self.__set_dict_mode_props(anthy_props)
-        self.__set_dict_config_props(anthy_props)
-        anthy_props.append(IBus.Property(key=u'setup',
-                                         label=IBus.Text.new_from_string(_("Preferences - Anthy")),
-                                         icon=config.ICON_PREFERENCE,
-                                         tooltip=IBus.Text.new_from_string(_("Configure Anthy")),
-                                         sensitive=True,
-                                         visible=True))
-
-        return anthy_props
-
-    def __init_signal(self):
-        signal.signal(signal.SIGHUP, self.__signal_cb)
-        signal.signal(signal.SIGINT, self.__signal_cb)
-        signal.signal(signal.SIGQUIT, self.__signal_cb)
-        signal.signal(signal.SIGABRT, self.__signal_cb)
-        signal.signal(signal.SIGTERM, self.__signal_cb)
-
-    def __signal_cb(self, signum, object):
-        self.__remove_dict_files()
-        signal.signal(signum, signal.SIG_DFL)
-        os.kill(os.getpid(), signum)
+        mode = Engine.__typing_mode
+        mode = 'TypingMode.' + ['Romaji', 'Kana', 'ThumbShift'][mode]
+        self.__typing_mode_activate(mode, IBus.PropState.CHECKED)
 
     def __set_segment_mode_props(self, anthy_props):
         if Engine.__segment_mode == None:
             Engine.__segment_mode = SEGMENT_DEFAULT
             Engine.__segment_mode = self.__prefs.get_value('common',
                                                            'conversion_segment_mode')
+
+        if not self.__prefs.get_value('common', 'show-segment-mode'):
+            return
+
         symbol = '連'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
@@ -431,9 +446,17 @@ class Engine(IBus.EngineSimple):
         segment_mode_prop.set_sub_props(props)
         anthy_props.append(segment_mode_prop)
 
+        mode = Engine.__segment_mode
+        mode = 'SegmentMode.' + ['Multi', 'Single',
+                                 'ImmediateMulti', 'ImmediateSingle'][mode]
+        self.__segment_mode_activate(mode, IBus.PropState.CHECKED)
+
     def __set_dict_mode_props(self, anthy_props):
         if Engine.__dict_mode == None:
             Engine.__dict_mode = 0
+
+        if not self.__prefs.get_value('common', 'show-dict-mode'):
+            return
 
         short_label = self.__prefs.get_value('dict/file/embedded',
                                              'short_label')
@@ -500,9 +523,17 @@ class Engine(IBus.EngineSimple):
 
         dict_mode_prop.set_sub_props(props)
         anthy_props.append(dict_mode_prop)
-        self.__init_signal()
+
+        prop_name = self.__dict_mode_get_prop_name(Engine.__dict_mode)
+        if prop_name == None:
+            return
+        self.__dict_mode_activate(prop_name,
+                                  IBus.PropState.CHECKED)
 
     def __set_dict_config_props(self, anthy_props):
+        if not self.__prefs.get_value('common', 'show-dict-config'):
+            return
+
         admin_command = self.__prefs.get_value('common', 'dict_admin_command')
         icon_path = self.__prefs.get_value('common', 'dict_config_icon')
 
@@ -756,8 +787,6 @@ class Engine(IBus.EngineSimple):
         self.update_property(self.__prop_dict[prop_name])
 
         mode, symbol = input_modes[prop_name]
-        if Engine.__input_mode == mode:
-            return
 
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Input mode"), 'symbol' : symbol }
@@ -799,6 +828,9 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
 
     def __refresh_typing_mode_property(self):
+        if u'TypingMode' not in self.__prop_dict:
+            return
+
         prop = self.__prop_dict[u'TypingMode']
         modes = {
             jastring.TYPING_MODE_ROMAJI : (u'TypingMode.Romaji', 'R'),

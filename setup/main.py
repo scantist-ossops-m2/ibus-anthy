@@ -122,6 +122,30 @@ class AnthySetup(object):
             section, key = self.__get_section_key(name)
             builder.get_object(name).set_active(prefs.get_value(section, key))
 
+        tv = builder.get_object('menu_visible:treeview')
+        ls = Gtk.ListStore(str, bool, str)
+        tv.set_model(ls)
+
+        column = Gtk.TreeViewColumn(' ')
+        renderer = Gtk.CellRendererToggle()
+        renderer.set_radio(False)
+        renderer.connect('toggled', self.__renderer_toggled_cb, ls)
+        column.pack_start(renderer, False)
+        column.set_cell_data_func(renderer,
+                                  self.__toggle_menu_visible_cell_cb,
+                                  1)
+        tv.append_column(column)
+
+        column = Gtk.TreeViewColumn(_("Menu label"))
+        renderer = Gtk.CellRendererText()
+        column.pack_start(renderer, False)
+        column.set_cell_data_func(renderer,
+                                  self.__text_menu_visible_cell_cb,
+                                  2)
+        tv.append_column(column)
+
+        self.__append_menus_in_model()
+
         l = ['default', 'atok', 'wnn']
         s_type = prefs.get_value('common', 'shortcut_type')
         s_type = s_type if s_type in l else 'default'
@@ -157,7 +181,7 @@ class AnthySetup(object):
             section, key = self.__get_section_key(name)
             builder.get_object(name).set_text(prefs.get_value(section, key))
 
-        tv = builder.get_object('treeview2')
+        tv = builder.get_object('es:treeview')
         tv.append_column(Gtk.TreeViewColumn('', Gtk.CellRendererText(), text=0))
         tv.get_selection().connect_after('changed',
                                           self.on_selection_changed, 1)
@@ -174,7 +198,7 @@ class AnthySetup(object):
 
         tv = builder.get_object('dict:view')
 
-        column = Gtk.TreeViewColumn((' '))
+        column = Gtk.TreeViewColumn(' ')
         renderer = Gtk.CellRendererText()
         column.pack_start(renderer, False)
         column.set_cell_data_func(renderer, self.__text_cell_data_cb, 1)
@@ -311,6 +335,46 @@ class AnthySetup(object):
 
     def __japanese_thumb_sort(self, a, b):
         return cmp(a[0], b[0])
+
+    def __renderer_toggled_cb(self, renderer, path, model):
+        prefs = self.prefs
+        enabled = not model[path][1]
+        model[path][1] = enabled
+        key = model[path][0]
+        prefs.set_value('common', key, enabled)
+        self.__builder.get_object('btn_apply').set_sensitive(True)
+
+    def __toggle_menu_visible_cell_cb(self, column, renderer, model, iter, id):
+        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        active = l.get_value(iter, id)
+        renderer.set_property('active', active)
+
+    def __text_menu_visible_cell_cb(self, column, renderer, model, iter, id):
+        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        text = l.get_value(iter, id)
+        renderer.set_property('text', text)
+
+    def __append_menus_in_model(self):
+        prefs = self.prefs
+        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        l.append(['show-input-mode',
+                  prefs.get_value('common', 'show-input-mode'),
+                  _("Input mode")])
+        l.append(['show-typing-method',
+                  prefs.get_value('common', 'show-typing-method'),
+                  _("Typing method")])
+        l.append(['show-segment-mode',
+                  prefs.get_value('common', 'show-segment-mode'),
+                  _("Segment mode")])
+        l.append(['show-dict-mode',
+                  prefs.get_value('common', 'show-dict-mode'),
+                  _("Dictionary mode")])
+        l.append(['show-dict-config',
+                  prefs.get_value('common', 'show-dict-config'),
+                  _("Dictionary - Anthy")])
+        l.append(['show-preferences',
+                  prefs.get_value('common', 'show-preferences'),
+                  _("Preferences - Anthy")])
 
     def __get_romaji_treeview_custom_key_table(self, method):
         prefs = self.prefs
@@ -1024,7 +1088,7 @@ class AnthySetup(object):
     def on_selection_changed(self, widget, id):
         set_sensitive = lambda a, b: self.__builder.get_object(a).set_sensitive(b)
         flg = True if widget.get_selected()[1] else False
-        for name in [['btn_default', 'btn_edit'], ['button5', 'button6']][id]:
+        for name in [['btn_default', 'btn_edit'], ['es:button_refresh', 'es:button_del']][id]:
             set_sensitive(name, flg)
 
     def on_selection_custom_key_table_changed(self, widget, id):
@@ -1130,12 +1194,12 @@ class AnthySetup(object):
 
     def on_btn_edit_clicked(self, widget):
         ls, it = self.__builder.get_object('shortcut').get_selection().get_selected()
-        m = self.__builder.get_object('treeview2').get_model()
+        m = self.__builder.get_object('es:treeview').get_model()
         m.clear()
         for s in s_to_l(ls.get(it, 1)[0]):
             m.append([s])
-        self.__builder.get_object('entry2').set_text('')
-        for w in ['checkbutton6', 'checkbutton7', 'checkbutton8']:
+        self.__builder.get_object('es:entry').set_text('')
+        for w in ['es:checkbutton_ctrl', 'es:checkbutton_alt', 'es:checkbutton_shift']:
             self.__builder.get_object(w).set_active(False)
         dlg = self.__builder.get_object('edit_shortcut')
         id = dlg.run()
@@ -1279,26 +1343,27 @@ class AnthySetup(object):
         else:
             return
         text = self.__builder.get_object(entry).get_text()
-        m = self.__builder.get_object('treeview2').get_model()
+        tv = self.__builder.get_object('es:treeview')
+        m = tv.get_model()
         m.clear()
         if text != None:
             m.append([text])
             i = m.get_iter_first()
-            self.__builder.get_object('treeview2').get_selection().select_iter(i)
-        self.__builder.get_object('entry2').set_text('')
-        self.__builder.get_object('button4').hide()
-        self.__builder.get_object('button5').show()
-        self.__builder.get_object('button6').hide()
-        for w in ['checkbutton6', 'checkbutton7', 'checkbutton8']:
+            tv.get_selection().select_iter(i)
+        self.__builder.get_object('es:entry').set_text('')
+        self.__builder.get_object('es:button_add').hide()
+        self.__builder.get_object('es:button_refresh').show()
+        self.__builder.get_object('es:button_del').hide()
+        for w in ['es:checkbutton_ctrl', 'es:checkbutton_alt', 'es:checkbutton_shift']:
             self.__builder.get_object(w).set_active(False)
         dlg = self.__builder.get_object('edit_shortcut')
         id = dlg.run()
         dlg.hide()
-        self.__builder.get_object('button4').show()
-        self.__builder.get_object('button5').hide()
-        self.__builder.get_object('button6').show()
+        self.__builder.get_object('es:button_add').show()
+        self.__builder.get_object('es:button_refresh').hide()
+        self.__builder.get_object('es:button_del').show()
         if id == Gtk.ResponseType.OK:
-            l, i = self.__builder.get_object('treeview2').get_selection().get_selected()
+            l, i = tv.get_selection().get_selected()
             new = l[i][0]
             if new != text:
                 section, key = self.__get_section_key(entry)
@@ -1573,13 +1638,13 @@ class AnthySetup(object):
         self.prefs.set_value('common', key, list)
         self.__builder.get_object('btn_apply').set_sensitive(True)
 
-    def on_entry2_changed(self, widget):
+    def on_es_entry_changed(self, widget):
         if not widget.get_text():
-            self.__builder.get_object('button4').set_sensitive(False)
+            self.__builder.get_object('es:button_add').set_sensitive(False)
         else:
-            self.__builder.get_object('button4').set_sensitive(True)
+            self.__builder.get_object('es:button_add').set_sensitive(True)
 
-    def on_button7_clicked(self, widget):
+    def on_es_button_run_input_clicked(self, widget):
         dlg = self.__builder.get_object('key_input_dialog')
         dlg.set_markup('<big><b>%s</b></big>' % _("Please press a key (or a key combination)"))
         dlg.format_secondary_text(_("The dialog will be closed when the key is released"))
@@ -1590,15 +1655,15 @@ class AnthySetup(object):
             if (state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK) and
                     ord('a') <= key <= ord('z')):
                 key = ord(chr(key).upper())
-            self.__builder.get_object('entry2').set_text(IBus.keyval_name(key))
+            self.__builder.get_object('es:entry').set_text(IBus.keyval_name(key))
 
-            for w, i in [('checkbutton6', IBus.ModifierType.CONTROL_MASK),
-                         ('checkbutton7', IBus.ModifierType.MOD1_MASK),
-                         ('checkbutton8', IBus.ModifierType.SHIFT_MASK)]:
+            for w, i in [('es:checkbutton_ctrl', IBus.ModifierType.CONTROL_MASK),
+                         ('es:checkbutton_alt', IBus.ModifierType.MOD1_MASK),
+                         ('es:checkbutton_shift', IBus.ModifierType.SHIFT_MASK)]:
                 self.__builder.get_object(w).set_active(True if state & i else False)
 
-    def on_button4_clicked(self, widget):
-        s = self.__builder.get_object('entry2').get_text()
+    def on_es_button_add_clicked(self, widget):
+        s = self.__builder.get_object('es:entry').get_text()
         if not s or not IBus.keyval_from_name(s):
             dlg = self.__builder.get_object('invalid_keysym')
             dlg.set_markup('<big><b>%s</b></big>' % _("Invalid keysym"))
@@ -1606,19 +1671,19 @@ class AnthySetup(object):
             dlg.run()
             dlg.hide()
             return True
-        for w, m in [('checkbutton6', 'Ctrl+'),
-                     ('checkbutton7', 'Alt+'),
-                     ('checkbutton8', 'Shift+')]:
+        for w, m in [('es:checkbutton_ctrl', 'Ctrl+'),
+                     ('es:checkbutton_alt', 'Alt+'),
+                     ('es:checkbutton_shift', 'Shift+')]:
             if self.__builder.get_object(w).get_active():
                 s = m + s
-        l = self.__builder.get_object('treeview2').get_model()
+        l = self.__builder.get_object('es:treeview').get_model()
         for i in range(len(l)):
             if l[i][0] == s:
                 return True
         l.append([s])
 
-    def on_button5_clicked(self, widget):
-        s = self.__builder.get_object('entry2').get_text()
+    def on_es_button_refresh_clicked(self, widget):
+        s = self.__builder.get_object('es:entry').get_text()
         if not s or not IBus.keyval_from_name(s):
             dlg = self.__builder.get_object('invalid_keysym')
             dlg.set_markup('<big><b>%s</b></big>' % _("Invalid keysym"))
@@ -1626,17 +1691,19 @@ class AnthySetup(object):
             dlg.run()
             dlg.hide()
             return True
-        for w, m in [('checkbutton6', 'Ctrl+'),
-                     ('checkbutton7', 'Alt+'),
-                     ('checkbutton8', 'Shift+')]:
+        for w, m in [('es:checkbutton_ctrl', 'Ctrl+'),
+                     ('es:checkbutton_alt', 'Alt+'),
+                     ('es:checkbutton_shift', 'Shift+')]:
             if self.__builder.get_object(w).get_active():
                 s = m + s
-        l, i = self.__builder.get_object('treeview2').get_selection().get_selected()
+        tv = self.__builder.get_object('es:treeview')
+        l, i = tv.get_selection().get_selected()
         l[i][0] = s
         return True
 
-    def on_button6_clicked(self, widget):
-        l, i = self.__builder.get_object('treeview2').get_selection().get_selected()
+    def on_es_button_del_clicked(self, widget):
+        tv = self.__builder.get_object('es:treeview')
+        l, i = tv.get_selection().get_selected()
         if i:
             l.remove(i)
 

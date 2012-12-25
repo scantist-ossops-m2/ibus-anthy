@@ -139,6 +139,14 @@ class Prefs(object):
         for key in variant.keys():
             v = variant[key]
             self.modified.setdefault(section, {})[key] = v if v != [''] else []
+        # FIXME: ibus-dconf converts the keys.
+        if section == 'common':
+            self.fetch_item(section, 'show-input-mode')
+            self.fetch_item(section, 'show-typing-method')
+            self.fetch_item(section, 'show-segment-mode')
+            self.fetch_item(section, 'show-dict-mode')
+            self.fetch_item(section, 'show-dict-config')
+            self.fetch_item(section, 'show-preferences')
 
     def fetch_item(self, section, key, readonly=False):
         s = '/'.join(
