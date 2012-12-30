@@ -22,9 +22,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import os
+from os import path
 import sys
 import getopt
 import locale
+import xml.dom.minidom
 
 from gi.repository import GObject
 from gi.repository import IBus
@@ -81,6 +83,38 @@ def get_userhome():
         userhome = os.environ['HOME']
     userhome = userhome.rstrip('/')
     return userhome
+
+def resync_engine_file():
+    user_config = path.join(get_userhome(), '.config',
+                            'ibus-anthy', 'engines.xml')
+    system_config = path.join(config.PKGDATADIR, 'engine', 'default.xml')
+    if not path.exists(user_config):
+        return
+    if not path.exists(system_config):
+        os.unlink(user_config)
+        return
+
+    # path.getmtime depends on the build time rather than install time.
+    def __get_engine_file_version(engine_file):
+        version_str = ''
+        dom = xml.dom.minidom.parse(engine_file)
+        elements = dom.getElementsByTagName('version')
+        nodes = []
+        if len(elements) > 0:
+            nodes = elements[0].childNodes
+        if len(nodes) > 0:
+            version_str = nodes[0].data
+        if type(version_str) == unicode:
+            version_str = str(version_str)
+        if version_str != '':
+            version_str = version_str.strip()
+        return version_str
+
+    user_config_version = __get_engine_file_version(user_config)
+    system_config_version = __get_engine_file_version(system_config)
+    if system_config_version > user_config_version:
+        import shutil
+        shutil.copyfile(system_config, user_config)
 
 def print_xml():
     user_config = os.path.join(get_userhome(), '.config',
@@ -141,6 +175,7 @@ def main():
             sys.exit()
 
     if xml:
+        resync_engine_file()
         print_xml()
         return
 

@@ -14,5 +14,6 @@
 		<rank>99</rank>
 		@HOTKEYS_XML@
 		@SYMBOL_XML@
+		<version>@PACKAGE_VERSION@</version>
 	</engine>
 </engines>

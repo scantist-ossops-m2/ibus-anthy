@@ -24,6 +24,7 @@
 from os import environ, getuid, path
 import os, sys
 import locale
+import xml.dom.minidom
 import gettext
 from gettext import dgettext
 
@@ -922,6 +923,38 @@ class AnthySetup(object):
         active = l.get_value(iter, id)
         renderer.set_property('active', active)
 
+    def __resync_engine_file(self):
+        user_config = path.join(self.__get_userhome(), '.config',
+                                'ibus-anthy', 'engines.xml')
+        system_config = path.join(config.PKGDATADIR, 'engine', 'default.xml')
+        if not path.exists(user_config):
+            return
+        if not path.exists(system_config):
+            os.unlink(user_config)
+            return
+
+        # path.getmtime depends on the build time rather than install time.
+        def __get_engine_file_version(engine_file):
+            version_str = ''
+            dom = xml.dom.minidom.parse(engine_file)
+            elements = dom.getElementsByTagName('version')
+            nodes = []
+            if len(elements) > 0:
+                nodes = elements[0].childNodes
+            if len(nodes) > 0:
+                version_str = nodes[0].data
+            if type(version_str) == unicode:
+                version_str = str(version_str)
+            if version_str != '':
+                version_str = version_str.strip()
+            return version_str
+
+        user_config_version = __get_engine_file_version(user_config)
+        system_config_version = __get_engine_file_version(system_config)
+        if system_config_version > user_config_version:
+            import shutil
+            shutil.copyfile(system_config, user_config)
+
     def __get_engine_file(self):
         user_config = path.join(self.__get_userhome(), '.config',
                                 'ibus-anthy', 'engines.xml')
@@ -946,7 +979,6 @@ class AnthySetup(object):
         if engine_file == None:
             return None
 
-        import xml.dom.minidom
         dom = xml.dom.minidom.parse(engine_file)
         nodes = dom.getElementsByTagName('layout')[0].childNodes
         if len(nodes) > 0:
@@ -1018,7 +1050,6 @@ class AnthySetup(object):
 
         (layout, variant, option) = self.__parse_keymap(self.__keymap)
 
-        import xml.dom.minidom
         dom = xml.dom.minidom.parse(engine_file)
         nodes = dom.getElementsByTagName('layout')[0].childNodes
         if len(nodes) == 0:
@@ -1054,6 +1085,7 @@ class AnthySetup(object):
                                     "Please restart ibus to reload the layout."))
 
     def __update_keymap_label(self):
+        self.__resync_engine_file()
         prefs = self.prefs
         keymap = self.__get_keymap()
         if keymap == None:
