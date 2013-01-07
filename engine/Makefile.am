@@ -38,10 +38,10 @@ engine_anthydir = $(pkgdatadir)/engine
 engine_anthy_built_files = $(BUILT_SOURCES)
 engine_anthy_built_in_files = $(addsuffix .in, $(engine_anthy_built_files))
 
-if HAVE_PYGTK2_ANTHY
 PYGTK2_ANTHY_RAW = anthy.i
 PYGTK2_ANTHY_GEN = anthy.py anthy_wrap.c
 
+if HAVE_PYGTK2_ANTHY
 anthy_DATA = \
 	anthy.py \
 	$(NULL)
@@ -69,9 +69,6 @@ _anthy_la_LDFLAGS = \
 
 anthy.py anthy_wrap.c: anthy.i
 	$(SWIG) -python $(ANTHY_CFLAGS) -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
-else
-PYGTK2_ANTHY_RAW =
-PYGTK2_ANTHY_GEN =
 endif
 
 libexec_SCRIPTS = ibus-engine-anthy

@@ -47,15 +47,14 @@ dnl - define PACKAGE_VERSION_* variables
 AS_VERSION
 AS_NANO
 AM_SANITY_CHECK
-AM_MAINTAINER_MODE
-AM_DISABLE_STATIC
+AM_MAINTAINER_MODE(enable)
+AC_DISABLE_STATIC
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CXX
-AC_ISC_POSIX
 AC_HEADER_STDC
-AM_PROG_LIBTOOL
-IT_PROG_INTLTOOL([0.35.0])
+AC_PROG_LIBTOOL
+IT_PROG_INTLTOOL([0.41.1])
 
 dnl - For dislpay Date
 m4_define(ibus_datedisplay,
@@ -211,7 +210,7 @@ AC_MSG_CHECKING([whether you enable pygtk2 anthy])
 AC_ARG_ENABLE(pygtk2-anthy,
               AS_HELP_STRING([--enable-pygtk2-anthy=no/yes],
                              [Install pygtk2 anthy default=no]),
-              enable_pygtk2_anthy=yes,
+              [],
               enable_pygtk2_anthy=no)
 AC_MSG_RESULT($enable_pygtk2_anthy)
 
