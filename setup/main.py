@@ -35,6 +35,7 @@ except:
 
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GdkX11
 from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import IBus
@@ -79,6 +80,29 @@ class AnthySetup(object):
         self.__builder = builder = Gtk.Builder()
         builder.set_translation_domain(DOMAINNAME)
         builder.add_from_file(builder_file)
+
+        toplevel = builder.get_object('main')
+
+        try:
+            gnome_control_center_xid = int(environ['GNOME_CONTROL_CENTER_XID'])
+        except:
+            gnome_control_center_xid = 0
+
+        if gnome_control_center_xid != 0:
+            def set_transient(obj, pspec):
+                window = toplevel.get_window()
+                if window == None:
+                    return
+                parent_window = GdkX11.X11Window.foreign_new_for_display(Gdk.Display.get_default(),
+                                                                         gnome_control_center_xid)
+                if parent_window != None:
+                    window.set_transient_for(parent_window)
+            toplevel.set_wmclass('gnome-control-center', 'Gnome-control-center')
+            toplevel.set_modal(True)
+            toplevel.set_type_hint(Gdk.WindowTypeHint.DIALOG)
+            toplevel.connect('notify::window', set_transient)
+
+        toplevel.show()
 
         if ibus_address == None:
             builder.connect_signals(self)

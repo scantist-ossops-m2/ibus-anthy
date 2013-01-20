@@ -190,7 +190,7 @@
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="main">
-    <property name="visible">True</property>
+    <property name="visible">False</property>
     <property name="title" translatable="yes">Setup - IBus-Anthy</property>
     <property name="type_hint">dialog</property>
     <signal handler="on_main_delete" name="delete_event"/>
