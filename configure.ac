@@ -287,7 +287,7 @@ AC_MSG_CHECKING([if you install the private png file])
 AC_ARG_ENABLE(private-png,
               AS_HELP_STRING([--enable-private-png=no/yes],
                              [Install ibus-anthy.png default=no]),
-              enable_private_png=yes,
+              [],
               enable_private_png=no)
 AC_MSG_RESULT($enable_private_png)
 
