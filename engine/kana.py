@@ -105,13 +105,8 @@ class KanaSegment(segment.Segment):
         value = None
         section = self._kana_typing_rule_section
         if section != None:
-            try:
-                # U+A5 needs to be UTF-8 since gconf values are
-                # disk saved values.
-                enchars = enchars.encode('utf-8')
-            except:
-                print >> sys.stderr, \
-                    'Failed to encode UTF-8:', enchars
+            # Need to send Unicode to typing_to_config_key instead of UTF-8
+            # not to separate U+A5
             gkey = prefs.typing_to_config_key(enchars)
             if gkey == '':
                 return None

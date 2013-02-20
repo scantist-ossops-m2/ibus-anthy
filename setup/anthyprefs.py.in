@@ -102,6 +102,13 @@ class AnthyPrefs(Prefs):
             for _key, _ch in _config_key_to_char.items():
                 self._char_to_config_key[_ch] = _key
         for ch in typing:
+            try:
+                # U+A5 needs to be UTF-8 since gconf values are
+                # disk saved values.
+                ch = ch.encode('utf-8')
+            except:
+                print >> sys.stderr, \
+                    'Failed to encode UTF-8:', ch
             if ch in _supported_gsettings_key_chars:
                 if retval != '':
                     retval += '-'
