@@ -33,10 +33,10 @@ try:
 except:
     getpreferredencoding = None
 
+from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GdkX11
-from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import IBus
 
@@ -195,8 +195,8 @@ class AnthySetup(object):
         tv.set_model(ls)
 
         self.__keymap = None
-        GObject.idle_add(self.__update_keymap_label,
-                         priority = GObject.PRIORITY_LOW)
+        GLib.idle_add(self.__update_keymap_label,
+                      priority = GLib.PRIORITY_LOW)
 
         self.__thumb_kb_layout_mode = builder.get_object('thumb:keyboard_layout_mode')
         self.__thumb_kb_layout = builder.get_object('thumb:keyboard_layout')

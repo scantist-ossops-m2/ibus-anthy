@@ -34,7 +34,7 @@ try:
 except:
     pass
 
-from gi.repository import GObject
+from gi.repository import GLib
 from gi.repository import IBus
 
 try:
@@ -174,7 +174,7 @@ class Engine(IBus.EngineSimple):
         self._RMM = 0
         self._RSS = 0
         if self.__idle_id != 0:
-            GObject.source_remove(self.__idle_id)
+            GLib.source_remove(self.__idle_id)
             self.__idle_id = 0
 
     def __init_props(self):
@@ -973,7 +973,7 @@ class Engine(IBus.EngineSimple):
 
     def do_destroy(self):
         if self.__idle_id != 0:
-            GObject.source_remove(self.__idle_id)
+            GLib.source_remove(self.__idle_id)
             self.__idle_id = 0
         self.__remove_dict_files()
         # It seems the parent do_destroy and destroy are different.
@@ -1118,8 +1118,8 @@ class Engine(IBus.EngineSimple):
     def __invalidate(self):
         if self.__idle_id != 0:
             return
-        self.__idle_id = GObject.idle_add(self.__update,
-                                          priority = GObject.PRIORITY_LOW)
+        self.__idle_id = GLib.idle_add(self.__update,
+                                       priority = GLib.PRIORITY_LOW)
 
 #    def __get_preedit(self):
     def __get_preedit(self, commit=False):
@@ -1870,11 +1870,13 @@ class Engine(IBus.EngineSimple):
             self._H = None
 
         def start(t):
-            self._H = GObject.timeout_add(t, on_timeout, keyval)
+            self._H = GLib.timeout_add_full(GLib.PRIORITY_DEFAULT,
+                                            t, on_timeout, keyval,
+                                            None)
 
         def stop():
             if self._H:
-                GObject.source_remove(self._H)
+                GLib.source_remove(self._H)
                 self._H = None
                 return True
             return False

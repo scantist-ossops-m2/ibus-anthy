@@ -28,7 +28,7 @@ import getopt
 import locale
 import xml.dom.minidom
 
-from gi.repository import GObject
+from gi.repository import GLib
 from gi.repository import IBus
 
 import _config as config
@@ -56,7 +56,7 @@ class IMApp:
                                  symbol=config.SYMBOL_CHAR,
                                  rank=99)
         self.__component.add_engine(engine)
-        self.__mainloop = GObject.MainLoop()
+        self.__mainloop = GLib.MainLoop()
         self.__bus = IBus.Bus()
         self.__bus.connect('disconnected', self.__bus_disconnected_cb)
         self.__factory = factory.EngineFactory(self.__bus)
