@@ -1851,7 +1851,8 @@ class Engine(IBus.EngineSimple):
     @staticmethod
     def _mk_key(keyval, state):
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
-            if unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
+            if keyval < 0xff and \
+               unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
                 state |= IBus.ModifierType.SHIFT_MASK
             elif IBus.KEY_a <= keyval <= IBus.KEY_z:
                 keyval -= (IBus.KEY_a - IBus.KEY_A)
