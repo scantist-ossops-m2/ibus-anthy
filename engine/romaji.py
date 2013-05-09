@@ -32,13 +32,28 @@ def romaji_correction_rule_get(k, d):
 class RomajiSegment(segment.Segment):
     _prefs = None
     _romaji_typing_rule_section = None
+    _latin_with_shift = True
+    _shift_mode = False
 
-    def __init__(self, enchars=u'', jachars=u'', shift=False):
+    def __init__(self, enchars=u'', jachars=u'', shift=False, unshift=False):
+        if self._latin_with_shift:
+            # If Shift key is pressed, Latin mode.
+            # If Hiragana_Katakana key is pressed, Hiragana mode.
+            if shift:
+                self._shift_mode = True
+            if unshift:
+                self._shift_mode = False
+
+        enchars_orig = enchars
+        # Even if the chars are capital with CapsLock, Hiragana
+        # should be converted. E.g. 'SA'
+        enchars = enchars.lower()
+
         if not jachars and not shift:
             jachars = self.__get_romaji_typing_rule(enchars, None)
             if jachars == None:
                 jachars = symbol_rule.get(enchars, u'')
-        super(RomajiSegment, self).__init__(enchars, jachars)
+        super(RomajiSegment, self).__init__(enchars_orig, jachars)
 
     @classmethod
     def _init_romaji_typing_rule(cls, prefs):
@@ -52,6 +67,11 @@ class RomajiSegment(segment.Segment):
         cls._romaji_typing_rule_section = 'romaji_typing_rule/' + method
         if cls._romaji_typing_rule_section not in prefs.sections():
             cls._romaji_typing_rule_section = None
+
+    @classmethod
+    def SET_LATIN_WITH_SHIFT(cls, latin_with_shift):
+        # Do not use IBus.Config in every conversion for the performance.
+        cls._latin_with_shift = latin_with_shift
 
     def __get_romaji_typing_rule(self, enchars, retval=None):
         prefs = self._prefs
@@ -83,35 +103,48 @@ class RomajiSegment(segment.Segment):
     def is_finished(self):
         return self._jachars != u''
 
-    def append(self, enchar, shift=False):
+    def append(self, enchar, shift=False, unshift=False):
         if self.is_finished():
             if enchar == u'' and enchar == u'\0':
                 return []
             return [RomajiSegment(enchar)]
 
-        text = self._enchars + enchar
+        text_orig = self._enchars + enchar
+        text = text_orig.lower()
+
+        if self._latin_with_shift:
+            # If Shift key is pressed, Latin mode.
+            # If Hiragana_Katakana key is pressed, Hiragana mode.
+            if shift:
+                self._shift_mode = True
+            if unshift:
+                self._shift_mode = False
+            if self._shift_mode:
+                self._enchars = text_orig
+                return []
+
         if shift:
-            self._enchars = text
+            self._enchars = text_orig
             return []
 
         jachars = self.__get_romaji_typing_rule(text, None)
         if jachars == None:
             jachars = symbol_rule.get(text, None)
         if jachars:
-            self._enchars = text
+            self._enchars = text_orig
             self._jachars = jachars
             return []
 
         jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
         if jachars:
-            self._enchars = text[0]
+            self._enchars = text_orig[0]
             self._jachars = jachars
             return [RomajiSegment(c)]
 
 #        jachars, c = romaji_correction_rule.get(text, (None, None))
         jachars, c = romaji_correction_rule_get(text, (None, None))
         if jachars:
-            self._enchars = text[0]
+            self._enchars = text_orig[0]
             self._jachars = jachars
             return [RomajiSegment(c)]
 
@@ -123,13 +156,13 @@ class RomajiSegment(segment.Segment):
                 jachars = symbol_rule.get(enchars, None)
             if jachars:
                 jasegment = RomajiSegment(enchars, jachars)
-                self._enchars = text[:i]
+                self._enchars = text_orig[:i]
                 return [jasegment]
 
             jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
                 jasegment = RomajiSegment(enchars[:-len(c)], jachars)
-                self._enchars = text[:i]
+                self._enchars = text_orig[:i]
                 if c:
                     return [jasegment, RomajiSegment(c)]
                 return [jasegment]
@@ -138,44 +171,55 @@ class RomajiSegment(segment.Segment):
             jachars, c = romaji_correction_rule_get(enchars, (None, None))
             if jachars:
                 jasegment = RomajiSegment(enchars[:-len(c)], jachars)
-                self._enchars = text[:i]
+                self._enchars = text_orig[:i]
                 if c:
                     return [jasegment, RomajiSegment(c)]
                 return [jasegment]
 
-        self._enchars = text
+        self._enchars = text_orig
         return []
 
-    def prepend(self, enchar, shift=False):
+    def prepend(self, enchar, shift=False, unshift=False):
         if enchar == u'' or enchar == u'\0':
             return []
 
         if self.is_finished():
             return [RomajiSegment(enchar)]
 
-        text = enchar + self._enchars
+        text_orig  = enchar + self._enchars
+        text  = text_orig.lower()
+
+        if self._latin_with_shift:
+            if shift:
+                self._shift_mode = True
+            if unshift:
+                self._shift_mode = False
+            if self._shift_mode:
+                self._enchars = text_orig
+                return []
+
         if shift:
-            self._enchars = text
+            self._enchars = text_orig
             return []
 
         jachars = self.__get_romaji_typing_rule(text, None)
         if jachars == None:
             jachars = symbol_rule.get(text, None)
         if jachars:
-            self._enchars = text
+            self._enchars = text_orig
             self._jachars = jachars
             return []
 
         jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
         if jachars:
             self._enchars = c
-            return [RomajiSegment(text[0], jachars)]
+            return [RomajiSegment(text_orig[0], jachars)]
 
 #        jachars, c = romaji_correction_rule.get(text, (None, None))
         jachars, c = romaji_correction_rule_get(text, (None, None))
         if jachars:
             self._enchars = c
-            return [RomajiSegment(text[0], jachars)]
+            return [RomajiSegment(text_orig[0], jachars)]
 
         for i in range(min(4, len(text)), 0, -1):
             enchars = text[:i]
@@ -185,21 +229,21 @@ class RomajiSegment(segment.Segment):
                 jachars = symbol_rule.get(enchars, None)
             if jachars:
                 jasegment = RomajiSegment(enchars, jachars)
-                self._enchars = text[i:]
+                self._enchars = text_orig[i:]
                 return [jasegment]
 
             jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
-                self._enchars = c + text[i:]
+                self._enchars = c + text_orig[i:]
                 return [RomajiSegment(enchars[:-len(c)], jachars)]
 
 #            jachars, c = romaji_correction_rule.get(enchars, (None, None))
             jachars, c = romaji_correction_rule_get(enchars, (None, None))
             if jachars:
-                self._enchars = c + text[i:]
+                self._enchars = c + text_orig[i:]
                 return [RomajiSegment(enchars[:-len(c)], jachars)]
 
-        self._enchars = text
+        self._enchars = text_orig
         return []
 
     def pop(self, index=-1):

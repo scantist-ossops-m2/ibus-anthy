@@ -637,23 +637,6 @@
                             <property name="column_spacing">8</property>
                             <property name="row_spacing">4</property>
                             <child>
-                              <object class="GtkCheckButton" id="half_width_number">
-                                <property name="label" translatable="yes">Convert _numbers with the one column width</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="draw_indicator">True</property>
-                                <signal handler="on_ck_toggled" name="toggled"/>
-                                <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
-                              </object>
-                              <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options"/>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkHBox" id="hbox4">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
@@ -708,6 +691,23 @@
                               </packing>
                             </child>
                             <child>
+                              <object class="GtkCheckButton" id="half_width_number">
+                                <property name="label" translatable="yes">Convert _numbers with the one column width</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal handler="on_ck_toggled" name="toggled"/>
+                                <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
+                              </object>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="y_options"/>
+                              </packing>
+                            </child>
+                            <child>
                               <object class="GtkCheckButton" id="half_width_space">
                                 <property name="label" translatable="yes">Con_vert spaces with the one column width</property>
                                 <property name="visible">True</property>
@@ -721,6 +721,23 @@
                               <packing>
                                 <property name="top_attach">3</property>
                                 <property name="bottom_attach">4</property>
+                                <property name="y_options"/>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="latin_with_shift">
+                                <property name="label" translatable="yes">Swi_tch “Hiragana” and “Latin” with Shift key and Hiragana–Katakana key in preedit</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal handler="on_ck_toggled" name="toggled"/>
+                                <accelerator key="t" modifiers="GDK_MOD1_MASK" signal="activate"/>
+                              </object>
+                              <packing>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="y_options"/>
                               </packing>
                             </child>

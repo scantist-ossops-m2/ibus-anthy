@@ -370,6 +370,7 @@ _config = {
         'half_width_symbol': False,
         'half_width_number': False,
         'half_width_space': False,
+        'latin_with_shift': True,
 
         'shortcut_type': 'default',
 

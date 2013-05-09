@@ -50,16 +50,22 @@ TYPING_MODE_THUMB_SHIFT = range(3)
 
 class JaString:
     _prefs = None
+    _mode = TYPING_MODE_ROMAJI
+    _shift = False
+    _unshift = False
 
-    def __init__(self, mode=TYPING_MODE_ROMAJI):
+    def __init__(self, mode=TYPING_MODE_ROMAJI, latin_with_shift=True):
         self._init_mode(mode)
+        if mode == TYPING_MODE_ROMAJI:
+            romaji.RomajiSegment.SET_LATIN_WITH_SHIFT(latin_with_shift)
 
     @classmethod
     def _init_mode(cls, mode):
-        cls.__mode = mode
+        cls._mode = mode
+        cls._shift = False
+        cls._unshift = False
         cls.__cursor = 0
         cls.__segments = list()
-        cls.__shift = False
         if mode == TYPING_MODE_ROMAJI:
             romaji.RomajiSegment._init_romaji_typing_rule(cls._prefs)
         elif mode == TYPING_MODE_KANA:
@@ -78,9 +84,15 @@ class JaString:
             mode = TYPING_MODE_KANA
             kana.KanaSegment.RESET(prefs, section, name, value)
             cls._init_mode(mode)
+        if section == 'common' and name == 'latin_with_shift':
+            romaji.RomajiSegment.SET_LATIN_WITH_SHIFT(value)
 
     def set_shift(self, shift):
-        self.__shift = shift
+        self._shift = shift
+
+    def set_hiragana_katakana(self, mode):
+        if mode and self._mode == TYPING_MODE_ROMAJI:
+            self._unshift = True
 
     def insert(self, c):
         segment_before = None
@@ -93,22 +105,32 @@ class JaString:
             segment_after = self.__segments[self.__cursor]
         if segment_before and not segment_before.is_finished():
             if type(segment_before) == romaji.RomajiSegment:
-                new_segments = segment_before.append(c, self.__shift)
+                new_segments = segment_before.append(c,
+                                                     self._shift,
+                                                     self._unshift)
+                self._unshift = False
             else:
                 new_segments = segment_before.append(c)
         elif segment_after and not segment_after.is_finished():
             if type(segment_after) == romaji.RomajiSegment:
-                new_segments = segment_after.prepend(c, self.__shift)
+                new_segments = segment_after.prepend(c,
+                                                     self._shift,
+                                                     self._unshift)
+                self._unshift = False
             else:
                 new_segments = segment_after.prepend(c)
         else:
             if c != u'\0' and c != u'':
-                if self.__mode == TYPING_MODE_ROMAJI:
-                    new_segments = [romaji.RomajiSegment(c, u'', self.__shift)]
-                elif self.__mode == TYPING_MODE_KANA:
+                if self._mode == TYPING_MODE_ROMAJI:
+                    new_segments = [romaji.RomajiSegment(c,
+                                                         u'',
+                                                         self._shift,
+                                                         self._unshift)]
+                    self._unshift = False
+                elif self._mode == TYPING_MODE_KANA:
                     # kana mode doesn't have shift latin in MS.
                     new_segments = [kana.KanaSegment(c)]
-                elif self.__mode == TYPING_MODE_THUMB_SHIFT:
+                elif self._mode == TYPING_MODE_THUMB_SHIFT:
                     new_segments = [thumb.ThumbShiftSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
@@ -227,7 +249,7 @@ class JaString:
         for c in s:
             c = c if not period else PeriodTable.get(c, c)
             # thumb_left + '2' and '/' are different
-            if self.__mode != TYPING_MODE_THUMB_SHIFT:
+            if self._mode != TYPING_MODE_THUMB_SHIFT:
                 c = c if not symbol else SymbolTable[symbol].get(c, c)
             c = c if not half_symbol else HalfSymbolTable.get(c, c)
             c = c if not half_number else HalfNumberTable.get(c, c)

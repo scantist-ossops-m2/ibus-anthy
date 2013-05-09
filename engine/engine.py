@@ -119,6 +119,7 @@ class Engine(IBus.EngineSimple):
     __prefs = None
     __keybind = {}
     __thumb = None
+    __latin_with_shift = True
 
     def __init__(self, bus, object_path):
         super(Engine, self).__init__(connection=bus.get_connection(),
@@ -161,7 +162,8 @@ class Engine(IBus.EngineSimple):
 
     # reset values of engine
     def __reset(self):
-        self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode)
+        self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode,
+                                                     self.__latin_with_shift)
         self.__convert_chars = u''
         self.__cursor_pos = 0
         self.__convert_mode = CONV_MODE_OFF
@@ -1309,7 +1311,8 @@ class Engine(IBus.EngineSimple):
                     return
 
                 # Set self.__preedit_ja_string by anthy context.
-                self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode)
+                self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode,
+                                                             self.__latin_with_shift)
                 self.__convert_chars = self.__normalize_preedit(all_text)
                 for i in xrange(0, len(self.__convert_chars)):
                     keyval = self.__convert_chars[i]
@@ -1597,6 +1600,7 @@ class Engine(IBus.EngineSimple):
             print 'RELOADED'
         if not cls.__prefs:
             cls.__prefs = AnthyPrefs(bus)
+            cls._init_prefs()
 
         cls.__keybind = cls._mk_keybind()
 
@@ -1639,6 +1643,9 @@ class Engine(IBus.EngineSimple):
             cls.__prefs.set_value(base_sec, name, value)
             if name == 'shortcut_type':
                 cls.__keybind = cls._mk_keybind()
+            if name == 'latin_with_shift':
+                cls.__latin_with_shift = value
+                jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
         elif base_sec == 'thumb':
             cls.__prefs.set_value(base_sec, name, value)
             cls._reset_thumb()
@@ -1654,6 +1661,12 @@ class Engine(IBus.EngineSimple):
             cls.__prefs.set_value(base_sec, name, value)
         else:
             cls.__prefs.set_value(section, name, value)
+
+    @classmethod
+    def _init_prefs(cls):
+        prefs = cls.__prefs
+        value = prefs.get_value('common', 'latin_with_shift')
+        cls.__latin_with_shift = value
 
     @classmethod
     def _mk_keybind(cls):
@@ -2031,6 +2044,9 @@ class Engine(IBus.EngineSimple):
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
             return False
 
+        if keyval == IBus.KEY_Hiragana_Katakana:
+            self.__preedit_ja_string.set_hiragana_katakana(True)
+        
         if (IBus.KEY_exclam <= keyval <= IBus.KEY_asciitilde or
             keyval == IBus.KEY_yen):
             if self.__typing_mode == jastring.TYPING_MODE_KANA:
