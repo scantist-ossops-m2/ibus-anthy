@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus-anthy - The Anthy engine for IBus
- * Copyright (c) 2012 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2012-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (c) 2012 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (c) 2012 Red Hat, Inc.
+ * Copyright (c) 2012-2013 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
