@@ -583,7 +583,6 @@ msgid "Con_vert spaces with the one column width"
 msgstr "Convertir les _espaces en espaces d’une seule colonne de largeur"
 
 #: ../setup/setup.ui.h:46
-#, fuzzy
 msgid "Swi_tch “Hiragana” and “Latin” with Shift key and Hiragana–Katakana key in preedit"
 msgstr "Permuter entre les modes « Hiragana » et « Latin » avec la touche Maj et la touche Hiragana-Katakana en pré-édition"
 
