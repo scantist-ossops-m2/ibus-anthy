@@ -1554,11 +1554,12 @@ class Engine(IBus.EngineSimple):
 
     def __on_key_common(self, keyval, state=0):
 
+        # If use-system-layout is FALSE in ibus 1.4.y or lower,
+        # ibus converts the keymap and ibus-anthy needed to use
+        # self.__commit_string
+        # ibus 1.5.y uses XKB directly so Latin mode can return FALSE.
         if Engine.__input_mode == INPUT_MODE_LATIN:
-            # Input Latin chars
-            char = unichr(keyval)
-            self.__commit_string(char)
-            return True
+            return False
 
         elif Engine.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
@@ -2055,7 +2056,8 @@ class Engine(IBus.EngineSimple):
                 elif keyval == IBus.KEY_backslash and keycode in [132-8, 133-8]:
                     keyval = IBus.KEY_yen
             ret = self.__on_key_common(keyval, state)
-            if (unichr(keyval) in u',.' and
+            if (Engine.__input_mode != INPUT_MODE_LATIN and
+                unichr(keyval) in u',.' and
                 self.__prefs.get_value('common', 'behavior_on_period')):
                 return self.__cmd_convert(keyval, state)
             return ret
@@ -2170,17 +2172,19 @@ class Engine(IBus.EngineSimple):
 
     #edit_keys
     def __cmd_insert_space(self, keyval, state):
+        if Engine.__input_mode == INPUT_MODE_LATIN:
+            return False
         if (self.__prefs.get_value('common', 'half_width_space') or
-            Engine.__input_mode in [INPUT_MODE_LATIN,
-                                    INPUT_MODE_HALF_WIDTH_KATAKANA]):
+            Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA):
             return self.__cmd_insert_half_space(keyval, state)
         else:
             return self.__cmd_insert_wide_space(keyval, state)
 
     def __cmd_insert_alternate_space(self, keyval, state):
+        if Engine.__input_mode == INPUT_MODE_LATIN:
+            return False
         if (self.__prefs.get_value('common', 'half_width_space') or
-            Engine.__input_mode in [INPUT_MODE_LATIN,
-                                    INPUT_MODE_HALF_WIDTH_KATAKANA]):
+            Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA):
             return self.__cmd_insert_wide_space(keyval, state)
         else:
             return self.__cmd_insert_half_space(keyval, state)
