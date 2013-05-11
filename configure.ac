@@ -297,6 +297,15 @@ else
     AM_CONDITIONAL(HAVE_PRIVATE_PNG, false)
 fi
 
+dnl - check on-off keys
+AC_ARG_WITH(on-off-keys,
+           [AC_HELP_STRING([--with-on-off-keys="'KEY1','KEY2',..."],
+                           [Anthy default on-off keys. default="
+                            'Zenkaku_Hankaku', 'Ctrl+J'".])],
+           [ON_OFF_KEYS="$withval"],
+           [ON_OFF_KEYS="'Zenkaku_Hankaku', 'Ctrl+J'"])
+AC_SUBST(ON_OFF_KEYS)
+
 dnl - check hotkeys for ibus-anthy which is used for ibus bridge mode.
 dnl - Normally you don't need this so could be HOTKEYS="no"
 AC_ARG_WITH(hotkeys,
@@ -443,6 +452,7 @@ ANTHY_ZIPCODE_FILE          $ANTHY_ZIPCODE_FILE
 KASUMI_EXEC_FILE            $KASUMI_EXEC_FILE
 KASUMI_ICON_FILE            $KASUMI_ICON_FILE
 ICON_PREFERENCE             $ICON_PREFERENCE
+ON_OFF_KEYS                 $ON_OFF_KEYS
 HOTKEYS_XML                 $HOTKEYS_XML
 SYMBOL_XML                  $SYMBOL_XML
 LAYOUT_XML                  $LAYOUT_XML

@@ -2090,10 +2090,9 @@ class Engine(IBus.EngineSimple):
 
     #mod_keys
     def __set_input_mode(self, mode):
-        if not self._chk_mode('0'):
-            return False
-
         self.__input_mode_activate(mode, IBus.PropState.CHECKED)
+        self.__reset()
+        self.__invalidate()
 
         return True
 

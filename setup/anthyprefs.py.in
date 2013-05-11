@@ -1136,7 +1136,7 @@ _config = {
 }
 
 _shortcut_default = {
-    'on_off': ['Ctrl+J'],
+    'on_off': [@ON_OFF_KEYS@],
     'circle_input_mode': ['Ctrl+comma', 'Ctrl+less'],
     'circle_kana_mode': ['Ctrl+period', 'Ctrl+greater', 'Hiragana_Katakana'],
 #    'cancel_pseudo_ascii_mode_key': ['Escape'],
