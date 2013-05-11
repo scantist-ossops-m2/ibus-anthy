@@ -80,7 +80,7 @@ PKG_CHECK_MODULES(GOBJECT2, [
 ])
 
 dnl - GObject introspection
-GOBJECT_INTROSPECTION_CHECK([0.6.8])
+GOBJECT_INTROSPECTION_REQUIRE([0.6.8])
 
 dnl - check libanthy directory
 AC_ARG_WITH(anthygobject-libdir,
