@@ -2050,7 +2050,7 @@ class Engine(IBus.EngineSimple):
         
         if (IBus.KEY_exclam <= keyval <= IBus.KEY_asciitilde or
             keyval == IBus.KEY_yen):
-            if self.__typing_mode == jastring.TYPING_MODE_KANA:
+            if Engine.__typing_mode == jastring.TYPING_MODE_KANA:
                 if keyval == IBus.KEY_0 and state == IBus.ModifierType.SHIFT_MASK:
                     keyval = IBus.KEY_asciitilde
                 elif keyval == IBus.KEY_backslash and keycode in [132-8, 133-8]:
@@ -2096,7 +2096,20 @@ class Engine(IBus.EngineSimple):
 
         return True
 
+    def __unset_current_input_mode(self):
+        modes = {
+            INPUT_MODE_HIRAGANA: u'InputMode.Hiragana',
+            INPUT_MODE_KATAKANA: u'InputMode.Katakana',
+            INPUT_MODE_HALF_WIDTH_KATAKANA: u'InputMode.HalfWidthKatakana',
+            INPUT_MODE_LATIN: u'InputMode.Latin',
+            INPUT_MODE_WIDE_LATIN: u'InputMode.WideLatin'
+        }
+        self.__input_mode_activate(modes[Engine.__input_mode],
+                                   IBus.PropState.UNCHECKED)
+
     def __cmd_on_off(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         if Engine.__input_mode == INPUT_MODE_LATIN:
             return self.__set_input_mode(u'InputMode.Hiragana')
         else:
@@ -2110,6 +2123,8 @@ class Engine(IBus.EngineSimple):
             INPUT_MODE_LATIN: u'InputMode.WideLatin',
             INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
         }
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(modes[Engine.__input_mode])
 
     def __cmd_circle_kana_mode(self, keyval, state):
@@ -2120,25 +2135,46 @@ class Engine(IBus.EngineSimple):
             INPUT_MODE_LATIN: u'InputMode.Hiragana',
             INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
         }
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(modes[Engine.__input_mode])
 
     def __cmd_latin_mode(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(u'InputMode.Latin')
 
     def __cmd_wide_latin_mode(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(u'InputMode.WideLatin')
 
     def __cmd_hiragana_mode(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(u'InputMode.Hiragana')
 
     def __cmd_katakana_mode(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(u'InputMode.Katakana')
 
     def __cmd_half_katakana(self, keyval, state):
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_input_mode()
         return self.__set_input_mode(u'InputMode.HalfWidthKatakana')
 
 #    def __cmd_cancel_pseudo_ascii_mode_key(self, keyval, state):
 #        pass
+
+    def __unset_current_typing_mode(self):
+        modes = {
+            jastring.TYPING_MODE_ROMAJI: u'TypingMode.Romaji',
+            jastring.TYPING_MODE_KANA: u'TypingMode.Kana',
+            jastring.TYPING_MODE_THUMB_SHIFT: u'TypingMode.ThumbShift',
+        }
+        self.__typing_mode_activate(modes[Engine.__typing_mode],
+                                    IBus.PropState.UNCHECKED)
 
     def __cmd_circle_typing_method(self, keyval, state):
         if not self._chk_mode('0'):
@@ -2149,7 +2185,9 @@ class Engine(IBus.EngineSimple):
             jastring.TYPING_MODE_KANA: u'TypingMode.ThumbShift',
             jastring.TYPING_MODE_ROMAJI: u'TypingMode.Kana',
         }
-        self.__typing_mode_activate(modes[self.__typing_mode],
+        # ibus 1.5 or later needs to send UNCHECKED
+        self.__unset_current_typing_mode()
+        self.__typing_mode_activate(modes[Engine.__typing_mode],
                                     IBus.PropState.CHECKED)
         return True
 
