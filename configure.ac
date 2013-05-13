@@ -24,7 +24,7 @@ dnl - if not 1, append datestamp to the version number.
 m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [5])
-m4_define([ibus_micro_version], [2])
+m4_define([ibus_micro_version], [3])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
@@ -165,16 +165,13 @@ AM_PATH_PYTHON([$IBUS_PYTHON_MIN_VERSION])
 dnl - check the supported ibus version
 AC_MSG_CHECKING([if your ibus version is supported])
 IBUS_VERSION_TEST="
-def _ibus_check_version(major, minor, micro):
+def _ibus_check_version(major, minor):
     return (IBus.MAJOR_VERSION > (major) or \
-    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION > (minor)) or \
-    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION == (minor) and \
-     IBus.MICRO_VERSION >= (micro)))
+    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION >= (minor)))
 
 from gi.repository import IBus
 retval = _ibus_check_version (ibus_major_version,
-                              ibus_minor_version, 
-                              ibus_micro_version)
+                              ibus_minor_version)
 if not retval:
     print 'your ibus version %d.%d.%d is old against %d.%d.%d' \
         % ( IBus.MAJOR_VERSION, IBus.MINOR_VERSION, IBus.MICRO_VERSION, \
