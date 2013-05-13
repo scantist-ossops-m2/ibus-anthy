@@ -2043,9 +2043,6 @@ class Engine(IBus.EngineSimple):
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
             return False
 
-        if keyval == IBus.KEY_Hiragana_Katakana:
-            self.__preedit_ja_string.set_hiragana_katakana(True)
-        
         if (IBus.KEY_exclam <= keyval <= IBus.KEY_asciitilde or
             keyval == IBus.KEY_yen):
             if Engine.__typing_mode == jastring.TYPING_MODE_KANA:
@@ -2770,4 +2767,7 @@ class Engine(IBus.EngineSimple):
             Engine.__setup_pid = 0
         setup_cmd = path.join(config.LIBEXECDIR, 'ibus-setup-anthy')
         Engine.__setup_pid = os.spawnl(os.P_NOWAIT, setup_cmd, 'ibus-setup-anthy')
+
+    def __cmd_hiragana_for_latin_with_shift(self, keyval, state):
+        self.__preedit_ja_string.set_hiragana_katakana(True)
 

@@ -277,14 +277,16 @@ _cmd_keys = [
     'on_off',
     'circle_input_mode',
     'circle_kana_mode',
+    'circle_typing_method',
+    'circle_dict_method',
     'latin_mode',
     'wide_latin_mode',
     'hiragana_mode',
     'katakana_mode',
     'half_katakana_mode',
 #    'cancel_pseudo_ascii_mode_key',
-    'circle_typing_method',
-    'circle_dict_method',
+
+    'hiragana_for_latin_with_shift',
 
     'insert_space',
     'insert_alternate_space',
@@ -1196,6 +1198,8 @@ _shortcut_default = {
 
     'dict_admin': ['F11'],
     'add_word': ['F12'],
+
+    'hiragana_for_latin_with_shift': ['Hiragana_Katakana'],
 }
 
 _config['shortcut/default'] = dict.fromkeys(_cmd_keys, [])
@@ -1255,7 +1259,10 @@ _shortcut_atok = {
     'convert_to_wide_latin': ['F9', 'Ctrl+P'],
     'convert_to_latin': ['F10', 'Ctrl+at'],
 
+    'dict_admin': ['F11'],
     'add_word': ['Ctrl+F7'],
+
+    'hiragana_for_latin_with_shift': ['Ctrl+J'],
 }
 
 _config['shortcut/atok'] = dict.fromkeys(_cmd_keys, [])
@@ -1305,6 +1312,11 @@ _shortcut_wnn = {
     'convert_to_half': ['F8'],
     'convert_to_wide_latin': ['F9'],
     'convert_to_latin': ['F10'],
+
+    'dict_admin': ['F11'],
+    'add_word': ['F12'],
+
+    'hiragana_for_latin_with_shift': ['Hiragana_Katakana'],
 }
 
 _config['shortcut/wnn'] = dict.fromkeys(_cmd_keys, [])

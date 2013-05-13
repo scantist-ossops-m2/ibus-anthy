@@ -1621,9 +1621,6 @@ class AnthySetup(object):
         ls = self.__builder.get_object('shortcut').get_model()
         ls.clear()
 
-        for a in widget.get_model():
-            print a[0]
-
         sec = self._get_shortcut_sec()
         for k in self.prefs.keys(sec):
             ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
