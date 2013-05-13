@@ -27,6 +27,7 @@ __all__ = (
         'ThumbShiftSegment',
     )
 
+from gi.repository import GLib
 from gi.repository import IBus
 
 try:
@@ -388,6 +389,8 @@ class ThumbShiftKeyboard:
         return (keyval, state)
 
     def __get_xkb_layout(self):
+        # Until Gdk.property_get is fixed
+        '''
         root_window = get_default_root_window()
         if not root_window:
             return 0
@@ -416,6 +419,45 @@ class ThumbShiftKeyboard:
             elif data.find('japan:') >= 0:
                 layout = 0
         return layout
+        '''
+
+        layout = 0
+        argv = ['setxkbmap', '-query']
+        (ret, std_out, std_error, exit_status) = \
+                GLib.spawn_sync(None, argv, None,
+                                GLib.SpawnFlags.SEARCH_PATH_FROM_ENVP,
+                                None, None)
+        if not ret:
+            print >> sys.stderr, std_error
+            return layout
+        for line in std_out.split('\n'):
+            if line.startswith('layout:'):
+                data = line.split()[1]
+                if data == 'jp':
+                    layout = 0
+                elif data == 'us':
+                    layout = 1
+            elif line.startswith('options:'):
+                data = line.split()[1]
+                if data.find('japan:nicola_f_bs') >= 0:
+                    layout = 2
+                elif data.find('japan:') >= 0:
+                    layout = 0
+        return 0
+
+    def __reset_layout_and_handakuten(self):
+        mode = self.__prefs.get_value('thumb', 'keyboard_layout_mode')
+        layout = 0
+        if mode == 1:
+            layout = self.__get_xkb_layout()
+        else:
+            layout = self.__prefs.get_value('thumb', 'keyboard_layout')
+        self.set_layout(layout)
+
+        fmv_extension = self.__prefs.get_value('thumb', 'fmv_extension')
+        self.set_fmv_extension(fmv_extension)
+        handakuten = self.__prefs.get_value('thumb', 'handakuten')
+        self.set_handakuten(handakuten)
 
     def reset(self):
         s = self.__prefs.get_value('thumb', 'ls')
@@ -435,18 +477,8 @@ class ThumbShiftKeyboard:
         self.set_t1(t1)
         self.set_t2(t2)
 
-        mode = self.__prefs.get_value('thumb', 'keyboard_layout_mode')
-        layout = 0
-        if mode == 1:
-            layout = self.__get_xkb_layout()
-        else:
-            layout = self.__prefs.get_value('thumb', 'keyboard_layout')
-        self.set_layout(layout)
-
-        fmv_extension = self.__prefs.get_value('thumb', 'fmv_extension')
-        self.set_fmv_extension(fmv_extension)
-        handakuten = self.__prefs.get_value('thumb', 'handakuten')
-        self.set_handakuten(handakuten)
+        GLib.idle_add(self.__reset_layout_and_handakuten,
+                      priority = GLib.PRIORITY_LOW)
 
     def get_ls(self):
         return self.__ls

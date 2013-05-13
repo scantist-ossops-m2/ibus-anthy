@@ -1138,7 +1138,8 @@ _config = {
 _shortcut_default = {
     'on_off': [@ON_OFF_KEYS@],
     'circle_input_mode': ['Ctrl+comma', 'Ctrl+less'],
-    'circle_kana_mode': ['Ctrl+period', 'Ctrl+greater', 'Hiragana_Katakana'],
+    # Removed Hiragana_Katakana key in circle_kana_mode for latin_with_shift.
+    'circle_kana_mode': ['Ctrl+period', 'Ctrl+greater'],
 #    'cancel_pseudo_ascii_mode_key': ['Escape'],
     'circle_typing_method': ['Alt+Romaji', 'Ctrl+slash'],
     'circle_dict_method': ['Alt+Henkan'],

@@ -1885,9 +1885,7 @@ class Engine(IBus.EngineSimple):
             self._H = None
 
         def start(t):
-            self._H = GLib.timeout_add_full(GLib.PRIORITY_DEFAULT,
-                                            t, on_timeout, keyval,
-                                            None)
+            self._H = GLib.timeout_add(t, on_timeout, keyval)
 
         def stop():
             if self._H:
@@ -2194,6 +2192,12 @@ class Engine(IBus.EngineSimple):
     def __cmd_circle_dict_method(self, keyval, state):
         if not self._chk_mode('0'):
             return False
+
+        # ibus 1.5 or later needs to send UNCHECKED
+        prop_name = self.__dict_mode_get_prop_name(Engine.__dict_mode)
+        if prop_name != None:
+            self.__dict_mode_activate(prop_name,
+                                      IBus.PropState.UNCHECKED)
 
         single_files = self.__get_single_dict_files()
         new_mode = Engine.__dict_mode + 1
