@@ -67,11 +67,11 @@ class JaString:
         cls.__cursor = 0
         cls.__segments = list()
         if mode == TYPING_MODE_ROMAJI:
-            romaji.RomajiSegment._init_romaji_typing_rule(cls._prefs)
+            romaji.RomajiSegment.INIT_ROMAJI_TYPING_RULE(cls._prefs)
         elif mode == TYPING_MODE_KANA:
-            kana.KanaSegment._init_kana_typing_rule(cls._prefs)
+            kana.KanaSegment.INIT_KANA_TYPING_RULE(cls._prefs)
         elif mode == TYPING_MODE_THUMB_SHIFT:
-            thumb.ThumbShiftSegment._init_thumb_typing_rule(cls._prefs)
+            thumb.ThumbShiftSegment.INIT_THUMB_TYPING_RULE(cls._prefs)
 
     @classmethod
     def SET_PREFS(cls, prefs):

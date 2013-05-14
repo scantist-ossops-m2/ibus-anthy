@@ -566,7 +566,7 @@ class ThumbShiftSegment(segment.Segment):
         super(ThumbShiftSegment, self).__init__(enchars, jachars)
 
     @classmethod
-    def _init_thumb_typing_rule(cls, prefs):
+    def INIT_THUMB_TYPING_RULE(cls, prefs):
         cls._prefs = prefs
         if prefs == None:
             cls._thumb_typing_rule_section = None

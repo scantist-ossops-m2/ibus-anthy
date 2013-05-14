@@ -56,7 +56,7 @@ class RomajiSegment(segment.Segment):
         super(RomajiSegment, self).__init__(enchars_orig, jachars)
 
     @classmethod
-    def _init_romaji_typing_rule(cls, prefs):
+    def INIT_ROMAJI_TYPING_RULE(cls, prefs):
         cls._prefs = prefs
         if prefs == None:
             cls._romaji_typing_rule_section = None

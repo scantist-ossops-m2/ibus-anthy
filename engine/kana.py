@@ -39,7 +39,7 @@ class KanaSegment(segment.Segment):
         super(KanaSegment, self).__init__(enchars, jachars)
 
     @classmethod
-    def _init_kana_typing_rule(cls, prefs):
+    def INIT_KANA_TYPING_RULE(cls, prefs):
         cls._prefs = prefs
         if prefs == None:
             cls._kana_typing_rule_section = None
