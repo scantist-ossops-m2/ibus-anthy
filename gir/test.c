@@ -8,7 +8,9 @@ main (int argc, char *argv[])
     AnthyGContext *obj = NULL;
     gchar *string = NULL;
 
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
 
     obj = anthy_gcontext_new ();
 
