@@ -686,11 +686,17 @@ class AnthySetup(object):
             self.__thumb_kb_layout.set_sensitive(False)
         else:
             self.__thumb_kb_layout.set_sensitive(True)
+
+        use_system_keyboard = False
+
         try:
-            use_system_keyboard = self.__config.get_value('general',
-                                                          'use_system_keyboard_layout').get_boolean()
+            if self.__config != None:
+                use_system_keyboard = \
+                    self.__config.get_value('general',
+                                            'use_system_keyboard_layout').get_boolean()
         except:
-            use_system_keyboard = True
+            pass
+
         if layout_mode and \
            not use_system_keyboard:
             self.__builder.get_object('thumb:warning_hbox').show()

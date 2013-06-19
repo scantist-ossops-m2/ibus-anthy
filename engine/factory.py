@@ -47,7 +47,13 @@ class EngineFactory(IBus.Factory):
         self.__id = 0
         self.__config = self.__bus.get_config()
 
-        self.__config.connect('value-changed', self.__config_value_changed_cb)
+        if self.__config != None:
+            self.__config.connect('value-changed',
+                                  self.__config_value_changed_cb)
+        else:
+            print >> sys.stderr, \
+                'ibus-config is not running or bus address is not correct.'
+
         bus.get_connection().signal_subscribe('org.freedesktop.DBus',
                                               'org.freedesktop.DBus',
                                               'NameOwnerChanged',

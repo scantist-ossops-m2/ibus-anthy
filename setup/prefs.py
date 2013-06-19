@@ -35,19 +35,19 @@ class Prefs(object):
         self.new = {}
         self.__no_key_warning = False
 
+        # self._config is used by AnthyPrefs .
         self._config = config if config else \
                        bus.get_config() if bus else  \
                        IBus.Bus().get_config()
 
         # ibus_config_get_values enhances the performance.
-        self.__has_config_get_values = hasattr(self._config, 'get_values')
+        self.__has_config_get_values = False
 
-        # In the latest pygobject3 3.3.4 or later, g_variant_dup_strv
-        # returns the allocated strv but in the previous release,
-        # it returned the tuple of (strv, length)
-        self.__tuple_for_variant_strv = False
-        if type(GLib.Variant.new_strv([]).dup_strv()) == tuple:
-            self.__tuple_for_variant_strv = True
+        if self._config != None:
+            self.__has_config_get_values = hasattr(self._config, 'get_values')
+        else:
+            print >> sys.stderr, \
+                'ibus-config is not running or bus address is not correct.'
 
     def __log_handler(self, domain, level, message, data):
         if not data:
@@ -65,10 +65,11 @@ class Prefs(object):
         elif type_string == 'b':
             return variant.get_boolean()
         elif type_string == 'as':
-            if self.__tuple_for_variant_strv:
-                return variant.dup_strv()[0]
-            else:
-                return variant.dup_strv()
+            # Use unpack() instead of dup_strv() in python.
+            # In the latest pygobject3 3.3.4 or later, g_variant_dup_strv
+            # returns the allocated strv but in the previous release,
+            # it returned the tuple of (strv, length)
+            return variant.unpack()
         else:
             print >> sys.stderr, 'Unknown variant type:', type_string
             sys.abrt()
@@ -102,6 +103,9 @@ class Prefs(object):
                 return self.default[section][key]
 
     def get_value_direct(self, section, key, default=None):
+        if self._config == None:
+            return default
+
         s = section
         section = '/'.join(
             [s for s in '/'.join([self._prefix, section]).split('/') if s])
@@ -128,6 +132,9 @@ class Prefs(object):
             self.fetch_section(s)
 
     def fetch_section(self, section):
+        if self._config == None:
+            return
+
         if not self.__has_config_get_values:
             for k in self.keys(section):
                 self.fetch_item(section, k)
@@ -149,6 +156,9 @@ class Prefs(object):
             self.fetch_item(section, 'show-preferences')
 
     def fetch_item(self, section, key, readonly=False):
+        if self._config == None:
+            return
+
         s = '/'.join(
             [s for s in '/'.join([self._prefix, section]).split('/') if s])
         try:
@@ -199,7 +209,8 @@ class Prefs(object):
             if variant == None:
                 print >> sys.stderr, 'Unknown value type:', type(v)
                 sys.abrt()
-            self._config.set_value(s, key, variant)
+            if self._config != None:
+                self._config.set_value(s, key, variant)
             self.modified.setdefault(section, {})[key] = v
             del(self.new[section][key])
 

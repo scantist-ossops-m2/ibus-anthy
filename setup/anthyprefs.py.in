@@ -37,7 +37,8 @@ class AnthyPrefs(Prefs):
 
     def __init__(self, bus=None, config=None):
         super(AnthyPrefs, self).__init__(bus, config)
-        self.default = _config
+        if _config != None:
+            self.default = _config
         self.set_no_key_warning(True)
         self.fetch_all()
         self.set_no_key_warning(False)
