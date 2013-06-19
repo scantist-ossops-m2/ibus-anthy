@@ -37,12 +37,6 @@ except:
 from gi.repository import GLib
 from gi.repository import IBus
 
-try:
-    from gi.repository import Gtk
-    clipboard_get = Gtk.Clipboard.get
-except ImportError:
-    clipboard_get = lambda a : None
-
 from gi.repository import Anthy
 NTH_UNCONVERTED_CANDIDATE = Anthy.NTH_UNCONVERTED_CANDIDATE
 NTH_KATAKANA_CANDIDATE = Anthy.NTH_KATAKANA_CANDIDATE
@@ -2321,6 +2315,19 @@ class Engine(IBus.EngineSimple):
         if not self.__preedit_ja_string.is_empty():
             # if user has inputed some chars
             return False
+
+        # Move importing Gtk into Engine from the header
+        # because ibus-engine-anthy --xml does not requre to open X.
+        try:
+            from gi.repository import Gtk
+            clipboard_get = Gtk.Clipboard.get
+        except ImportError:
+            clipboard_get = lambda a : None
+        except RuntimeError:
+            # Do we support the engine without display?
+            print >> sys.stderr, "Gtk couldn't be initialized"
+            print >> sys.stderr, 'Could not open display'
+            clipboard_get = lambda a : None
 
         # Use Gtk.Clipboard.request_text() instead of
         # Gtk.Clipboard.wait_for_text() because DBus is timed out.

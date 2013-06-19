@@ -29,6 +29,11 @@ import locale
 import xml.dom.minidom
 
 from gi.repository import GLib
+
+# set_prgname before importing factory to show the name in warning
+# messages when import modules are failed. E.g. Gtk.
+GLib.set_prgname('ibus-engine-anthy')
+
 from gi.repository import IBus
 
 import _config as config

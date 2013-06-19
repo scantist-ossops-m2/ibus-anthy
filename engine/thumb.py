@@ -30,16 +30,6 @@ __all__ = (
 from gi.repository import GLib
 from gi.repository import IBus
 
-try:
-    from gi.repository import Gdk
-    get_default_root_window = Gdk.get_default_root_window
-    property_get = Gdk.property_get
-    intern = Gdk.Atom.intern
-except ImportError:
-    get_default_root_window = lambda : None
-    property_get = lambda : None
-    intern = lambda : None
-
 import segment
 
 _THUMB_BASIC_METHOD = 'base'
@@ -391,6 +381,25 @@ class ThumbShiftKeyboard:
     def __get_xkb_layout(self):
         # Until Gdk.property_get is fixed
         '''
+        # Move importing Gdk into ThumbShiftKeyboard from the header
+        # because ibus-engine-anthy --xml does not requre to open X.
+        try:
+            from gi.repository import Gdk
+            get_default_root_window = Gdk.get_default_root_window
+            property_get = Gdk.property_get
+            intern = Gdk.Atom.intern
+        except ImportError:
+            get_default_root_window = lambda : None
+            property_get = lambda : None
+            intern = lambda : None
+        except RuntimeError:
+            # Do we support the engine without display?
+            print >> sys.stderr, "Gdk couldn't be initialized"
+            print >> sys.stderr, 'Could not open display'
+            get_default_root_window = lambda : None
+            property_get = lambda : None
+            intern = lambda : None
+
         root_window = get_default_root_window()
         if not root_window:
             return 0

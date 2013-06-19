@@ -34,6 +34,11 @@ except:
     getpreferredencoding = None
 
 from gi.repository import GLib
+
+# set_prgname before importing other modules to show the name in warning
+# messages when import modules are failed. E.g. Gtk.
+GLib.set_prgname('ibus-setup-anthy')
+
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GdkX11
