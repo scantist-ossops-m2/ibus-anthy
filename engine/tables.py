@@ -501,6 +501,7 @@ kana_voiced_consonant_no_rule = {
     u'ひ' : u'び',
     u'ふ' : u'ぶ',
     u'へ' : u'べ',
+    u'ほ' : u'ぼ',
 }
 
 kana_semi_voiced_consonant_no_rule = {
