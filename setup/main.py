@@ -687,22 +687,6 @@ class AnthySetup(object):
         else:
             self.__thumb_kb_layout.set_sensitive(True)
 
-        use_system_keyboard = False
-
-        try:
-            if self.__config != None:
-                use_system_keyboard = \
-                    self.__config.get_value('general',
-                                            'use_system_keyboard_layout').get_boolean()
-        except:
-            pass
-
-        if layout_mode and \
-           not use_system_keyboard:
-            self.__builder.get_object('thumb:warning_hbox').show()
-        else:
-            self.__builder.get_object('thumb:warning_hbox').hide()
-
     def __get_dict_cli_from_list(self, cli_list):
             cli_str = cli_list[0]
             if len(cli_list) <= 2:
@@ -734,13 +718,6 @@ class AnthySetup(object):
             return id
 
     def __get_dict_file_from_id(self, selected_id):
-        if selected_id == 'anthy_zipcode':
-            return self.prefs.get_value('dict', 'anthy_zipcode')[0]
-        elif selected_id == 'ibus_symbol':
-            return self.prefs.get_value('dict', 'ibus_symbol')[0]
-        elif selected_id == 'ibus_oldchar':
-            return self.prefs.get_value('dict', 'ibus_oldchar')[0]
-
         files = self.prefs.get_value('dict', 'files')
         retval = None
 
@@ -784,17 +761,10 @@ class AnthySetup(object):
         for file in prefs.get_value('dict', 'files'):
             if not path.exists(file):
                 continue
-            if file in prefs.get_value('dict', 'anthy_zipcode'):
-                id = 'anthy_zipcode'
-            elif file in prefs.get_value('dict', 'ibus_symbol'):
-                id = 'ibus_symbol'
-            elif file in prefs.get_value('dict', 'ibus_oldchar'):
-                id = 'ibus_oldchar'
-            else:
-                id = self.__get_quoted_id(file)
-                section = 'dict/file/' + id
-                if section not in prefs.sections():
-                    self.__fetch_dict_values(section)
+            id = self.__get_quoted_id(file)
+            section = 'dict/file/' + id
+            if section not in prefs.sections():
+                self.__fetch_dict_values(section)
             is_system_dict = self.__is_system_dict_file_from_id(id)
             self.__append_dict_id_in_model(id, is_system_dict)
 

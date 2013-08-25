@@ -147,6 +147,11 @@ class Engine(IBus.EngineSimple):
         # use reset to init values
         self.__reset()
 
+        ibus_config = bus.get_config()
+        if ibus_config != None:
+            ibus_config.connect('value-changed',
+                                self.__config_value_changed_cb)
+
     def __get_ibus_version(self):
         if self.__ibus_version == 0.0:
             self.__ibus_version = \
@@ -447,7 +452,7 @@ class Engine(IBus.EngineSimple):
                                  'ImmediateMulti', 'ImmediateSingle'][mode]
         self.__segment_mode_activate(mode, IBus.PropState.CHECKED)
 
-    def __set_dict_mode_props(self, anthy_props):
+    def __set_dict_mode_props(self, anthy_props, update_prop=False):
         if Engine.__dict_mode == None:
             Engine.__dict_mode = 0
 
@@ -484,8 +489,8 @@ class Engine(IBus.EngineSimple):
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
         for file in self.__prefs.get_value('dict', 'files'):
-            self._link_dict_file(file)
-            id = self._get_dict_id_from_file(file)
+            self.__link_dict_file(file)
+            id = self.__get_dict_id_from_file(file)
             if id == None:
                 continue
             section = 'dict/file/' + id
@@ -493,6 +498,12 @@ class Engine(IBus.EngineSimple):
                 continue
             key = 'DictMode.' + id
             long_label = self.__prefs.get_value(section, 'long_label')
+
+            # ibus-config 'value-changed' signal updated dict/files but
+            # not dict/file/new yet.
+            if long_label == None:
+                continue
+
             # if long_label is UTF-8
             if 'is_system' in self.__prefs.keys(section) and \
                self.__prefs.get_value(section, 'is_system'):
@@ -518,7 +529,13 @@ class Engine(IBus.EngineSimple):
             i += 1
 
         dict_mode_prop.set_sub_props(props)
-        anthy_props.append(dict_mode_prop)
+
+        if update_prop:
+            # focus-in event will call register_properties().
+            # Need to switch another IME to update menus on GtkStatusIcon?
+            anthy_props.update_property(dict_mode_prop)
+        else:
+            anthy_props.append(dict_mode_prop)
 
         prop_name = self.__dict_mode_get_prop_name(Engine.__dict_mode)
         if prop_name == None:
@@ -596,7 +613,7 @@ class Engine(IBus.EngineSimple):
         files = self.__prefs.get_value('dict', 'files')
         single_files = []
         for file in files:
-            id = self._get_dict_id_from_file(file)
+            id = self.__get_dict_id_from_file(file)
             if id == None:
                 continue
             section = 'dict/file/' + id
@@ -606,7 +623,7 @@ class Engine(IBus.EngineSimple):
 
     def __remove_dict_files(self):
         for file in self.__prefs.get_value('dict', 'files'):
-            self._remove_dict_file(file)
+            self.__remove_dict_file(file)
 
     def update_preedit(self, string, attrs, cursor_pos, visible):
         text = IBus.Text.new_from_string(string)
@@ -879,7 +896,7 @@ class Engine(IBus.EngineSimple):
         else:
             single_files = self.__get_single_dict_files()
             file = single_files[mode - 1]
-            id = self._get_dict_id_from_file(file)
+            id = self.__get_dict_id_from_file(file)
         if id == None:
             return None
         return 'DictMode.' + id
@@ -899,13 +916,10 @@ class Engine(IBus.EngineSimple):
 
         if id == 'embedded':
             pass
-        elif id == 'anthy_zipcode' or id == 'ibus_symbol' or \
-             id == 'ibus_oldchar':
-            file = self.__prefs.get_value('dict', id)[0]
         else:
             found = False
             for file in single_files:
-                if id == self._get_quoted_id(file):
+                if id == self.__get_quoted_id(file):
                     found = True
                     break
             if found == False:
@@ -1079,10 +1093,10 @@ class Engine(IBus.EngineSimple):
         file = single_files[Engine.__dict_mode - 1]
         if file == None:
             return
-        id = self._get_dict_id_from_file(file)
+        id = self.__get_dict_id_from_file(file)
         if id == None:
             return
-        if id == 'anthy_zipcode':
+        if id == 'zipcode':
             self.__fill_anthy_zipcode_strip(file, id)
 
     def __fill_lookup_table(self):
@@ -1641,21 +1655,8 @@ class Engine(IBus.EngineSimple):
             if name == 'latin_with_shift':
                 cls.__latin_with_shift = value
                 jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
-        elif base_sec == 'thumb':
-            cls.__prefs.set_value(base_sec, name, value)
-            cls._reset_thumb()
-        elif base_sec == 'dict':
-            cls._set_dict_files_value(base_sec, name, value)
-        elif base_sec.startswith('dict/file/'):
-            if base_sec not in cls.__prefs.sections():
-                cls._fetch_dict_values(base_sec)
-            cls.__prefs.set_value(base_sec, name, value)
         elif base_sec.startswith('kana_typing_rule'):
             jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
-        elif base_sec:
-            cls.__prefs.set_value(base_sec, name, value)
-        else:
-            cls.__prefs.set_value(section, name, value)
 
     @classmethod
     def _init_prefs(cls):
@@ -1698,163 +1699,6 @@ class Engine(IBus.EngineSimple):
 
         else:
             cls.__thumb.reset()
-
-    @classmethod
-    def _get_quoted_id(cls, file):
-        id = file
-        has_mbcs = False
-
-        for i in xrange(0, len(id)):
-            if ord(id[i]) >= 0x7f:
-                    has_mbcs = True
-                    break
-        if has_mbcs:
-            id = id.encode('hex')
-
-        if id.find('/') >=0:
-            id = id[id.rindex('/') + 1:]
-        if id.find('.') >=0:
-            id = id[:id.rindex('.')]
-
-        if id.startswith('0x'):
-            id = id.encode('hex')
-            has_mbcs = True
-        if has_mbcs:
-            id = '0x' + id
-        return id
-
-    @classmethod
-    def _get_dict_id_from_file(cls, file):
-        if file in cls.__prefs.get_value('dict', 'anthy_zipcode'):
-            id = 'anthy_zipcode'
-        elif file in cls.__prefs.get_value('dict', 'ibus_symbol'):
-            id = 'ibus_symbol'
-        elif file in cls.__prefs.get_value('dict', 'ibus_oldchar'):
-            id = 'ibus_oldchar'
-        else:
-            id = cls._get_quoted_id(file)
-        return id
-
-    @classmethod
-    def _link_dict_file_with_id(cls, file, id, link_mode):
-        if not path.exists(file):
-            print >> sys.stderr, file + ' does not exist'
-            return
-        if id == None:
-            return
-        if link_mode == LINK_DICT_EMBEDDED:
-            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
-            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
-        elif link_mode == LINK_DICT_SINGLE:
-            directory = get_userhome() + '/.anthy'
-            name = IMPORTED_SINGLE_DICT_PREFIX + id
-        else:
-            return
-        if path.exists(directory):
-            if not path.isdir(directory):
-                print >> sys.stderr, directory + ' is not a directory'
-                return
-        else:
-            os.makedirs(directory, 0700)
-        backup_dir = os.getcwd()
-        os.chdir(directory)
-        if path.lexists(directory + '/' + name):
-            if path.islink(directory + '/' + name):
-                print >> sys.stderr, 'Removing ' + name
-                os.unlink(directory + '/' + name)
-            else:
-                alternate = name + str(os.getpid())
-                print >> sys.stderr, 'Moving ' + name + ' to ' + alternate
-                os.rename(name, alternate)
-        os.symlink(file, directory + '/' + name)
-        if backup_dir != None:
-            os.chdir(backup_dir)
-
-    @classmethod
-    def _remove_dict_file_with_id(cls, file, id, link_mode):
-        if id == None:
-            return
-        if link_mode == LINK_DICT_EMBEDDED:
-            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
-            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
-        elif link_mode == LINK_DICT_SINGLE:
-            directory = get_userhome() + '/.anthy'
-            name = IMPORTED_SINGLE_DICT_PREFIX + id
-        else:
-            return
-        if path.exists(directory):
-            if not path.isdir(directory):
-                print >> sys.stderr, directory + ' is not a directory'
-                return
-        backup_dir = os.getcwd()
-        os.chdir(directory)
-        if path.lexists(directory + '/' + name):
-            os.unlink(directory + '/' + name)
-        if backup_dir != None:
-            os.chdir(backup_dir)
-
-    @classmethod
-    def _link_dict_file(cls, file):
-        id = cls._get_dict_id_from_file(file)
-        if id == None:
-            return
-        section = 'dict/file/' + id
-        if section not in cls.__prefs.sections():
-            cls._fetch_dict_values(section)
-        if cls.__prefs.get_value(section, 'embed'):
-            cls._link_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
-        if cls.__prefs.get_value(section, 'single'):
-            cls._link_dict_file_with_id(file, id, LINK_DICT_SINGLE)
-
-    @classmethod
-    def _remove_dict_file(cls, file):
-        id = cls._get_dict_id_from_file(file)
-        if id == None:
-            return
-        section = 'dict/file/' + id
-        if section not in cls.__prefs.sections():
-            cls._fetch_dict_values(section)
-        if cls.__prefs.get_value(section, 'embed'):
-            cls._remove_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
-        if cls.__prefs.get_value(section, 'single'):
-            cls._remove_dict_file_with_id(file, id, LINK_DICT_SINGLE)
-
-    @classmethod
-    def _set_dict_files_value(cls, base_sec, name, value):
-        if name == 'files':
-            str_list = []
-            for file in value:
-                str_list.append(cls.__prefs.str(file))
-            old_files = cls.__prefs.get_value(base_sec, name)
-            for file in old_files:
-                if file in str_list:
-                    continue
-                cls._remove_dict_file(file)
-            for file in str_list:
-                if file in old_files:
-                    continue
-                cls._link_dict_file(file)
-            cls.__prefs.set_value(base_sec, name, str_list)
-        else:
-            cls.__prefs.set_value(base_sec, name, value)
-
-    @classmethod
-    def _fetch_dict_values(cls, section):
-        cls.__prefs.set_new_section(section)
-        cls.__prefs.set_new_key(section, 'short_label')
-        cls.__prefs.fetch_item(section, 'short_label')
-        cls.__prefs.set_value(section, 'short_label',
-                              str(cls.__prefs.get_value(section, 'short_label')))
-        cls.__prefs.set_new_key(section, 'long_label')
-        cls.__prefs.fetch_item(section, 'long_label')
-        cls.__prefs.set_value(section, 'long_label',
-                              str(cls.__prefs.get_value(section, 'long_label')))
-        cls.__prefs.set_new_key(section, 'embed')
-        cls.__prefs.fetch_item(section, 'embed')
-        cls.__prefs.set_new_key(section, 'single')
-        cls.__prefs.fetch_item(section, 'single')
-        cls.__prefs.set_new_key(section, 'reverse')
-        cls.__prefs.fetch_item(section, 'reverse')
 
     @staticmethod
     def _mk_key(keyval, state):
@@ -2076,6 +1920,180 @@ class Engine(IBus.EngineSimple):
             return True
 
         return False
+
+    def __get_quoted_id(self, file):
+        id = file
+        has_mbcs = False
+
+        for i in xrange(0, len(id)):
+            if ord(id[i]) >= 0x7f:
+                    has_mbcs = True
+                    break
+        if has_mbcs:
+            id = id.encode('hex')
+
+        if id.find('/') >=0:
+            id = id[id.rindex('/') + 1:]
+        if id.find('.') >=0:
+            id = id[:id.rindex('.')]
+
+        if id.startswith('0x'):
+            id = id.encode('hex')
+            has_mbcs = True
+        if has_mbcs:
+            id = '0x' + id
+        return id
+
+    def __get_dict_id_from_file(self, file):
+        return self.__get_quoted_id(file)
+
+    def __link_dict_file_with_id(self, file, id, link_mode):
+        if not path.exists(file):
+            print >> sys.stderr, file + ' does not exist'
+            return
+        if id == None:
+            return
+        if link_mode == LINK_DICT_EMBEDDED:
+            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
+        elif link_mode == LINK_DICT_SINGLE:
+            directory = get_userhome() + '/.anthy'
+            name = IMPORTED_SINGLE_DICT_PREFIX + id
+        else:
+            return
+        if path.exists(directory):
+            if not path.isdir(directory):
+                print >> sys.stderr, directory + ' is not a directory'
+                return
+        else:
+            os.makedirs(directory, 0700)
+        backup_dir = os.getcwd()
+        os.chdir(directory)
+        if path.lexists(directory + '/' + name):
+            if path.islink(directory + '/' + name):
+                print >> sys.stderr, 'Removing ' + name
+                os.unlink(directory + '/' + name)
+            else:
+                alternate = name + str(os.getpid())
+                print >> sys.stderr, 'Moving ' + name + ' to ' + alternate
+                os.rename(name, alternate)
+        os.symlink(file, directory + '/' + name)
+        if backup_dir != None:
+            os.chdir(backup_dir)
+
+    def __remove_dict_file_with_id(self, file, id, link_mode):
+        if id == None:
+            return
+        if link_mode == LINK_DICT_EMBEDDED:
+            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
+        elif link_mode == LINK_DICT_SINGLE:
+            directory = get_userhome() + '/.anthy'
+            name = IMPORTED_SINGLE_DICT_PREFIX + id
+        else:
+            return
+        if path.exists(directory):
+            if not path.isdir(directory):
+                print >> sys.stderr, directory + ' is not a directory'
+                return
+        backup_dir = os.getcwd()
+        os.chdir(directory)
+        if path.lexists(directory + '/' + name):
+            os.unlink(directory + '/' + name)
+        if backup_dir != None:
+            os.chdir(backup_dir)
+
+    def __link_dict_file(self, file):
+        id = self.__get_dict_id_from_file(file)
+        if id == None:
+            return
+        section = 'dict/file/' + id
+        if section not in self.__prefs.sections():
+            self.__fetch_dict_values(section)
+        if self.__prefs.get_value(section, 'embed'):
+            self.__link_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
+        if self.__prefs.get_value(section, 'single'):
+            self.__link_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+
+    def __remove_dict_file(self, file):
+        id = self.__get_dict_id_from_file(file)
+        if id == None:
+            return
+        section = 'dict/file/' + id
+        if section not in self.__prefs.sections():
+            self.__fetch_dict_values(section)
+        if self.__prefs.get_value(section, 'embed'):
+            self.__remove_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
+        if self.__prefs.get_value(section, 'single'):
+            self.__remove_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+
+    def __set_dict_files_value(self, base_sec, name, value):
+        if name == 'files':
+            str_list = []
+            for file in value:
+                str_list.append(self.__prefs.str(file))
+            old_files = self.__prefs.get_value(base_sec, name)
+            for file in old_files:
+                if file in str_list:
+                    continue
+                self.__remove_dict_file(file)
+            for file in str_list:
+                if file in old_files:
+                    continue
+                self.__link_dict_file(file)
+            self.__prefs.set_value(base_sec, name, str_list)
+        else:
+            self.__prefs.set_value(base_sec, name, value)
+
+    def __fetch_dict_values(self, section):
+        self.__prefs.set_new_section(section)
+        self.__prefs.set_new_key(section, 'short_label')
+        self.__prefs.set_no_key_warning(True)
+        self.__prefs.fetch_item(section, 'short_label')
+        self.__prefs.set_new_key(section, 'long_label')
+        self.__prefs.fetch_item(section, 'long_label')
+        self.__prefs.set_new_key(section, 'embed')
+        self.__prefs.fetch_item(section, 'embed')
+        self.__prefs.set_new_key(section, 'single')
+        self.__prefs.fetch_item(section, 'single')
+        self.__prefs.set_new_key(section, 'reverse')
+        self.__prefs.fetch_item(section, 'reverse')
+        self.__prefs.set_no_key_warning(False)
+
+    def __config_value_changed_cb(self, ibus_config, section, name, variant):
+        if config.DEBUG:
+            print 'VALUE_CHAMGED =', section, name, variant
+
+        if not section.startswith('engine/anthy'):
+            # This value is used for IBus.config.set_value only.
+            return
+
+        # The key was deleted by dconf.
+        # test case: update /desktop/ibus/engine/anthy/thumb/ls
+        # and reset the key with dconf direclty.
+        if variant.get_type_string() == '()':
+            self.__prefs.undo_item(section, name)
+            return
+
+        value = self.__prefs.variant_to_value(variant)
+        base_sec = section[len(self.__prefs._prefix) + 1:]
+        sec = self._get_shortcut_type()
+
+        if base_sec == 'thumb':
+            self.__prefs.set_value(base_sec, name, value)
+            self._reset_thumb()
+        elif base_sec == 'dict':
+            self.__set_dict_files_value(base_sec, name, value)
+            self.__set_dict_mode_props(self.__prop_list, True)
+        elif base_sec.startswith('dict/file/'):
+            if base_sec not in self.__prefs.sections():
+                self.__fetch_dict_values(base_sec)
+            self.__prefs.set_value(base_sec, name, value)
+            self.__set_dict_mode_props(self.__prop_list, True)
+        elif base_sec:
+            self.__prefs.set_value(base_sec, name, value)
+        else:
+            self.__prefs.set_value(section, name, value)
 
     #mod_keys
     def __set_input_mode(self, mode):

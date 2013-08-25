@@ -1070,9 +1070,9 @@ _config = {
     },
 
     'dict': {
-        'anthy_zipcode': ['@ANTHY_ZIPCODE_FILE@'],
-        'ibus_symbol': ['@pkgdatadir@/dicts/symbol.t'],
-        'ibus_oldchar': ['@pkgdatadir@/dicts/oldchar.t'],
+        'zipcode': ['@ANTHY_ZIPCODE_FILE@'],
+        'symbol': ['@pkgdatadir@/dicts/symbol.t'],
+        'oldchar': ['@pkgdatadir@/dicts/oldchar.t'],
         'files': [
             '@ANTHY_ZIPCODE_FILE@',
             '@pkgdatadir@/dicts/symbol.t',
@@ -1103,7 +1103,7 @@ _config = {
         'is_system': True,
     },
 
-    'dict/file/anthy_zipcode': {
+    'dict/file/zipcode': {
         'embed': False,
         'single': True,
         'icon': None,
@@ -1115,7 +1115,7 @@ _config = {
         'encoding': 'euc_jp',
     },
 
-    'dict/file/ibus_symbol': {
+    'dict/file/symbol': {
         'embed': True,
         'single': False,
         'icon': None,
@@ -1126,7 +1126,7 @@ _config = {
         'is_system': True,
     },
 
-    'dict/file/ibus_oldchar': {
+    'dict/file/oldchar': {
         'embed': False,
         'single': True,
         'icon': None,
