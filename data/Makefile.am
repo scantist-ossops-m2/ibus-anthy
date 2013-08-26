@@ -20,6 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 dicts_DATA = \
+	era.t \
 	oldchar.t \
 	symbol.t \
 	$(NULL)
@@ -27,6 +28,7 @@ dicts_DATA = \
 dictsdir = $(pkgdatadir)/dicts
 
 EXTRA_DIST = \
+        era.t \
         oldchar.t \
         symbol.t \
         $(NULL)
