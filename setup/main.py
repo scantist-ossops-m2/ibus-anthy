@@ -28,11 +28,6 @@ import xml.dom.minidom
 import gettext
 from gettext import dgettext
 
-try:
-    from locale import getpreferredencoding
-except:
-    getpreferredencoding = None
-
 from gi.repository import GLib
 
 # set_prgname before importing other modules to show the name in warning
@@ -288,17 +283,7 @@ class AnthySetup(object):
     def __init_about_vbox(self, icon_path):
         about_dialog = self.__builder.get_object('about_dialog')
         about_vbox = self.__builder.get_object('about_vbox')
-
         about_dialog.set_version(self.prefs.get_version())
-        try:
-            if getpreferredencoding != None and \
-                getpreferredencoding().lower() == 'utf-8':
-                copyright = about_dialog.get_copyright()
-                copyright = copyright.replace('(c)', '\xc2\xa9')
-                copyright = copyright.replace('-', '\xe2\x80\x93')
-                about_dialog.set_copyright(copyright)
-        except:
-            pass
         if icon_path != None:
             if icon_path[0] == '/':
                 image = Gtk.Image.new_from_file(icon_path)
