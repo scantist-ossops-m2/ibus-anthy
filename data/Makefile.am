@@ -27,8 +27,18 @@ dicts_DATA = \
 
 dictsdir = $(pkgdatadir)/dicts
 
+if ENABLE_ZIPCODE
+dicts_DATA += zipcode.t
+
+zipcode.t: $(ANTHY_ZIPCODE_FILE)
+	$(PYTHON) zipcode-textdic.py $<
+
+CLEANFILES = zipcode.t
+endif
+
 EXTRA_DIST = \
         era.t \
         oldchar.t \
         symbol.t \
+        zipcode-textdic.py \
         $(NULL)

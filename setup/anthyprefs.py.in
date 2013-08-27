@@ -1070,12 +1070,12 @@ _config = {
     },
 
     'dict': {
-        'zipcode': ['@ANTHY_ZIPCODE_FILE@'],
+        'zipcode': ['@pkgdatadir@/dicts/zipcode.t'],
         'symbol': ['@pkgdatadir@/dicts/symbol.t'],
         'oldchar': ['@pkgdatadir@/dicts/oldchar.t'],
         'era': ['@pkgdatadir@/dicts/era.t'],
         'files': [
-            '@ANTHY_ZIPCODE_FILE@',
+            '@pkgdatadir@/dicts/zipcode.t',
             '@pkgdatadir@/dicts/symbol.t',
             '@pkgdatadir@/dicts/oldchar.t',
             '@pkgdatadir@/dicts/era.t',
@@ -1112,9 +1112,8 @@ _config = {
         'short_label': '〒',
         'long_label': N_("Zip Code Conversion"),
         'preview_lines': 30,
-        'reverse': True,
+        'reverse': False,
         'is_system': True,
-        'encoding': 'euc_jp',
     },
 
     'dict/file/symbol': {

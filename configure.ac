@@ -249,6 +249,7 @@ AC_ARG_WITH(anthy-zipcode,
            [ANTHY_ZIPCODE_FILE="$withval"],
            [ANTHY_ZIPCODE_FILE="$datadir/anthy/zipcode.t"])
 AC_SUBST(ANTHY_ZIPCODE_FILE)
+AM_CONDITIONAL([ENABLE_ZIPCODE], [test -f "$ANTHY_ZIPCODE_FILE" ])
 
 dnl - check file path of kasumi bin
 AC_ARG_WITH(kasumi-exec,

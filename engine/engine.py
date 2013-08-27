@@ -1062,43 +1062,6 @@ class Engine(IBus.EngineSimple):
                     candidate = candidate.replace(key, value)
                     self.__lookup_table.append_candidate(IBus.Text.new_from_string(candidate))
 
-    def __fill_anthy_zipcode_strip(self, dict_file, id):
-        import re
-        text = self.__preedit_ja_string.get_latin()[0]
-        if text.find('-') < 0:
-            return
-        text = text.replace('-', '')
-        section = 'dict/file/' + id
-        if 'encoding' not in self.__prefs.keys(section):
-            section = 'dict/file/default'
-        encoding = self.__prefs.get_value(section, 'encoding')
-        contents = unicode(open(dict_file).read(), encoding)
-        expression = re.compile('^' + text + '[ \t]')
-
-        found = False
-        dict_dest = None
-        for line in contents.split('\n'):
-            matched = expression.search(line)
-            if matched:
-                found = True
-                dict_dest = UN(matched.string).split(' ')[2]
-                break
-        if found:
-            self.__lookup_table.append_candidate(IBus.Text.new_from_string(dict_dest))
-
-    def __fill_lookup_table_dict_mode(self):
-        if Engine.__dict_mode <= 0:
-            return
-        single_files = self.__get_single_dict_files()
-        file = single_files[Engine.__dict_mode - 1]
-        if file == None:
-            return
-        id = self.__get_dict_id_from_file(file)
-        if id == None:
-            return
-        if id == 'zipcode':
-            self.__fill_anthy_zipcode_strip(file, id)
-
     def __fill_lookup_table(self):
         if self.__convert_mode == CONV_MODE_PREDICTION:
             nr_predictions = self.__context.get_nr_predictions()
@@ -1122,7 +1085,6 @@ class Engine(IBus.EngineSimple):
             candidate = UN(buf)
             self.__lookup_table.append_candidate(IBus.Text.new_from_string(candidate))
             self.__candidate_cb(candidate)
-        self.__fill_lookup_table_dict_mode()
 
 
     def __invalidate(self):
