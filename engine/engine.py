@@ -489,10 +489,9 @@ class Engine(IBus.EngineSimple):
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
         for file in self.__prefs.get_value('dict', 'files'):
-            self.__link_dict_file(file)
-            id = self.__get_dict_id_from_file(file)
-            if id == None:
+            if not self.__link_dict_file(file):
                 continue
+            id = self.__get_dict_id_from_file(file)
             section = 'dict/file/' + id
             if not self.__prefs.get_value(section, 'single'):
                 continue
@@ -614,8 +613,6 @@ class Engine(IBus.EngineSimple):
         single_files = []
         for file in files:
             id = self.__get_dict_id_from_file(file)
-            if id == None:
-                continue
             section = 'dict/file/' + id
             if self.__prefs.get_value(section, 'single'):
                 single_files.append(file)
@@ -897,8 +894,6 @@ class Engine(IBus.EngineSimple):
             single_files = self.__get_single_dict_files()
             file = single_files[mode - 1]
             id = self.__get_dict_id_from_file(file)
-        if id == None:
-            return None
         return 'DictMode.' + id
 
     def __dict_mode_activate(self, prop_name, state):
@@ -1910,9 +1905,6 @@ class Engine(IBus.EngineSimple):
         return self.__get_quoted_id(file)
 
     def __link_dict_file_with_id(self, file, id, link_mode):
-        if not path.exists(file):
-            print >> sys.stderr, file + ' does not exist'
-            return
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
@@ -1966,9 +1958,10 @@ class Engine(IBus.EngineSimple):
             os.chdir(backup_dir)
 
     def __link_dict_file(self, file):
+        if not path.exists(file):
+            print >> sys.stderr, file + ' does not exist'
+            return False
         id = self.__get_dict_id_from_file(file)
-        if id == None:
-            return
         section = 'dict/file/' + id
         if section not in self.__prefs.sections():
             self.__fetch_dict_values(section)
@@ -1976,11 +1969,10 @@ class Engine(IBus.EngineSimple):
             self.__link_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
         if self.__prefs.get_value(section, 'single'):
             self.__link_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+        return True
 
     def __remove_dict_file(self, file):
         id = self.__get_dict_id_from_file(file)
-        if id == None:
-            return
         section = 'dict/file/' + id
         if section not in self.__prefs.sections():
             self.__fetch_dict_values(section)
