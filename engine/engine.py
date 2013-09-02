@@ -116,7 +116,8 @@ class Engine(IBus.EngineSimple):
     __latin_with_shift = True
 
     def __init__(self, bus, object_path):
-        super(Engine, self).__init__(connection=bus.get_connection(),
+        super(Engine, self).__init__(engine_name="anthy",
+                                     connection=bus.get_connection(),
                                      object_path=object_path)
 
         # create anthy context
@@ -153,6 +154,7 @@ class Engine(IBus.EngineSimple):
         # loop infinitely if this class overrides it.
         # self.process_key_event is not accessible too.
         self.connect('process-key-event', self.__process_key_event)
+        self.connect('destroy', self.__destroy)
 
         self.__init_signal()
         # use reset to init values
@@ -331,6 +333,9 @@ class Engine(IBus.EngineSimple):
         symbol = 'R'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Typing method"), 'symbol' : symbol }
+
+        # Hide Typing mode icon on panel.
+        symbol = ''
         typing_mode_prop = IBus.Property(key=u'TypingMode',
                                          prop_type=IBus.PropType.MENU,
                                          label=IBus.Text.new_from_string(label),
@@ -398,6 +403,9 @@ class Engine(IBus.EngineSimple):
         symbol = '連'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
+
+        # Hide Segment mode icon on panel.
+        symbol = ''
         segment_mode_prop = IBus.Property(key=u'SegmentMode',
                                           prop_type=IBus.PropType.MENU,
                                           label=IBus.Text.new_from_string(label),
@@ -474,6 +482,9 @@ class Engine(IBus.EngineSimple):
                                              'short_label')
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : short_label }
+
+        # Hide Dict mode icon on panel.
+        short_label = ''
         dict_mode_prop = IBus.Property(key=u'DictMode',
                                        prop_type=IBus.PropType.MENU,
                                        label=IBus.Text.new_from_string(label),
@@ -623,6 +634,8 @@ class Engine(IBus.EngineSimple):
         files = self.__prefs.get_value('dict', 'files')
         single_files = []
         for file in files:
+            if not path.exists(file):
+                continue
             id = self.__get_dict_id_from_file(file)
             section = 'dict/file/' + id
             if self.__prefs.get_value(section, 'single'):
@@ -833,7 +846,8 @@ class Engine(IBus.EngineSimple):
             { 'description' : _("Typing method"), 'symbol' : symbol }
         Engine.__typing_mode = mode
         prop = self.__prop_dict[u'TypingMode']
-        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        # Hide Typing mode icon on panel.
+        #prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -858,7 +872,8 @@ class Engine(IBus.EngineSimple):
         _prop = self.__prop_dict[prop_name]
         _prop.set_state(IBus.PropState.CHECKED)
         self.update_property(_prop)
-        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        # Hide Typing mode icon on panel.
+        #prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -883,7 +898,8 @@ class Engine(IBus.EngineSimple):
             { 'description' : _("Segment mode"), 'symbol' : symbol }
         Engine.__segment_mode = mode
         prop = self.__prop_dict[u'SegmentMode']
-        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        # Hide Segment mode icon on panel.
+        #prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -943,7 +959,8 @@ class Engine(IBus.EngineSimple):
         symbol = self.__prefs.get_value(section, 'short_label')
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : symbol }
-        prop.set_symbol(IBus.Text.new_from_string(symbol))
+        # Hide Dict mode icon on panel.
+        #prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -985,14 +1002,13 @@ class Engine(IBus.EngineSimple):
         self.__reset()
         self.__invalidate()
 
-    def do_destroy(self):
+    def __destroy(self, obj):
         if self.__idle_id != 0:
             GLib.source_remove(self.__idle_id)
             self.__idle_id = 0
-        self.__remove_dict_files()
-        # It seems the parent do_destroy and destroy are different.
-        # The parent do_destroy calls self destroy infinitely.
-        super(Engine,self).destroy()
+        # It seems do_destroy() is called when launch_engine() is called.
+        #self.__remove_dict_files()
+        # It seems super.destroy() does not unref the engine.
 
     def __join_all_segments(self):
         while True:
