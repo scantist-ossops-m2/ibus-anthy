@@ -147,6 +147,13 @@ class Engine(IBus.EngineSimple):
                                                    round=True)
         self.__prop_list = self.__init_props()
 
+        # Do not use self.do_process_key_event to work ISO 14755
+        # with Ctrl+Shift+u .
+        # The super (parent) method of do_process_key_event is called
+        # loop infinitely if this class overrides it.
+        # self.process_key_event is not accessible too.
+        self.connect('process-key-event', self.__process_key_event)
+
         self.__init_signal()
         # use reset to init values
         self.__reset()
@@ -743,14 +750,6 @@ class Engine(IBus.EngineSimple):
         self.__fill_lookup_table()
         self.__invalidate()
         return True
-
-    def do_process_key_event(self, keyval, keycode, state):
-        try:
-            return self.__process_key_event_internal2(keyval, keycode, state)
-        except:
-            import traceback
-            traceback.print_exc()
-            return False
 
     def do_property_activate(self, prop_name, state):
 
@@ -1678,7 +1677,15 @@ class Engine(IBus.EngineSimple):
 
         return repr([int(state), int(keyval)])
 
-    def process_key_event_thumb(self, keyval, keycode, state):
+    def __process_key_event(self, obj, keyval, keycode, state):
+        try:
+            return self.__process_key_event_internal2(keyval, keycode, state)
+        except:
+            import traceback
+            traceback.print_exc()
+            return False
+
+    def __process_key_event_thumb(self, keyval, keycode, state):
         if self.__thumb == None:
             self._reset_thumb()
 
@@ -1823,7 +1830,7 @@ class Engine(IBus.EngineSimple):
 
         if Engine.__typing_mode == jastring.TYPING_MODE_THUMB_SHIFT and \
            Engine.__input_mode not in [INPUT_MODE_LATIN, INPUT_MODE_WIDE_LATIN]:
-            return self.process_key_event_thumb(keyval, keycode, state)
+            return self.__process_key_event_thumb(keyval, keycode, state)
 
         is_press = (state & IBus.ModifierType.RELEASE_MASK) == 0
 
@@ -1848,6 +1855,14 @@ class Engine(IBus.EngineSimple):
                     return True
             except:
                 print >> sys.stderr, 'Unknown command = %s' % cmd
+
+        # If input mode is not LATIN, eat Ctrl+Shift+u
+        hex_mod_mask = IBus.ModifierType.SHIFT_MASK | \
+                       IBus.ModifierType.CONTROL_MASK
+        if Engine.__input_mode != INPUT_MODE_LATIN and \
+           keyval == IBus.KEY_U and \
+           state & hex_mod_mask == hex_mod_mask:
+            return True
 
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
             return False
