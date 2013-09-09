@@ -333,9 +333,6 @@ class Engine(IBus.EngineSimple):
         symbol = 'R'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Typing method"), 'symbol' : symbol }
-
-        # Hide Typing mode icon on panel.
-        symbol = ''
         typing_mode_prop = IBus.Property(key=u'TypingMode',
                                          prop_type=IBus.PropType.MENU,
                                          label=IBus.Text.new_from_string(label),
@@ -403,9 +400,6 @@ class Engine(IBus.EngineSimple):
         symbol = '連'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
-
-        # Hide Segment mode icon on panel.
-        symbol = ''
         segment_mode_prop = IBus.Property(key=u'SegmentMode',
                                           prop_type=IBus.PropType.MENU,
                                           label=IBus.Text.new_from_string(label),
@@ -482,9 +476,6 @@ class Engine(IBus.EngineSimple):
                                              'short_label')
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : short_label }
-
-        # Hide Dict mode icon on panel.
-        short_label = ''
         dict_mode_prop = IBus.Property(key=u'DictMode',
                                        prop_type=IBus.PropType.MENU,
                                        label=IBus.Text.new_from_string(label),
@@ -846,8 +837,7 @@ class Engine(IBus.EngineSimple):
             { 'description' : _("Typing method"), 'symbol' : symbol }
         Engine.__typing_mode = mode
         prop = self.__prop_dict[u'TypingMode']
-        # Hide Typing mode icon on panel.
-        #prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -872,8 +862,7 @@ class Engine(IBus.EngineSimple):
         _prop = self.__prop_dict[prop_name]
         _prop.set_state(IBus.PropState.CHECKED)
         self.update_property(_prop)
-        # Hide Typing mode icon on panel.
-        #prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -898,8 +887,7 @@ class Engine(IBus.EngineSimple):
             { 'description' : _("Segment mode"), 'symbol' : symbol }
         Engine.__segment_mode = mode
         prop = self.__prop_dict[u'SegmentMode']
-        # Hide Segment mode icon on panel.
-        #prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
@@ -959,8 +947,7 @@ class Engine(IBus.EngineSimple):
         symbol = self.__prefs.get_value(section, 'short_label')
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : symbol }
-        # Hide Dict mode icon on panel.
-        #prop.set_symbol(IBus.Text.new_from_string(symbol))
+        prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
 
