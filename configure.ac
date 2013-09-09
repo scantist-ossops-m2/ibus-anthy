@@ -248,6 +248,9 @@ AC_ARG_WITH(anthy-zipcode,
                            [file path of Anty zipcode.t])],
            [ANTHY_ZIPCODE_FILE="$withval"],
            [ANTHY_ZIPCODE_FILE="$datadir/anthy/zipcode.t"])
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+eval ANTHY_ZIPCODE_FILE=$ANTHY_ZIPCODE_FILE
+eval ANTHY_ZIPCODE_FILE=$ANTHY_ZIPCODE_FILE
 AC_SUBST(ANTHY_ZIPCODE_FILE)
 AM_CONDITIONAL([ENABLE_ZIPCODE], [test -f "$ANTHY_ZIPCODE_FILE" ])
 
