@@ -55,6 +55,8 @@ _  = lambda a : dgettext('ibus-anthy', a)
 N_ = lambda a : a
 UN = lambda a : unicode(a, 'utf-8')
 
+printerr = AnthyPrefs.printerr
+
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
 INPUT_MODE_HALF_WIDTH_KATAKANA, \
@@ -798,7 +800,7 @@ class Engine(IBus.EngineSimple):
         }
 
         if prop_name not in input_modes:
-            print >> sys.stderr, 'Unknown prop_name = %s' % prop_name
+            printerr('Unknown prop_name = %s' % prop_name)
             return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
@@ -824,7 +826,7 @@ class Engine(IBus.EngineSimple):
         }
 
         if prop_name not in typing_modes:
-            print >> sys.stderr, 'Unknown prop_name = %s' % prop_name
+            printerr('Unknown prop_name = %s' % prop_name)
             return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
@@ -876,7 +878,7 @@ class Engine(IBus.EngineSimple):
         }
 
         if prop_name not in segment_modes:
-            print >> sys.stderr, 'Unknown prop_name = %s' % prop_name
+            printerr('Unknown prop_name = %s' % prop_name)
             return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
@@ -932,7 +934,7 @@ class Engine(IBus.EngineSimple):
             Engine.__dict_mode = 0
         else:
             if file not in single_files:
-                print >> sys.stderr, "Index error ", file, single_files
+                printerr('Index error', file, single_files)
                 return
             dict_name = 'ibus__' + id
             Engine.__dict_mode = single_files.index(file) + 1
@@ -1524,7 +1526,7 @@ class Engine(IBus.EngineSimple):
             else:
                 self.__convert_mode = CONV_MODE_LATIN_0
         else:
-            print >> sys.stderr, 'Unkown convert mode (%d)!' % mode
+            printerr('Unkown convert mode (%d)!' % mode)
             return False
         self.__invalidate()
         return True
@@ -1729,7 +1731,7 @@ class Engine(IBus.EngineSimple):
                     if getattr(self, cmd)(keyval, state):
                         return True
                 except:
-                    print >> sys.stderr, 'Unknown command = %s' % cmd
+                    printerr('Unknown command = %s' % cmd)
             return False
 
         def RS():
@@ -1857,7 +1859,7 @@ class Engine(IBus.EngineSimple):
                 if getattr(self, cmd)(keyval, state):
                     return True
             except:
-                print >> sys.stderr, 'Unknown command = %s' % cmd
+                printerr('Unknown command = %s' % cmd)
 
         # If input mode is not LATIN, eat Ctrl+Shift+u
         hex_mod_mask = IBus.ModifierType.SHIFT_MASK | \
@@ -1949,7 +1951,7 @@ class Engine(IBus.EngineSimple):
             return
         if path.exists(directory):
             if not path.isdir(directory):
-                print >> sys.stderr, directory + ' is not a directory'
+                printerr(directory + ' is not a directory')
                 return
         else:
             os.makedirs(directory, 0700)
@@ -1957,11 +1959,11 @@ class Engine(IBus.EngineSimple):
         os.chdir(directory)
         if path.lexists(directory + '/' + name):
             if path.islink(directory + '/' + name):
-                print >> sys.stderr, 'Removing ' + name
+                printerr('Removing ' + name)
                 os.unlink(directory + '/' + name)
             else:
                 alternate = name + str(os.getpid())
-                print >> sys.stderr, 'Moving ' + name + ' to ' + alternate
+                printerr('Moving ' + name + ' to ' + alternate)
                 os.rename(name, alternate)
         os.symlink(file, directory + '/' + name)
         if backup_dir != None:
@@ -1980,7 +1982,7 @@ class Engine(IBus.EngineSimple):
             return
         if path.exists(directory):
             if not path.isdir(directory):
-                print >> sys.stderr, directory + ' is not a directory'
+                printerr(directory + ' is not a directory')
                 return
         backup_dir = os.getcwd()
         os.chdir(directory)
@@ -1991,7 +1993,7 @@ class Engine(IBus.EngineSimple):
 
     def __link_dict_file(self, file):
         if not path.exists(file):
-            print >> sys.stderr, file + ' does not exist'
+            printerr(file + ' does not exist')
             return False
         id = self.__get_dict_id_from_file(file)
         section = 'dict/file/' + id
@@ -2329,8 +2331,8 @@ class Engine(IBus.EngineSimple):
             clipboard_get = lambda a : None
         except RuntimeError:
             # Do we support the engine without display?
-            print >> sys.stderr, "Gtk couldn't be initialized"
-            print >> sys.stderr, 'Could not open display'
+            printerr("Gtk couldn't be initialized")
+            printerr('Could not open display')
             clipboard_get = lambda a : None
 
         # Use Gtk.Clipboard.request_text() instead of

@@ -46,8 +46,8 @@ class Prefs(object):
         if self._config != None:
             self.__has_config_get_values = hasattr(self._config, 'get_values')
         else:
-            print >> sys.stderr, \
-                'ibus-config is not running or bus address is not correct.'
+            self.printerr(
+                'ibus-config is not running or bus address is not correct.')
 
     def __log_handler(self, domain, level, message, data):
         if not data:
@@ -71,7 +71,7 @@ class Prefs(object):
             # it returned the tuple of (strv, length)
             return variant.unpack()
         else:
-            print >> sys.stderr, 'Unknown variant type:', type_string
+            self.printerr('Unknown variant type:', type_string)
             sys.abrt()
         return variant
 
@@ -207,7 +207,7 @@ class Prefs(object):
             elif type(v) == list:
                 variant = GLib.Variant.new_strv(v)
             if variant == None:
-                print >> sys.stderr, 'Unknown value type:', type(v)
+                self.printerr('Unknown value type:', type(v))
                 sys.abrt()
             if self._config != None:
                 self._config.set_value(s, key, variant)
@@ -266,4 +266,12 @@ class Prefs(object):
         if type(string) == unicode:
             return string
         return unicode(string, 'utf-8')
+
+    # If the parent process exited, the std io/out/error will be lost.
+    @staticmethod
+    def printerr(sentence):
+        try:
+            print >> sys.stderr, sentence
+        except IOError:
+            pass
 
