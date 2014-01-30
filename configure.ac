@@ -110,57 +110,44 @@ dnl - check env
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
 
-dnl - check python
-dnl ibus-anthy and pygobject3 uses python2
-dnl but AM_PATH_PYTHON does not check if python3 is used
-dnl so I created IBUS_PYTHON_CHECK_VERSION2 from AM_PYTHON_CHECK_VERSION
-dnl to check both the python minimum version and 3.
-
-dnl from python.m4
-IBUS_PYTHON_MIN_VERSION=2.5
-IBUS_PYTHON_CHECK_VERSION2() {
-    ARGS="import sys
-# split strings by '.' and convert to numeric.  Append some zeros
-# because we need at least 4 digits for the hex conversion.
-# map returns an iterator in Python 3.0 and a list in 2.x
-minver = list(map(int, '$2'.split('.')))
-if [len](minver) < 4:
-    for i in list(range(0, 4 - [len](minver))): minver.append(0)
-minverhex = 0
-# xrange is not present in Python 3.0 and range returns an iterator
-for i in list(range(0, 4)): minverhex = (minverhex << 8) + minver[[i]]
-threever = [[3, 0, 0, 0]]
-threeverhex = 0
-for i in list(range(0, 4)): threeverhex = (threeverhex << 8) + threever[[i]]
-sys.exit(not (sys.hexversion >= minverhex and \\
-              sys.hexversion < threeverhex))"
-    PROG="$1"
-    PYTHON_VERSION2=`"$PROG" -c "import sys; sys.stdout.write(sys.version[[:3]])"`
-    "$PROG" -c "$ARGS"
-    return $?
-}
-
-AC_MSG_CHECKING([whether you have python2])
-HAS_PYTHON2=no
-IBUS_PYTHON_INTERPRETER_LIST='
-python python2 python2.7 python2.6 pythhon2.5
-'
-for PYTHON2 in $IBUS_PYTHON_INTERPRETER_LIST ; do
-    IBUS_PYTHON_CHECK_VERSION2 $PYTHON2 $IBUS_PYTHON_MIN_VERSION
-    if test $? -eq 0 ; then
-        HAS_PYTHON2=yes
-        break
-    fi
-done
-AC_MSG_RESULT($HAS_PYTHON2)
-
-if test x"$HAS_PYTHON2" = xyes; then
-    AC_PATH_PROG(PYTHON, $PYTHON2)
-    PYTHON_VERSION=$PYTHON_VERSION2
-fi
+dnl - define python version
+AC_ARG_WITH(python,
+    AS_HELP_STRING([--with-python[=PATH]],
+        [Select python2 or python3]),
+    [PYTHON=$with_python], []
+)
 
 dnl export $pyexecdir using existent $PYTHON
-AM_PATH_PYTHON([$IBUS_PYTHON_MIN_VERSION])
+AM_PATH_PYTHON([2.5])
+
+dnl Decided to separate python3 directory from python2 directory here
+dnl because engine/table.py includes unicode array so it's better to
+dnl use __future__.unicode_literals.
+dnl python3 string are always str.
+dnl In case __future__.unicode_literals is imported, all the literal
+dnl 'a' is treated as unicode and u'a' is not needed in python2.
+dnl But str is not unicode so we need to convert str to unicode in
+dnl python2 for all non-literal variables likes return values of
+dnl gettext, IBusConfig.get_value, get methods in GTK+ and so on.
+dnl It would causes to complicate python2 codes if merge python2 and
+dnl python3 in the same file.
+dnl if sys.version < '3':
+dnl     return unicode(gettext(a), 'utf-8')
+dnl else:
+dnl     return gettext(a)
+case "$PYTHON_VERSION" in
+3.*)
+    enable_python3=yes
+    enable_python2=no
+    ;;
+*)
+    enable_python3=no
+    enable_python2=yes
+    ;;
+esac
+
+AM_CONDITIONAL([ENABLE_PYTHON2], [test x"$enable_python2" = x"yes"])
+AM_CONDITIONAL([ENABLE_PYTHON3], [test x"$enable_python3" = x"yes"])
 
 dnl - check the supported ibus version
 AC_MSG_CHECKING([if your ibus version is supported])
@@ -173,9 +160,9 @@ from gi.repository import IBus
 retval = _ibus_check_version (ibus_major_version,
                               ibus_minor_version)
 if not retval:
-    print 'your ibus version %d.%d.%d is old against %d.%d.%d' \
+    print ('your ibus version %d.%d.%d is old against %d.%d.%d' \
         % ( IBus.MAJOR_VERSION, IBus.MINOR_VERSION, IBus.MICRO_VERSION, \
-            ibus_major_version, ibus_minor_version, ibus_micro_version )
+            ibus_major_version, ibus_minor_version, ibus_micro_version ))
     exit (-1)
 exit(0)
 "
@@ -424,11 +411,19 @@ ibus-anthy.spec
 data/Makefile
 gir/Makefile
 engine/Makefile
-engine/ibus-engine-anthy
-engine/anthy.xml.in
-engine/default.xml.in
+engine/python2/Makefile
+engine/python2/ibus-engine-anthy
+engine/python2/anthy.xml.in
+engine/python2/default.xml.in
+engine/python3/Makefile
+engine/python3/ibus-engine-anthy
+engine/python3/anthy.xml.in
+engine/python3/default.xml.in
 setup/Makefile
-setup/ibus-setup-anthy
+setup/python2/Makefile
+setup/python2/ibus-setup-anthy
+setup/python3/Makefile
+setup/python3/ibus-setup-anthy
 icons/Makefile
 m4/Makefile
 ])
@@ -446,6 +441,8 @@ LT_VERSION_INFO             $LT_VERSION_INFO
 ENV_IBUS_ENGINE             $ENV_IBUS_ENGINE
 HAVE_PYGTK2_ANTHY           $enable_pygtk2_anthy
 python                      $PYTHON
+Enable python2              $enable_python2
+Enable python3              $enable_python3
 python-config               $PYTHON_CONFIG
 PYTHON_CFLAGS               $PYTHON_CFLAGS
 PYTHON_LIBS                 $PYTHON_LIBS

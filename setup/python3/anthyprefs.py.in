@@ -1,0 +1,1329 @@
+# -*- coding: utf-8 -*-
+# vim:set noet ts=4:
+#
+# ibus-anthy - The Anthy engine for IBus
+#
+# Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
+# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import sys
+
+from prefs import Prefs
+
+N_ = lambda a : a
+
+__all__ = ['AnthyPrefs']
+
+
+class AnthyPrefs(Prefs):
+    _prefix = 'engine/anthy'
+    _char_to_config_key = None
+
+    def __init__(self, bus=None, config=None):
+        super(AnthyPrefs, self).__init__(bus, config)
+        if _config != None:
+            self.default = _config
+        self.set_no_key_warning(True)
+        self.fetch_all()
+        self.set_no_key_warning(False)
+
+    def __update_key (self, section, old_key, new_key):
+        file = __file__
+        if __file__.find('/') >= 0:
+            file = __file__[__file__.rindex('/') + 1:]
+        warning_message = \
+            '(' + file + ') ibus-anthy-WARNING **: '                        \
+            'The key (' + old_key + ') will be removed in the future. '     \
+            'Currently the key (' + new_key + ') is used instead. '         \
+            'The ibus keys are defined in ' +                               \
+            '/'.join(['/desktop/ibus', self._prefix, section]) + ' .'
+
+        if not self.fetch_item(section, old_key, True):
+            return
+        print(warning_message, file=sys.stderr)
+        if self.fetch_item(section, new_key, True):
+            return
+
+        self.fetch_item(section, old_key)
+        value = self.get_value(section, old_key)
+        self.set_value(section, new_key, value)
+        self.commit_item(section, new_key)
+        self.undo_item(section, new_key)
+
+    def keys(self, section):
+        if section.startswith('shortcut/'):
+            return _cmd_keys
+        return list(self.default[section].keys())
+
+    def get_japanese_ordered_list(self):
+        return _japanese_ordered_list
+
+    def get_version(self):
+        return '@VERSION@'
+
+    # Convert typing sequences to gsettings key.
+    # E.g. 'largea-bracketleft' to 'A['
+    def typing_from_config_key(self, gkeys):
+        retval = ''
+        for key in gkeys.split('-'):
+            if key in _supported_gsettings_key_chars:
+                retval += key
+                continue
+            try:
+                ch = _config_key_to_char[key]
+            except KeyError:
+                print('Not supported key in gsettings', gkeys, file=sys.stderr)
+                retval = ''
+                break
+            retval += ch
+        return retval
+
+    # Convert typing sequences to gsettings key.
+    # E.g. 'A[' to 'largea-bracketleft'
+    def typing_to_config_key(self, typing):
+        retval = ''
+        if self._char_to_config_key == None:
+            self._char_to_config_key = {}
+            for _key, _ch in list(_config_key_to_char.items()):
+                self._char_to_config_key[_ch] = _key
+        for ch in typing:
+            if ch in _supported_gsettings_key_chars:
+                if retval != '':
+                    retval += '-'
+                retval += ch
+                continue
+            try:
+                key = self._char_to_config_key[ch]
+            except KeyError:
+                print('Not supported key in gsettings', typing, file=sys.stderr)
+                retval = ''
+                break
+            if retval != '':
+                retval += '-'
+            retval += key
+        return retval
+
+# Sad! dict.keys() doesn't return the saved order.
+# locale.strcoll() also just returns the Unicode code point.
+# Unicode order is wrong in Japanese large 'a' and small 'a'.
+# The workaround is to save the order here...
+_japanese_ordered_list = [
+    'あ', 'い', 'う', 'え', 'お',
+    'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+    'いぇ',
+    'うぁ', 'うぃ', 'うぅ', 'うぇ', 'うぉ',
+    'うゃ', 'うゅ', 'うょ',
+    'か', 'き', 'く', 'け', 'こ',
+    'ゕ', 'ゖ', 'ヵ', 'ヶ',
+    'が', 'ぎ', 'ぐ', 'げ', 'ご',
+    'きゃ', 'きぃ', 'きゅ', 'きぇ', 'きょ',
+    'くぁ', 'くぃ', 'くぅ', 'くぇ', 'くぉ',
+    'ぎゃ', 'ぎぃ', 'ぎゅ', 'ぎぇ', 'ぎょ',
+    'ぐぁ', 'ぐぃ', 'ぐぅ', 'ぐぇ', 'ぐぉ',
+    'さ', 'し', 'す', 'せ', 'そ',
+    'ざ', 'じ', 'ず', 'ぜ', 'ぞ',
+    'しゃ', 'しぃ', 'しゅ', 'しぇ', 'しょ',
+    'じゃ', 'じぃ', 'じゅ', 'じぇ', 'じょ',
+    'すぅぃ', 'すぇ',
+    'ずぇ',
+    'た', 'ち', 'つ', 'て', 'と',
+    'だ', 'ぢ', 'づ', 'で', 'ど',
+    'っ',
+    'ちゃ', 'ちぃ', 'ちゅ', 'ちぇ', 'ちょ',
+    'ぢぃ', 'ぢぇ',
+    'ぢゃ', 'ぢゅ', 'ぢょ',
+    'つぁ', 'つぃ', 'つぇ', 'つぉ',
+    'つゃ', 'つぃぇ', 'つゅ', 'つょ',
+    'づぁ', 'づぃ', 'づぇ', 'づぉ',
+    'づゃ', 'づぃぇ', 'づゅ', 'づょ',
+    'てぃ', 'てぇ',
+    'てゃ', 'てゅ', 'てょ',
+    'とぅ',
+    'でぃ', 'でぇ',
+    'でゃ', 'でゅ', 'でょ',
+    'どぅ',
+    'な', 'に', 'ぬ', 'ね', 'の',
+    'にぃ', 'にぇ',
+    'にゃ', 'にゅ', 'にょ',
+    'は', 'ひ', 'ふ', 'へ', 'ほ',
+    'ば', 'び', 'ぶ', 'べ', 'ぼ',
+    'ぱ', 'ぴ', 'ぷ', 'ぺ', 'ぽ',
+    'ひぃ', 'ひぇ',
+    'ひゃ', 'ひゅ', 'ひょ',
+    'びぃ', 'びぇ',
+    'びゃ', 'びゅ', 'びょ',
+    'ぴぃ', 'ぴぇ',
+    'ぴゃ', 'ぴゅ', 'ぴょ',
+    'ふぁ', 'ふぃ', 'ふぇ', 'ふぉ',
+    'ふゃ', 'ふゅ', 'ふょ',
+    'ぶぁ', 'ぶぇ', 'ぶぉ',
+    'ぷぁ', 'ぷぇ', 'ぷぉ',
+    'ま', 'み', 'む', 'め', 'も',
+    'みぃ', 'みぇ',
+    'みゃ', 'みゅ', 'みょ',
+    'や', 'ゆ', 'よ',
+    'ゃ', 'ゅ', 'ょ',
+    'ら', 'り', 'る', 'れ', 'ろ',
+    'りぃ', 'りぇ',
+    'りゃ', 'りゅ', 'りょ',
+    'わ', 'を', 'ん',
+    'ゎ',
+    'ゐ', 'ゑ',
+    'ー',
+    'ヴぁ', 'ヴぃ', 'ヴ', 'ヴぇ', 'ヴぉ',
+    'ヴゃ', 'ヴぃぇ', 'ヴゅ', 'ヴょ',
+]
+
+# http://git.gnome.org/browse/glib/tree/gio/glib-compile-schemas.c#n765
+# gsettings supports keys named by "abcdefghijklmnopqrstuvwxyz0123456789-"
+# and ibus-anthy uses '-' as the delimiter.
+_supported_gsettings_key_chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+
+_config_key_to_char = {
+    # no modifiers keys
+    'minus'         : '-',
+    'asciicircum'   : '^',
+    'at'            : '@',
+    'bracketleft'   : '[',
+    'semicolon'     : ';',
+    'colon'         : ':',
+    'bracketright'  : ']',
+    'comma'         : ',',
+    'period'        : '.',
+    'slash'         : '/',
+    'backslash'     : '\\',
+
+    # shift modifiered keys
+    'exclam'        : '!',
+    'quotedbl'      : '"',
+    'numbersign'    : '#',
+    'dollar'        : '$',
+    'percent'       : '%',
+    'ampersand'     : '&',
+    'apostrophe'    : '\'',
+    'parenleft'     : '(',
+    'parenright'    : ')',
+    'asciitilde'    : '~',
+    'equal'         : '=',
+    'bar'           : '|',
+
+    'largeq'        : 'Q',
+    'largew'        : 'W',
+    'largee'        : 'E',
+    'larger'        : 'R',
+    'larget'        : 'T',
+    'largey'        : 'Y',
+    'largeu'        : 'U',
+    'largei'        : 'I',
+    'largeo'        : 'O',
+    'largep'        : 'P',
+    'grave'         : '`',
+
+    'braceleft'     : '{',
+
+    'largea'        : 'A',
+    'larges'        : 'S',
+    'larged'        : 'D',
+    'largef'        : 'F',
+    'largeg'        : 'G',
+    'largeh'        : 'H',
+    'largej'        : 'J',
+    'largek'        : 'K',
+    'largel'        : 'L',
+    'plus'          : '+',
+    'asterisk'      : '*',
+
+    'braceright'    : '}',
+
+    'largez'        : 'Z',
+    'largex'        : 'X',
+    'largec'        : 'C',
+    'largev'        : 'V',
+    'largeb'        : 'B',
+    'largen'        : 'N',
+    'largem'        : 'M',
+    'less'          : '<',
+    'greater'       : '>',
+
+    'question'      : '?',
+    'underscore'    : '_',
+
+    'yen'           : '¥',
+}
+
+_cmd_keys = [
+    'on_off',
+    'circle_input_mode',
+    'circle_kana_mode',
+    'circle_typing_method',
+    'circle_dict_method',
+    'latin_mode',
+    'wide_latin_mode',
+    'hiragana_mode',
+    'katakana_mode',
+    'half_katakana_mode',
+#    'cancel_pseudo_ascii_mode_key',
+
+    'hiragana_for_latin_with_shift',
+
+    'insert_space',
+    'insert_alternate_space',
+    'insert_half_space',
+    'insert_wide_space',
+    'backspace',
+    'delete',
+    'commit',
+    'convert',
+    'predict',
+    'cancel',
+    'cancel_all',
+    'reconvert',
+#    'do_nothing',
+
+    'select_first_candidate',
+    'select_last_candidate',
+    'select_next_candidate',
+    'select_prev_candidate',
+    'candidates_page_up',
+    'candidates_page_down',
+
+    'move_caret_first',
+    'move_caret_last',
+    'move_caret_forward',
+    'move_caret_backward',
+
+    'select_first_segment',
+    'select_last_segment',
+    'select_next_segment',
+    'select_prev_segment',
+    'shrink_segment',
+    'expand_segment',
+    'commit_first_segment',
+    'commit_selected_segment',
+
+    'select_candidates_1',
+    'select_candidates_2',
+    'select_candidates_3',
+    'select_candidates_4',
+    'select_candidates_5',
+    'select_candidates_6',
+    'select_candidates_7',
+    'select_candidates_8',
+    'select_candidates_9',
+    'select_candidates_0',
+
+    'convert_to_char_type_forward',
+    'convert_to_char_type_backward',
+    'convert_to_hiragana',
+    'convert_to_katakana',
+    'convert_to_half',
+    'convert_to_half_katakana',
+    'convert_to_wide_latin',
+    'convert_to_latin',
+
+    'dict_admin',
+    'add_word',
+
+    'start_setup',
+]
+
+_config = {
+    'common': {
+        'input_mode': 0,
+        'typing_method': 0,
+        'conversion_segment_mode': 0,
+
+        'show-input-mode': True,
+        'show-typing-method': False,
+        'show-segment-mode': False,
+        'show-dict-mode': True,
+        'show-dict-config': False,
+        'show-preferences': True,
+
+        'period_style': 0,
+        'symbol_style': 1,
+        'ten_key_mode': 1,
+        'behavior_on_focus_out': 0,
+        'behavior_on_period': 0,
+
+        'page_size': 10,
+        'half_width_symbol': False,
+        'half_width_number': False,
+        'half_width_space': False,
+        'latin_with_shift': True,
+
+        'shortcut_type': 'default',
+
+        'dict_admin_command': ['@KASUMI_EXEC_FILE@', 'kasumi'],
+        'add_word_command': ['@KASUMI_EXEC_FILE@', 'kasumi', '-a'],
+        'dict_config_icon': '@KASUMI_ICON_FILE@',
+        'keyboard_layouts': [
+            'default', 'jp', 'us',
+            # XKB options requires ibus 1.5.
+            'jp[ctrl:swapcaps]', 'us[ctrl:swapcaps]',
+            'jp[ctrl:swapcaps,compose:rctrl]',
+            'us[ctrl:swapcaps,compose:rctrl]',
+            'jp[japan:kana_lock]',
+            'jp[japan:nicola_f_bs]',
+            'jp[japan:nicola_f_bs,ctrl:swapcaps]',
+            'jp[japan:hztg_escape]',
+            'jp[japan:hztg_escape,ctrl:swapcaps]',
+        ],
+    },
+
+    'romaji_typing_rule': {
+        'method': 'default',
+        # The newkeys list is saved for every romaji_typing_rule/$method
+        # so that prefs.get_value_direct() is not used.
+        # prefs.fetch_section() doesn't get the keys if they exist
+        # in gconf only.
+        'newkeys': [],
+    },
+
+    ##0 MS-IME
+    # http://www.filibeto.org/sun/lib/solaris10-docs/E19253-01/819-7844/appe-1-4/index.html
+    ##1 ATOK
+    # http://www.filibeto.org/sun/lib/solaris10-docs/E19253-01/819-7844/appe-1-3/index.html
+    ##2 Gairaigo http://ja.wikipedia.org/wiki/%E5%A4%96%E6%9D%A5%E8%AA%9E
+    ##3 ANSI/BSI Suggestions http://en.wikipedia.org/wiki/Katakana
+    ##4 Historical kana http://en.wikipedia.org/wiki/Romanization_of_Japanese
+    # Maybe we need a compatibility between MS-IME and ibus-anthy.
+    'romaji_typing_rule/default': {
+        'minus'                 : 'ー',
+        'a'                     : 'あ',
+        'i'                     : 'い',
+        'u'                     : 'う',
+        'e'                     : 'え',
+        'o'                     : 'お',
+        'x-a'                   : 'ぁ',
+        'x-i'                   : 'ぃ',
+        'x-u'                   : 'ぅ',
+        'x-e'                   : 'ぇ',
+        'x-o'                   : 'ぉ',
+        'l-a'                   : 'ぁ',
+        'l-i'                   : 'ぃ',
+        'l-u'                   : 'ぅ',
+        'l-e'                   : 'ぇ',
+        'l-o'                   : 'ぉ',
+        'w-h-a'                 : 'うぁ',
+        'w-h-i'                 : 'うぃ',
+        'w-h-e'                 : 'うぇ',
+        'w-h-o'                 : 'うぉ',
+        'w-y-a'                 : 'うゃ', ##2
+        'w-y-u'                 : 'うゅ', ##2
+        'w-y-o'                 : 'うょ', ##2
+        'v-a'                   : 'ヴぁ',
+        'v-i'                   : 'ヴぃ',
+        'v-u'                   : 'ヴ',
+        'v-e'                   : 'ヴぇ',
+        'v-o'                   : 'ヴぉ',
+        'v-y-a'                 : 'ヴゃ',   ##2
+        'v-y-u'                 : 'ヴゅ',   ##2
+        'v-y-e'                 : 'ヴぃぇ', ##2
+        'v-y-o'                 : 'ヴょ',   ##2
+        'k-a'                   : 'か',
+        'k-i'                   : 'き',
+        'k-u'                   : 'く',
+        'k-e'                   : 'け',
+        'k-o'                   : 'こ',
+        'l-k-a'                 : 'ヵ',
+        'l-k-e'                 : 'ヶ',
+#        'x-k-a'                 : 'ゕ',
+        'x-k-a'                 : 'ヵ',
+#        'x-k-e'                 : 'ゖ',
+        'x-k-e'                 : 'ヶ',
+        'g-a'                   : 'が',
+        'g-i'                   : 'ぎ',
+        'g-u'                   : 'ぐ',
+        'g-e'                   : 'げ',
+        'g-o'                   : 'ご',
+        'k-y-a'                 : 'きゃ',
+        'k-y-i'                 : 'きぃ',
+        'k-y-u'                 : 'きゅ',
+        'k-y-e'                 : 'きぇ',
+        'k-y-o'                 : 'きょ',
+        'k-w-a'                 : 'くぁ',
+        'k-w-i'                 : 'くぃ', ##2
+        'k-w-u'                 : 'くぅ', ##2
+        'k-w-e'                 : 'くぇ', ##2
+        'k-w-o'                 : 'くぉ', ##2
+        'g-y-a'                 : 'ぎゃ',
+        'g-y-i'                 : 'ぎぃ',
+        'g-y-u'                 : 'ぎゅ',
+        'g-y-e'                 : 'ぎぇ',
+        'g-y-o'                 : 'ぎょ',
+        'g-w-a'                 : 'ぐぁ',
+        'g-w-i'                 : 'ぐぃ', ##2
+        'g-w-u'                 : 'ぐぅ', ##2
+        'g-w-e'                 : 'ぐぇ', ##2
+        'g-w-o'                 : 'ぐぉ', ##2
+        's-a'                   : 'さ',
+        's-i'                   : 'し',
+        's-u'                   : 'す',
+        's-e'                   : 'せ',
+        's-o'                   : 'そ',
+        'z-a'                   : 'ざ',
+        'z-i'                   : 'じ',
+        'z-u'                   : 'ず',
+        'z-e'                   : 'ぜ',
+        'z-o'                   : 'ぞ',
+        's-y-a'                 : 'しゃ',
+        's-y-i'                 : 'しぃ',
+        's-y-u'                 : 'しゅ',
+        's-y-e'                 : 'しぇ',
+        's-y-o'                 : 'しょ',
+        's-h-a'                 : 'しゃ',
+        's-h-i'                 : 'し',
+        's-h-u'                 : 'しゅ',
+        's-h-e'                 : 'しぇ',
+        's-h-o'                 : 'しょ',
+        'z-y-a'                 : 'じゃ',
+        'z-y-i'                 : 'じぃ',
+        'z-y-u'                 : 'じゅ',
+        'z-y-e'                 : 'じぇ',
+        'z-y-o'                 : 'じょ',
+        'j-a'                   : 'じゃ',
+        'j-y-a'                 : 'じゃ',
+        'j-i'                   : 'じ',
+        'j-y-i'                 : 'じぃ',
+        'j-u'                   : 'じゅ',
+        'j-y-u'                 : 'じゅ',
+        'j-e'                   : 'じぇ',
+        'j-y-e'                 : 'じぇ',
+        'j-o'                   : 'じょ',
+        'j-y-o'                 : 'じょ',
+        's-w-i'                 : 'すぅぃ', ##2
+        's-w-e'                 : 'すぇ',   ##2
+        'z-w-e'                 : 'ずぇ',   ##2
+        't-a'                   : 'た',
+        't-i'                   : 'ち',
+        't-u'                   : 'つ',
+        't-s-u'                 : 'つ',
+        't-e'                   : 'て',
+        't-o'                   : 'と',
+        'd-a'                   : 'だ',
+        'd-i'                   : 'ぢ',
+        'd-u'                   : 'づ',
+        'd-e'                   : 'で',
+        'd-o'                   : 'ど',
+        'x-t-u'                 : 'っ',
+        'x-t-s-u'               : 'っ',
+        'l-t-u'                 : 'っ',
+        'l-t-s-u'               : 'っ',
+        't-y-a'                 : 'ちゃ',
+        't-y-i'                 : 'ちぃ',
+        't-y-u'                 : 'ちゅ',
+        't-y-e'                 : 'ちぇ',
+        't-y-o'                 : 'ちょ',
+        'c-y-a'                 : 'ちゃ',
+        'c-y-i'                 : 'ちぃ',
+        'c-y-u'                 : 'ちゅ',
+        'c-y-e'                 : 'ちぇ',
+        'c-y-o'                 : 'ちょ',
+        'c-h-a'                 : 'ちゃ',
+        'c-h-i'                 : 'ち',
+        'c-h-u'                 : 'ちゅ',
+        'c-h-e'                 : 'ちぇ',
+        'c-h-o'                 : 'ちょ',
+        'd-y-a'                 : 'ぢゃ',
+        'd-y-i'                 : 'ぢぃ',
+        'd-y-u'                 : 'ぢゅ',
+        'd-y-e'                 : 'ぢぇ',
+        'd-y-o'                 : 'ぢょ',
+        't-s-a'                 : 'つぁ',
+        't-s-i'                 : 'つぃ',
+        't-s-e'                 : 'つぇ',
+        't-s-o'                 : 'つぉ',
+        't-s-y-a'               : 'つゃ',   ##3
+        't-s-y-u'               : 'つゅ',   ##3
+        't-s-y-e'               : 'つぃぇ', ##3
+        't-s-y-o'               : 'つょ',   ##3
+        'd-z-a'                 : 'づぁ',    ##3
+        'd-z-i'                 : 'づぃ',    ##3
+        'd-z-u'                 : 'づ',      ##4
+        'd-z-e'                 : 'づぇ',    ##3
+        'd-z-o'                 : 'づぉ',    ##3
+        'd-z-y-a'               : 'づゃ',   ##3
+        'd-z-y-u'               : 'づゅ',   ##3
+        'd-z-y-e'               : 'づぃぇ', ##3
+        'd-z-y-o'               : 'づょ',   ##3
+        't-h-a'                 : 'てゃ',
+        't-h-i'                 : 'てぃ',
+        't-h-u'                 : 'てゅ',
+        't-h-e'                 : 'てぇ',
+        't-h-o'                 : 'てょ',
+        't-w-u'                 : 'とぅ',
+        'd-h-a'                 : 'でゃ',
+        'd-h-i'                 : 'でぃ',
+        'd-h-u'                 : 'でゅ',
+        'd-h-e'                 : 'でぇ',
+        'd-h-o'                 : 'でょ',
+        'd-w-u'                 : 'どぅ',
+        'n-a'                   : 'な',
+        'n-i'                   : 'に',
+        'n-u'                   : 'ぬ',
+        'n-e'                   : 'ね',
+        'n-o'                   : 'の',
+        'n-y-a'                 : 'にゃ',
+        'n-y-i'                 : 'にぃ',
+        'n-y-u'                 : 'にゅ',
+        'n-y-e'                 : 'にぇ',
+        'n-y-o'                 : 'にょ',
+        'h-a'                   : 'は',
+        'h-i'                   : 'ひ',
+        'h-u'                   : 'ふ',
+        'h-e'                   : 'へ',
+        'h-o'                   : 'ほ',
+        'b-a'                   : 'ば',
+        'b-i'                   : 'び',
+        'b-u'                   : 'ぶ',
+        'b-e'                   : 'べ',
+        'b-o'                   : 'ぼ',
+        'p-a'                   : 'ぱ',
+        'p-i'                   : 'ぴ',
+        'p-u'                   : 'ぷ',
+        'p-e'                   : 'ぺ',
+        'p-o'                   : 'ぽ',
+        'h-y-a'                 : 'ひゃ',
+        'h-y-i'                 : 'ひぃ',
+        'h-y-u'                 : 'ひゅ',
+        'h-y-e'                 : 'ひぇ',
+        'h-y-o'                 : 'ひょ',
+        'b-y-a'                 : 'びゃ',
+        'b-y-i'                 : 'びぃ',
+        'b-y-u'                 : 'びゅ',
+        'b-y-e'                 : 'びぇ',
+        'b-y-o'                 : 'びょ',
+        'p-y-a'                 : 'ぴゃ',
+        'p-y-i'                 : 'ぴぃ',
+        'p-y-u'                 : 'ぴゅ',
+        'p-y-e'                 : 'ぴぇ',
+        'p-y-o'                 : 'ぴょ',
+        'f-a'                   : 'ふぁ',
+        'f-i'                   : 'ふぃ',
+        'f-u'                   : 'ふ',
+        'f-e'                   : 'ふぇ',
+        'f-o'                   : 'ふぉ',
+        'f-y-a'                 : 'ふゃ',
+        'f-y-i'                 : 'ふぃ',
+        'f-y-u'                 : 'ふゅ',
+        'f-y-e'                 : 'ふぇ',
+        'f-y-o'                 : 'ふょ',
+        'b-w-a'                 : 'ぶぁ', ##2
+        'b-w-e'                 : 'ぶぇ', ##2
+        'b-w-o'                 : 'ぶぉ', ##2
+        'p-w-a'                 : 'ぷぁ', ##2
+        'p-w-e'                 : 'ぷぇ', ##2
+        'p-w-o'                 : 'ぷぉ', ##2
+        'm-a'                   : 'ま',
+        'm-i'                   : 'み',
+        'm-u'                   : 'む',
+        'm-e'                   : 'め',
+        'm-o'                   : 'も',
+        'm-y-a'                 : 'みゃ',
+        'm-y-i'                 : 'みぃ',
+        'm-y-u'                 : 'みゅ',
+        'm-y-e'                 : 'みぇ',
+        'm-y-o'                 : 'みょ',
+        'y-a'                   : 'や',
+        'y-i'                   : 'い',
+        'y-u'                   : 'ゆ',
+        'y-e'                   : 'いぇ',
+        'y-o'                   : 'よ',
+        'l-y-a'                 : 'ゃ',
+        'l-y-i'                 : 'ぃ',
+        'l-y-u'                 : 'ゅ',
+        'l-y-e'                 : 'ぇ',
+        'l-y-o'                 : 'ょ',
+        'x-y-a'                 : 'ゃ',
+        'x-y-i'                 : 'ぃ',
+        'x-y-u'                 : 'ゅ',
+        'x-y-e'                 : 'ぇ',
+        'x-y-o'                 : 'ょ',
+        'r-a'                   : 'ら',
+        'r-i'                   : 'り',
+        'r-u'                   : 'る',
+        'r-e'                   : 'れ',
+        'r-o'                   : 'ろ',
+        'r-y-a'                 : 'りゃ',
+        'r-y-i'                 : 'りぃ',
+        'r-y-u'                 : 'りゅ',
+        'r-y-e'                 : 'りぇ',
+        'r-y-o'                 : 'りょ',
+        'w-a'                   : 'わ',
+        'w-i'                   : 'うぃ',
+        'w-u'                   : 'う',
+        'w-e'                   : 'うぇ',
+        'w-o'                   : 'を',
+        'l-w-a'                 : 'ゎ',
+        'x-w-a'                 : 'ゎ',
+        'n-apostrophe'          : 'ん',
+        'n-n'                   : 'ん',
+        'w-y-i'                 : 'ゐ',
+        'w-y-e'                 : 'ゑ',
+    },
+
+    'kana_typing_rule': {
+        'method': 'jp',
+        'newkeys': [],
+    },
+
+    'kana_typing_rule/jp': {
+        # no modifiers keys
+        '1'             : 'ぬ',
+        '2'             : 'ふ',
+        '3'             : 'あ',
+        '4'             : 'う',
+        '5'             : 'え',
+        '6'             : 'お',
+        '7'             : 'や',
+        '8'             : 'ゆ',
+        '9'             : 'よ',
+        '0'             : 'わ',
+        'minus'         : 'ほ',
+        'asciicircum'   : 'へ',
+
+        'q'             : 'た',
+        'w'             : 'て',
+        'e'             : 'い',
+        'r'             : 'す',
+        't'             : 'か',
+        'y'             : 'ん',
+        'u'             : 'な',
+        'i'             : 'に',
+        'o'             : 'ら',
+        'p'             : 'せ',
+        'at'            : '゛',
+        'bracketleft'   : '゜',
+
+        'a'             : 'ち',
+        's'             : 'と',
+        'd'             : 'し',
+        'f'             : 'は',
+        'g'             : 'き',
+        'h'             : 'く',
+        'j'             : 'ま',
+        'k'             : 'の',
+        'l'             : 'り',
+        'semicolon'     : 'れ',
+        'colon'         : 'け',
+        'bracketright'  : 'む',
+
+        'z'             : 'つ',
+        'x'             : 'さ',
+        'c'             : 'そ',
+        'v'             : 'ひ',
+        'b'             : 'こ',
+        'n'             : 'み',
+        'm'             : 'も',
+        'comma'         : 'ね',
+        'period'        : 'る',
+        'slash'         : 'め',
+        # 'backslash'     : 'ー',
+        'backslash'     : 'ろ',
+
+        # shift modifiered keys
+        'exclam'        : 'ぬ',
+        'quotedbl'      : 'ふ',
+        'numbersign'    : 'ぁ',
+        'dollar'        : 'ぅ',
+        'percent'       : 'ぇ',
+        'ampersand'     : 'ぉ',
+        'apostrophe'    : 'ゃ',
+        'parenleft'     : 'ゅ',
+        'parenright'    : 'ょ',
+        'asciitilde'    : 'を',
+        'equal'         : 'ゑ',
+        'bar'           : 'ー',
+
+        'largeq'        : 'た',
+        'largew'        : 'て',
+        'largee'        : 'ぃ',
+        'larger'        : 'す',
+        'larget'        : 'ヵ',
+        'largey'        : 'ん',
+        'largeu'        : 'な',
+        'largei'        : 'に',
+        'largeo'        : 'ら',
+        'largep'        : 'せ',
+        'grave'         : '゛',
+
+        'braceleft'     : '「',
+
+        'largea'        : 'ち',
+        'larges'        : 'と',
+        'larged'        : 'し',
+        'largef'        : 'ゎ',
+        'largeg'        : 'き',
+        'largeh'        : 'く',
+        'largej'        : 'ま',
+        'largek'        : 'の',
+        'largel'        : 'り',
+        'plus'          : 'れ',
+        'asterisk'      : 'ヶ',
+
+        'braceright'    : '」',
+
+        'largez'        : 'っ',
+        'largex'        : 'さ',
+        'largec'        : 'そ',
+        'largev'        : 'ゐ',
+        'largeb'        : 'こ',
+        'largen'        : 'み',
+        'largem'        : 'も',
+        'less'          : '、',
+        'greater'       : '。',
+
+        'question'      : '・',
+        'underscore'    : 'ろ',
+
+        'yen'           : 'ー',
+    },
+
+    'kana_typing_rule/us': {
+        # no modifiers keys
+        'grave'         : 'ろ',
+        '1'             : 'ぬ',
+        '2'             : 'ふ',
+        '3'             : 'あ',
+        '4'             : 'う',
+        '5'             : 'え',
+        '6'             : 'お',
+        '7'             : 'や',
+        '8'             : 'ゆ',
+        '9'             : 'よ',
+        '0'             : 'わ',
+        'minus'         : 'ほ',
+        'equal'         : 'へ',
+
+        'q'             : 'た',
+        'w'             : 'て',
+        'e'             : 'い',
+        'r'             : 'す',
+        't'             : 'か',
+        'y'             : 'ん',
+        'u'             : 'な',
+        'i'             : 'に',
+        'o'             : 'ら',
+        'p'             : 'せ',
+        'bracketleft'   : '゛',
+        'bracketright'  : '゜',
+        # 'backslash'     : 'ー',
+        'backslash'     : 'む',
+
+        'a'             : 'ち',
+        's'             : 'と',
+        'd'             : 'し',
+        'f'             : 'は',
+        'g'             : 'き',
+        'h'             : 'く',
+        'j'             : 'ま',
+        'k'             : 'の',
+        'l'             : 'り',
+        'semicolon'     : 'れ',
+        'apostrophe'    : 'け',
+
+        'z'             : 'つ',
+        'x'             : 'さ',
+        'c'             : 'そ',
+        'v'             : 'ひ',
+        'b'             : 'こ',
+        'n'             : 'み',
+        'm'             : 'も',
+        'comma'         : 'ね',
+        'period'        : 'る',
+        'slash'         : 'め',
+
+        # shift modifiered keys
+        'asciitilde'    : 'ろ',
+        'exclam'        : 'ぬ',
+        'at'            : 'ふ',
+        'numbersign'    : 'ぁ',
+        'dollar'        : 'ぅ',
+        'percent'       : 'ぇ',
+        'asciicircum'   : 'ぉ',
+        'ampersand'     : 'ゃ',
+        'asterisk'      : 'ゅ',
+        'parenleft'     : 'ょ',
+        'parenright'    : 'を',
+        'underscore'    : 'ー',
+        'plus'          : 'ゑ',
+
+        'largeq'        : 'た',
+        'largew'        : 'て',
+        'largee'        : 'ぃ',
+        'larger'        : 'す',
+        'larget'        : 'ヵ',
+        'largey'        : 'ん',
+        'largeu'        : 'な',
+        'largei'        : 'に',
+        'largeo'        : 'ら',
+        'largep'        : 'せ',
+        'braceleft'     : '「',
+
+        'braceright'    : '」',
+
+        'bar'           : 'む',
+
+        'largea'        : 'ち',
+        'larges'        : 'と',
+        'larged'        : 'し',
+        'largef'        : 'ゎ',
+        'largeg'        : 'き',
+        'largeh'        : 'く',
+        'largej'        : 'ま',
+        'largek'        : 'の',
+        'largel'        : 'り',
+        'colon'         : 'れ',
+        'quotedbl'      : 'ヶ',
+
+        'largez'        : 'っ',
+        'largex'        : 'さ',
+        'largec'        : 'そ',
+        'largev'        : 'ゐ',
+        'largeb'        : 'こ',
+        'largen'        : 'み',
+        'largem'        : 'も',
+        'less'          : '、',
+        'greater'       : '。',
+
+        'question'      : '・',
+    },
+    'thumb': {
+        'keyboard_layout_mode': True,
+        'keyboard_layout': 0,
+        'fmv_extension': 2,
+        'handakuten': False,
+        'rs': 'Henkan',
+        'ls': 'Muhenkan',
+        't1': 100,
+        't2': 75,
+    },
+
+    'thumb_typing_rule': {
+        'method': 'base',
+        'newkeys': [],
+        'nicola_j_table_newkeys': [],
+        'nicola_a_table_newkeys': [],
+        'nicola_f_table_newkeys': [],
+        'kb231_j_fmv_table_newkeys': [],
+        'kb231_a_fmv_table_newkeys': [],
+        'kb231_f_fmv_table_newkeys': [],
+        'kb611_j_fmv_table_newkeys': [],
+        'kb611_a_fmv_table_newkeys': [],
+        'kb611_f_fmv_table_newkeys': [],
+    },
+
+    'thumb_typing_rule/base': {
+        'q'             : ['。', '',   'ぁ'],
+        'w'             : ['か', 'が', 'え'],
+        'e'             : ['た', 'だ', 'り'],
+        'r'             : ['こ', 'ご', 'ゃ'],
+        't'             : ['さ', 'ざ', 'れ'],
+
+        'y'             : ['ら', 'よ', 'ぱ'],
+        'u'             : ['ち', 'に', 'ぢ'],
+        'i'             : ['く', 'る', 'ぐ'],
+        'o'             : ['つ', 'ま', 'づ'],
+        'p'             : ['，',  'ぇ', 'ぴ'],
+        'at'            : ['、', '',   ''],
+        'bracketleft'   : ['゛', '゜', ''],
+
+        'a'             : ['う', '',   'を'],
+        's'             : ['し', 'じ', 'あ'],
+        'd'             : ['て', 'で', 'な'],
+        'f'             : ['け', 'げ', 'ゅ'],
+        'g'             : ['せ', 'ぜ', 'も'],
+
+        'h'             : ['は', 'み', 'ば'],
+        'j'             : ['と', 'お', 'ど'],
+        'k'             : ['き', 'の', 'ぎ'],
+        'l'             : ['い', 'ょ', 'ぽ'],
+        'semicolon'     : ['ん', 'っ', ''],
+
+        'z'             : ['．',  '',   'ぅ'],
+        'x'             : ['ひ', 'び', 'ー'],
+        'c'             : ['す', 'ず', 'ろ'],
+        'v'             : ['ふ', 'ぶ', 'や'],
+        'b'             : ['へ', 'べ', 'ぃ'],
+
+        'n'             : ['め', 'ぬ', 'ぷ'],
+        'm'             : ['そ', 'ゆ', 'ぞ'],
+        'comma'         : ['ね', 'む', 'ぺ'],
+        'period'        : ['ほ', 'わ', 'ぼ'],
+        'slash'         : ['・', 'ぉ', ''],
+
+        '1'             : ['1',  '',   '？'],
+        '2'             : ['2',  '',   '／'],
+        '4'             : ['4',  '',   '「'],
+        '5'             : ['5',  '',   '」'],
+
+        '6'             : ['6',  '［',  ''],
+        '7'             : ['7',  '］',  ''],
+        '8'             : ['8',  '（',  ''],
+        '9'             : ['9',  '）',  ''],
+        'backslash'     : ['￥', '',  ''],
+    },
+
+    'thumb_typing_rule/nicola_j_table': {
+        'colon'         : ['：', '',   ''],
+        'at'            : ['、', '',   ''],
+        'bracketleft'   : ['゛', '゜', ''],
+        'bracketright'  : ['」', '',   ''],
+        '8'             : ['8',  '（', ''],
+        '9'             : ['9',  '）', ''],
+        '0'             : ['0',  '',   ''],
+    },
+
+    'thumb_typing_rule/nicola_a_table': {
+        'colon'         : ['：', '',   ''],
+        'at'            : ['＠', '',   ''],
+        'bracketleft'   : ['、', '',   ''],
+        'bracketright'  : ['゛', '゜', ''],
+        '8'             : ['8',  '',   ''],
+        '9'             : ['9',  '（', ''],
+        '0'             : ['0',  '）', ''],
+    },
+
+    'thumb_typing_rule/nicola_f_table': {
+        'colon'         : ['、', '',   ''],
+        'at'            : ['＠', '',   ''],
+        'bracketleft'   : ['゛', '゜', ''],
+        'bracketright'  : ['」', '',   ''],
+        '8'             : ['8',  '（', ''],
+        '9'             : ['9',  '）', ''],
+        '0'             : ['0',  '',   ''],
+    },
+
+    'thumb_typing_rule/kb231_j_fmv_table': {
+        '3'             : ['3',  '',   '～'],
+        '0'             : ['0',  '『', ''],
+        'minus'         : ['-',  '』', ''],
+        'equal'         : ['=',  '',   ''],
+    },
+
+    'thumb_typing_rule/kb231_a_fmv_table': {
+        '3'             : ['3',  '',   '～'],
+        '0'             : ['0',  '）', ''],
+        'minus'         : ['-',  '『', ''],
+        'equal'         : ['=',  '』', ''],
+    },
+
+    'thumb_typing_rule/kb231_f_fmv_table': {
+        '3'             : ['3',  '',   '～'],
+        '0'             : ['0',  '『', ''],
+        'minus'         : ['-',  '』', ''],
+        'equal'         : ['=',  '',   ''],
+    },
+
+    'thumb_typing_rule/kb611_j_fmv_table': {
+        'grave'         :  ['‘', '',   ''],
+        'asciicircum'   :  ['々', '£',  ''],
+        'colon'         :  ['：', '',   ''],
+        'at'            :  ['、', '¢',  ''],
+        'bracketleft'   :  ['゛', '゜', ''],
+        # keysyms are same and keycodes depend on the platforms.
+        #'￥'            : [u'￥', u'¬',  u''],
+        'backslash'     : ['￥', '¦',  ''],
+    },
+
+    'thumb_typing_rule/kb611_a_fmv_table': {
+        'grave'         :  ['々', '',   '£'],
+        'colon'         :  ['：', '',   ''],
+        'at'            :  ['＠', '',   ''],
+        'bracketleft'   :  ['、', '¢',  ''],
+        #'￥'            : [u'￥', u'¬',  u''],
+        'backslash'     : ['￥', '¦',  ''],
+    },
+
+    'thumb_typing_rule/kb611_f_fmv_table': {
+        'grave'         :  ['‘', '',   ''],
+        'asciicircum'   :  ['々', '£',  ''],
+        'colon'         :  ['、', '¢',  ''],
+        'at'            :  ['＠', '',   ''],
+        'bracketleft'   :  ['゛', '゜', ''],
+        #'￥'            : [u'￥', u'¬',  u''],
+        'backslash'     : ['￥', '¦',  ''],
+    },
+
+    'dict': {
+        'zipcode': ['@pkgdatadir@/dicts/zipcode.t'],
+        'symbol': ['@pkgdatadir@/dicts/symbol.t'],
+        'oldchar': ['@pkgdatadir@/dicts/oldchar.t'],
+        'era': ['@pkgdatadir@/dicts/era.t'],
+        'files': [
+            '@pkgdatadir@/dicts/zipcode.t',
+            '@pkgdatadir@/dicts/symbol.t',
+            '@pkgdatadir@/dicts/oldchar.t',
+            '@pkgdatadir@/dicts/era.t',
+        ],
+    },
+
+    'dict/file/default': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': None,
+        'long_label': None,
+        'preview_lines': 30,
+        'reverse': False,
+        'is_system': False,
+        'encoding': 'utf-8',
+    },
+
+    'dict/file/embedded': {
+        'embed': True,
+        'single': True,
+        'icon': None,
+        'short_label': '般',
+        'long_label': N_("General"),
+        'preview_lines': 0,
+        'reverse': False,
+        'is_system': True,
+    },
+
+    'dict/file/zipcode': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': '〒',
+        'long_label': N_("Zip Code Conversion"),
+        'preview_lines': 30,
+        'reverse': False,
+        'is_system': True,
+    },
+
+    'dict/file/symbol': {
+        'embed': True,
+        'single': False,
+        'icon': None,
+        'short_label': '記',
+        'long_label': N_("Symbol"),
+        'preview_lines': -1,
+        'reverse': False,
+        'is_system': True,
+    },
+
+    'dict/file/oldchar': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': '旧',
+        'long_label': N_("Old Character Style"),
+        'preview_lines': -1,
+        'reverse': False,
+        'is_system': True,
+    },
+    'dict/file/era': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': '年',
+        'long_label': N_("Era"),
+        'preview_lines': -1,
+        'reverse': False,
+        'is_system': True,
+    },
+}
+
+_shortcut_default = {
+    'on_off': [@ON_OFF_KEYS@],
+    'circle_input_mode': ['Ctrl+comma', 'Ctrl+less'],
+    # Removed Hiragana_Katakana key in circle_kana_mode for latin_with_shift.
+    'circle_kana_mode': ['Ctrl+period', 'Ctrl+greater'],
+#    'cancel_pseudo_ascii_mode_key': ['Escape'],
+    'circle_typing_method': ['Alt+Romaji', 'Ctrl+slash'],
+    'circle_dict_method': ['Alt+Henkan'],
+
+    'insert_space': ['space'],
+    'insert_alternate_space': ['Shift+space'],
+    'backspace': ['BackSpace', 'Ctrl+H'],
+    'delete': ['Delete', 'Ctrl+D'],
+    'commit': ['Return', 'KP_Enter', 'Ctrl+J', 'Ctrl+M'],
+    'convert': ['space', 'KP_Space', 'Henkan'],
+    'predict': ['Tab', 'ISO_Left_Tab'],
+    'cancel': ['Escape', 'Ctrl+G'],
+    'reconvert': ['Shift+Henkan'],
+
+    'move_caret_first': ['Ctrl+A', 'Home'],
+    'move_caret_last': ['Ctrl+E', 'End'],
+    'move_caret_forward': ['Right', 'Ctrl+F'],
+    'move_caret_backward': ['Left', 'Ctrl+B'],
+
+    'select_first_segment': ['Ctrl+A', 'Home'],
+    'select_last_segment': ['Ctrl+E', 'End'],
+    'select_next_segment': ['Right', 'Ctrl+F'],
+    'select_prev_segment': ['Left', 'Ctrl+B'],
+    'shrink_segment': ['Shift+Left', 'Ctrl+I'],
+    'expand_segment': ['Shift+Right', 'Ctrl+O'],
+    'commit_first_segment': ['Shift+Down'],
+    'commit_selected_segment': ['Ctrl+Down'],
+
+    'select_first_candidate': ['Home'],
+    'select_last_candidate': ['End'],
+    'select_next_candidate': ['space', 'KP_Space', 'Tab', 'ISO_Left_Tab', 'Henkan', 'Down', 'KP_Add', 'Ctrl+N'],
+    'select_prev_candidate': ['Shift+Tab', 'Shift+ISO_Left_Tab', 'Up', 'KP_Subtract', 'Ctrl+P'],
+    'candidates_page_up': ['Page_Up'],
+    'candidates_page_down': ['Page_Down', 'KP_Tab'],
+
+    'select_candidates_1': ['1'],
+    'select_candidates_2': ['2'],
+    'select_candidates_3': ['3'],
+    'select_candidates_4': ['4'],
+    'select_candidates_5': ['5'],
+    'select_candidates_6': ['6'],
+    'select_candidates_7': ['7'],
+    'select_candidates_8': ['8'],
+    'select_candidates_9': ['9'],
+    'select_candidates_0': ['0'],
+
+    'convert_to_char_type_forward': ['Muhenkan'],
+    'convert_to_hiragana': ['F6'],
+    'convert_to_katakana': ['F7'],
+    'convert_to_half': ['F8'],
+    'convert_to_half_katakana': ['Shift+F8'],
+    'convert_to_wide_latin': ['F9'],
+    'convert_to_latin': ['F10'],
+
+    'dict_admin': ['F11'],
+    'add_word': ['F12'],
+
+    'hiragana_for_latin_with_shift': ['Hiragana_Katakana'],
+}
+
+_config['shortcut/default'] = dict.fromkeys(_cmd_keys, [])
+_config['shortcut/default'].update(_shortcut_default)
+
+_shortcut_atok = {
+    'on_off': ['Henkan', 'Eisu_toggle', 'Zenkaku_Hankaku'],
+    'circle_input_mode': ['F10'],
+    'hiragana_mode': ['Hiragana_Katakana'],
+    'katakana_mode': ['Shift+Hiragana_Katakana'],
+    'circle_typing_method': ['Romaji', 'Alt+Romaji'],
+    'circle_dict_method': ['Alt+Henkan'],
+    'convert': ['space', 'Henkan', 'Shift+space', 'Shift+Henkan'],
+    'predict': ['Tab'],
+    'cancel': ['Escape', 'BackSpace', 'Ctrl+H', 'Ctrl+bracketleft'],
+    'commit': ['Return', 'Ctrl+M'],
+    'reconvert': ['Shift+Henkan'],
+
+    'insert_space': ['space'],
+    'insert_alternate_space': ['Shift+space'],
+    'backspace': ['BackSpace', 'Ctrl+H'],
+    'delete': ['Delete', 'Ctrl+G'],
+
+    'move_caret_backward': ['Left', 'Ctrl+K'],
+    'move_caret_forward': ['Right', 'Ctrl+L'],
+    'move_caret_first': ['Ctrl+Left'],
+    'move_caret_last': ['Ctrl+Right'],
+
+    'select_prev_segment': ['Shift+Left'],
+    'select_next_segment': ['Shift+Right'],
+    'select_first_segment': ['Ctrl+Left'],
+    'select_last_segment': ['Ctrl+Right'],
+    'expand_segment': ['Right', 'Ctrl+L'],
+    'shrink_segment': ['Left', 'Ctrl+K'],
+    'commit_selected_segment': ['Down', 'Ctrl+N'],
+
+    'candidates_page_up': ['Shift+Henkan', 'Page_Up'],
+    'candidates_page_down': ['Henkan', 'Page_Down'],
+    'select_next_candidate': ['space', 'Tab', 'Henkan', 'Shift+space', 'Shift+Henkan'],
+    'select_prev_candidate': ['Up'],
+
+    'select_candidates_1': ['1'],
+    'select_candidates_2': ['2'],
+    'select_candidates_3': ['3'],
+    'select_candidates_4': ['4'],
+    'select_candidates_5': ['5'],
+    'select_candidates_6': ['6'],
+    'select_candidates_7': ['7'],
+    'select_candidates_8': ['8'],
+    'select_candidates_9': ['9'],
+    'select_candidates_0': ['0'],
+
+    'convert_to_hiragana': ['F6', 'Ctrl+U'],
+    'convert_to_katakana': ['F7', 'Ctrl+I'],
+    'convert_to_half': ['F8', 'Ctrl+O'],
+    'convert_to_half_katakana': ['Shift+F8'],
+    'convert_to_wide_latin': ['F9', 'Ctrl+P'],
+    'convert_to_latin': ['F10', 'Ctrl+at'],
+
+    'dict_admin': ['F11'],
+    'add_word': ['Ctrl+F7'],
+
+    'hiragana_for_latin_with_shift': ['Ctrl+J'],
+}
+
+_config['shortcut/atok'] = dict.fromkeys(_cmd_keys, [])
+_config['shortcut/atok'].update(_shortcut_atok)
+
+_shortcut_wnn = {
+    'on_off': ['Shift+space'],
+    'convert': ['space'],
+    'predict': ['Ctrl+Q'],
+    'cancel': ['Escape', 'Ctrl+G', 'Alt+Down', 'Muhenkan'],
+    'commit': ['Ctrl+L', 'Ctrl+M', 'Ctrl+J', 'Return'],
+    'insert_space': ['space'],
+    'backspace': ['Ctrl+H', 'BackSpace'],
+    'delete': ['Ctrl+D', 'Delete'],
+    'circle_dict_method': ['Alt+Henkan'],
+
+    'move_caret_backward': ['Ctrl+B', 'Left'],
+    'move_caret_forward': ['Ctrl+F', 'Right'],
+    'move_caret_first': ['Ctrl+A', 'Alt+Left'],
+    'move_caret_last': ['Ctrl+E', 'Alt+Right'],
+
+    'select_prev_segment': ['Ctrl+B', 'Left'],
+    'select_next_segment': ['Ctrl+F', 'Right'],
+    'select_first_segment': ['Ctrl+A', 'Alt+Left'],
+    'select_last_segment': ['Ctrl+E', 'Alt+Right'],
+    'expand_segment': ['Ctrl+O', 'F14'],
+    'shrink_segment': ['Ctrl+I', 'F13'],
+
+    'candidates_page_up': ['Tab'],
+    'candidates_page_down': ['Shift+Tab'],
+    'select_next_candidate': ['space', 'Ctrl+Q', 'Ctrl+P', 'Down'],
+    'select_prev_candidate': ['Ctrl+N', 'Up'],
+
+    'select_candidates_1': ['1'],
+    'select_candidates_2': ['2'],
+    'select_candidates_3': ['3'],
+    'select_candidates_4': ['4'],
+    'select_candidates_5': ['5'],
+    'select_candidates_6': ['6'],
+    'select_candidates_7': ['7'],
+    'select_candidates_8': ['8'],
+    'select_candidates_9': ['9'],
+    'select_candidates_0': ['0'],
+
+    'convert_to_hiragana': ['F6'],
+    'convert_to_katakana': ['F7'],
+    'convert_to_half': ['F8'],
+    'convert_to_wide_latin': ['F9'],
+    'convert_to_latin': ['F10'],
+
+    'dict_admin': ['F11'],
+    'add_word': ['F12'],
+
+    'hiragana_for_latin_with_shift': ['Hiragana_Katakana'],
+}
+
+_config['shortcut/wnn'] = dict.fromkeys(_cmd_keys, [])
+_config['shortcut/wnn'].update(_shortcut_wnn)
+

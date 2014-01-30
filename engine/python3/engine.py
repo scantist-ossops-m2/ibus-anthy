@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import binascii
 import os
 from os import environ, path
 import signal
@@ -61,7 +62,7 @@ INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
 INPUT_MODE_HALF_WIDTH_KATAKANA, \
 INPUT_MODE_LATIN, \
-INPUT_MODE_WIDE_LATIN = range(5)
+INPUT_MODE_WIDE_LATIN = list(range(5))
 
 CONV_MODE_OFF, \
 CONV_MODE_ANTHY, \
@@ -76,16 +77,16 @@ CONV_MODE_WIDE_LATIN_0, \
 CONV_MODE_WIDE_LATIN_1, \
 CONV_MODE_WIDE_LATIN_2, \
 CONV_MODE_WIDE_LATIN_3, \
-CONV_MODE_PREDICTION = range(14)
+CONV_MODE_PREDICTION = list(range(14))
 
 SEGMENT_DEFAULT         = 0
 SEGMENT_SINGLE          = 1 << 0
 SEGMENT_IMMEDIATE       = 1 << 1
 
-CLIPBOARD_RECONVERT = range(1)
+CLIPBOARD_RECONVERT = list(range(1))
 
 LINK_DICT_EMBEDDED, \
-LINK_DICT_SINGLE = range(2)
+LINK_DICT_SINGLE = list(range(2))
 
 IMPORTED_EMBEDDED_DICT_DIR = 'imported_words_default.d'
 IMPORTED_EMBEDDED_DICT_PREFIX = 'ibus__'
@@ -178,7 +179,7 @@ class Engine(IBus.EngineSimple):
     def __reset(self):
         self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode,
                                                      self.__latin_with_shift)
-        self.__convert_chars = u''
+        self.__convert_chars = ''
         self.__cursor_pos = 0
         self.__convert_mode = CONV_MODE_OFF
         self.__segments = list()
@@ -205,7 +206,7 @@ class Engine(IBus.EngineSimple):
         if not self.__prefs.get_value('common', 'show-preferences'):
             return anthy_props
 
-        anthy_props.append(IBus.Property(key=u'setup',
+        anthy_props.append(IBus.Property(key='setup',
                                          label=IBus.Text.new_from_string(_("Preferences - Anthy")),
                                          icon=config.ICON_PREFERENCE,
                                          tooltip=IBus.Text.new_from_string(_("Configure Anthy")),
@@ -247,7 +248,7 @@ class Engine(IBus.EngineSimple):
         # It will be "Input Mode (A)" for example.
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Input mode"), 'symbol' : symbol }
-        input_mode_prop = IBus.Property(key=u'InputMode',
+        input_mode_prop = IBus.Property(key='InputMode',
                                         prop_type=IBus.PropType.MENU,
                                         label=IBus.Text.new_from_string(label),
                                         symbol=IBus.Text.new_from_string(symbol),
@@ -257,10 +258,10 @@ class Engine(IBus.EngineSimple):
                                         visible=True,
                                         state=IBus.PropState.UNCHECKED,
                                         sub_props=None)
-        self.__prop_dict[u'InputMode'] = input_mode_prop
+        self.__prop_dict['InputMode'] = input_mode_prop
 
         props = IBus.PropList()
-        props.append(IBus.Property(key=u'InputMode.Hiragana',
+        props.append(IBus.Property(key='InputMode.Hiragana',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Hiragana")),
                                    icon=None,
@@ -269,7 +270,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'InputMode.Katakana',
+        props.append(IBus.Property(key='InputMode.Katakana',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Katakana")),
                                    icon=None,
@@ -278,7 +279,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'InputMode.HalfWidthKatakana',
+        props.append(IBus.Property(key='InputMode.HalfWidthKatakana',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Halfwidth Katakana")),
                                    icon=None,
@@ -287,7 +288,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'InputMode.Latin',
+        props.append(IBus.Property(key='InputMode.Latin',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Latin")),
                                    icon=None,
@@ -296,7 +297,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'InputMode.WideLatin',
+        props.append(IBus.Property(key='InputMode.WideLatin',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Wide Latin")),
                                    icon=None,
@@ -335,7 +336,7 @@ class Engine(IBus.EngineSimple):
         symbol = 'R'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Typing method"), 'symbol' : symbol }
-        typing_mode_prop = IBus.Property(key=u'TypingMode',
+        typing_mode_prop = IBus.Property(key='TypingMode',
                                          prop_type=IBus.PropType.MENU,
                                          label=IBus.Text.new_from_string(label),
                                          symbol=IBus.Text.new_from_string(symbol),
@@ -345,10 +346,10 @@ class Engine(IBus.EngineSimple):
                                          visible=True,
                                          state=IBus.PropState.UNCHECKED,
                                          sub_props=None)
-        self.__prop_dict[u'TypingMode'] = typing_mode_prop
+        self.__prop_dict['TypingMode'] = typing_mode_prop
 
         props = IBus.PropList()
-        props.append(IBus.Property(key=u'TypingMode.Romaji',
+        props.append(IBus.Property(key='TypingMode.Romaji',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Romaji")),
                                    icon=None,
@@ -357,7 +358,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'TypingMode.Kana',
+        props.append(IBus.Property(key='TypingMode.Kana',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Kana")),
                                    icon=None,
@@ -366,7 +367,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'TypingMode.ThumbShift',
+        props.append(IBus.Property(key='TypingMode.ThumbShift',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Thumb shift")),
                                    icon=None,
@@ -402,7 +403,7 @@ class Engine(IBus.EngineSimple):
         symbol = '連'
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
-        segment_mode_prop = IBus.Property(key=u'SegmentMode',
+        segment_mode_prop = IBus.Property(key='SegmentMode',
                                           prop_type=IBus.PropType.MENU,
                                           label=IBus.Text.new_from_string(label),
                                           symbol=IBus.Text.new_from_string(symbol),
@@ -412,10 +413,10 @@ class Engine(IBus.EngineSimple):
                                           visible=True,
                                           state=IBus.PropState.UNCHECKED,
                                           sub_props=None)
-        self.__prop_dict[u'SegmentMode'] = segment_mode_prop
+        self.__prop_dict['SegmentMode'] = segment_mode_prop
 
         props = IBus.PropList()
-        props.append(IBus.Property(key=u'SegmentMode.Multi',
+        props.append(IBus.Property(key='SegmentMode.Multi',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Multiple segment")),
                                    icon=None,
@@ -424,7 +425,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'SegmentMode.Single',
+        props.append(IBus.Property(key='SegmentMode.Single',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Single segment")),
                                    icon=None,
@@ -433,7 +434,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'SegmentMode.ImmediateMulti',
+        props.append(IBus.Property(key='SegmentMode.ImmediateMulti',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Immediate conversion (multiple segment)")),
                                    icon=None,
@@ -442,7 +443,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'SegmentMode.ImmediateSingle',
+        props.append(IBus.Property(key='SegmentMode.ImmediateSingle',
                                    prop_type=IBus.PropType.RADIO,
                                    label=IBus.Text.new_from_string(_("Immediate conversion (single segment)")),
                                    icon=None,
@@ -478,7 +479,7 @@ class Engine(IBus.EngineSimple):
                                              'short_label')
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : short_label }
-        dict_mode_prop = IBus.Property(key=u'DictMode',
+        dict_mode_prop = IBus.Property(key='DictMode',
                                        prop_type=IBus.PropType.MENU,
                                        label=IBus.Text.new_from_string(label),
                                        symbol=IBus.Text.new_from_string(short_label),
@@ -488,15 +489,15 @@ class Engine(IBus.EngineSimple):
                                        visible=True,
                                        state=IBus.PropState.UNCHECKED,
                                        sub_props=None)
-        self.__prop_dict[u'DictMode'] = dict_mode_prop
+        self.__prop_dict['DictMode'] = dict_mode_prop
         props = IBus.PropList()
 
         long_label = self.__prefs.get_value('dict/file/embedded',
                                             'long_label')
-        props.append(IBus.Property(key=u'DictMode.embedded',
+        props.append(IBus.Property(key='DictMode.embedded',
                                    prop_type=IBus.PropType.RADIO,
                                    # if long_label is UTF-8
-                                   label=IBus.Text.new_from_string(UN(_(long_label))),
+                                   label=IBus.Text.new_from_string(_(long_label)),
                                    icon=None,
                                    tooltip=None,
                                    sensitive=True,
@@ -518,13 +519,12 @@ class Engine(IBus.EngineSimple):
             if long_label == None:
                 continue
 
-            # if long_label is UTF-8
             if 'is_system' in self.__prefs.keys(section) and \
                self.__prefs.get_value(section, 'is_system'):
-                uni_long_label = UN(_(long_label))
+                uni_long_label = _(long_label)
             else:
-                uni_long_label = UN(long_label)
-            props.append(IBus.Property(key=UN(key),
+                uni_long_label = long_label
+            props.append(IBus.Property(key=key,
                                        prop_type=IBus.PropType.RADIO,
                                        label=IBus.Text.new_from_string(uni_long_label),
                                        icon=None,
@@ -567,15 +567,14 @@ class Engine(IBus.EngineSimple):
         if not path.exists(admin_command[0]):
             return
         label = _("Dictionary - Anthy")
-        # if icon_path is UTF-8
         if icon_path and path.exists(icon_path):
-            icon = UN(icon_path)
+            icon = icon_path
         else:
             # Translators: "Dic" means 'dictionary', One kanji may be good.
             label = _("Dic")
-            icon = u''
+            icon = ''
 
-        dict_prop = IBus.Property(key=u'setup-dict-kasumi',
+        dict_prop = IBus.Property(key='setup-dict-kasumi',
                                   prop_type=IBus.PropType.MENU,
                                   label=IBus.Text.new_from_string(label),
                                   icon=icon,
@@ -584,10 +583,10 @@ class Engine(IBus.EngineSimple):
                                   visible=True,
                                   state=IBus.PropState.UNCHECKED,
                                   sub_props=None)
-        self.__prop_dict[u'setup-dict-kasumi'] = dict_prop
+        self.__prop_dict['setup-dict-kasumi'] = dict_prop
 
         props = IBus.PropList()
-        props.append(IBus.Property(key=u'setup-dict-kasumi-admin',
+        props.append(IBus.Property(key='setup-dict-kasumi-admin',
                                    prop_type=IBus.PropType.NORMAL,
                                    label=IBus.Text.new_from_string(_("Edit dictionaries")),
                                    icon=icon,
@@ -596,7 +595,7 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        props.append(IBus.Property(key=u'setup-dict-kasumi-word',
+        props.append(IBus.Property(key='setup-dict-kasumi-word',
                                    prop_type=IBus.PropType.NORMAL,
                                    label=IBus.Text.new_from_string(_("Add words")),
                                    icon=icon,
@@ -679,8 +678,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
-        # if candidate is UTF-8
-        candidate = UN(self.__lookup_table.get_candidate(index).get_text())
+        candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
         return True
@@ -694,8 +692,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
-        # if candidate is UTF-8
-        candidate = UN(self.__lookup_table.get_candidate(index).get_text())
+        candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
         return True
@@ -710,8 +707,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
-        # if candidate is UTF-8
-        candidate = UN(self.__lookup_table.get_candidate(index).get_text())
+        candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
         return True
@@ -726,8 +722,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         index = self.__lookup_table.get_cursor_pos()
-        # if candidate is UTF-8
-        candidate = UN(self.__lookup_table.get_candidate(index).get_text())
+        candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
         return True
@@ -748,9 +743,9 @@ class Engine(IBus.EngineSimple):
         self.__context.resize_segment(self.__cursor_pos, relative_size)
         nr_segments = self.__context.get_nr_segments()
         del self.__segments[self.__cursor_pos:]
-        for i in xrange(self.__cursor_pos, nr_segments):
+        for i in range(self.__cursor_pos, nr_segments):
             buf = self.__context.get_segment(i, 0)
-            text = UN(buf)
+            text = buf
             self.__segments.append((0, text))
         self.__lookup_table_visible = False
         self.__fill_lookup_table()
@@ -762,16 +757,16 @@ class Engine(IBus.EngineSimple):
         if state == IBus.PropState.CHECKED:
             if prop_name == None:
                 return
-            elif prop_name.startswith(u'InputMode.'):
+            elif prop_name.startswith('InputMode.'):
                 self.__input_mode_activate(prop_name, state)
                 return
-            elif prop_name.startswith(u'TypingMode.'):
+            elif prop_name.startswith('TypingMode.'):
                 self.__typing_mode_activate(prop_name, state)
                 return
-            elif prop_name.startswith(u'SegmentMode.'):
+            elif prop_name.startswith('SegmentMode.'):
                 self.__segment_mode_activate(prop_name, state)
                 return
-            elif prop_name.startswith(u'DictMode.'):
+            elif prop_name.startswith('DictMode.'):
                 self.__dict_mode_activate(prop_name, state)
                 return
         else:
@@ -792,11 +787,11 @@ class Engine(IBus.EngineSimple):
 
     def __input_mode_activate(self, prop_name, state):
         input_modes = {
-            u'InputMode.Hiragana' : (INPUT_MODE_HIRAGANA, 'あ'),
-            u'InputMode.Katakana' : (INPUT_MODE_KATAKANA, 'ア'),
-            u'InputMode.HalfWidthKatakana' : (INPUT_MODE_HALF_WIDTH_KATAKANA, '_ｱ'),
-            u'InputMode.Latin' : (INPUT_MODE_LATIN, '_A'),
-            u'InputMode.WideLatin' : (INPUT_MODE_WIDE_LATIN, 'Ａ'),
+            'InputMode.Hiragana' : (INPUT_MODE_HIRAGANA, 'あ'),
+            'InputMode.Katakana' : (INPUT_MODE_KATAKANA, 'ア'),
+            'InputMode.HalfWidthKatakana' : (INPUT_MODE_HALF_WIDTH_KATAKANA, '_ｱ'),
+            'InputMode.Latin' : (INPUT_MODE_LATIN, '_A'),
+            'InputMode.WideLatin' : (INPUT_MODE_WIDE_LATIN, 'Ａ'),
         }
 
         if prop_name not in input_modes:
@@ -810,7 +805,7 @@ class Engine(IBus.EngineSimple):
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Input mode"), 'symbol' : symbol }
         Engine.__input_mode = mode
-        prop = self.__prop_dict[u'InputMode']
+        prop = self.__prop_dict['InputMode']
         prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
@@ -820,9 +815,9 @@ class Engine(IBus.EngineSimple):
 
     def __typing_mode_activate(self, prop_name, state):
         typing_modes = {
-            u'TypingMode.Romaji' : (jastring.TYPING_MODE_ROMAJI, 'R'),
-            u'TypingMode.Kana' : (jastring.TYPING_MODE_KANA, 'か'),
-            u'TypingMode.ThumbShift' : (jastring.TYPING_MODE_THUMB_SHIFT, '親'),
+            'TypingMode.Romaji' : (jastring.TYPING_MODE_ROMAJI, 'R'),
+            'TypingMode.Kana' : (jastring.TYPING_MODE_KANA, 'か'),
+            'TypingMode.ThumbShift' : (jastring.TYPING_MODE_THUMB_SHIFT, '親'),
         }
 
         if prop_name not in typing_modes:
@@ -830,7 +825,7 @@ class Engine(IBus.EngineSimple):
             return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
-        if prop_name == u'TypingMode.ThumbShift':
+        if prop_name == 'TypingMode.ThumbShift':
             self._reset_thumb()
 
         mode, symbol = typing_modes[prop_name]
@@ -838,7 +833,7 @@ class Engine(IBus.EngineSimple):
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Typing method"), 'symbol' : symbol }
         Engine.__typing_mode = mode
-        prop = self.__prop_dict[u'TypingMode']
+        prop = self.__prop_dict['TypingMode']
         prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
@@ -847,14 +842,14 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
 
     def __refresh_typing_mode_property(self):
-        if u'TypingMode' not in self.__prop_dict:
+        if 'TypingMode' not in self.__prop_dict:
             return
 
-        prop = self.__prop_dict[u'TypingMode']
+        prop = self.__prop_dict['TypingMode']
         modes = {
-            jastring.TYPING_MODE_ROMAJI : (u'TypingMode.Romaji', 'R'),
-            jastring.TYPING_MODE_KANA : (u'TypingMode.Kana', 'か'),
-            jastring.TYPING_MODE_THUMB_SHIFT : (u'TypingMode.ThumbShift', '親'),
+            jastring.TYPING_MODE_ROMAJI : ('TypingMode.Romaji', 'R'),
+            jastring.TYPING_MODE_KANA : ('TypingMode.Kana', 'か'),
+            jastring.TYPING_MODE_THUMB_SHIFT : ('TypingMode.ThumbShift', '親'),
         }
         prop_name, symbol = modes.get(Engine.__typing_mode, (None, None))
         if prop_name == None or symbol == None:
@@ -870,10 +865,10 @@ class Engine(IBus.EngineSimple):
 
     def __segment_mode_activate(self, prop_name, state):
         segment_modes = {
-            u'SegmentMode.Multi' : (SEGMENT_DEFAULT, '連'),
-            u'SegmentMode.Single' : (SEGMENT_SINGLE, '単'),
-            u'SegmentMode.ImmediateMulti' : (SEGMENT_IMMEDIATE, '逐|連'),
-            u'SegmentMode.ImmediateSingle' :
+            'SegmentMode.Multi' : (SEGMENT_DEFAULT, '連'),
+            'SegmentMode.Single' : (SEGMENT_SINGLE, '単'),
+            'SegmentMode.ImmediateMulti' : (SEGMENT_IMMEDIATE, '逐|連'),
+            'SegmentMode.ImmediateSingle' :
                 (SEGMENT_IMMEDIATE | SEGMENT_SINGLE, '逐|単'),
         }
 
@@ -888,7 +883,7 @@ class Engine(IBus.EngineSimple):
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Segment mode"), 'symbol' : symbol }
         Engine.__segment_mode = mode
-        prop = self.__prop_dict[u'SegmentMode']
+        prop = self.__prop_dict['SegmentMode']
         prop.set_symbol(IBus.Text.new_from_string(symbol))
         prop.set_label(IBus.Text.new_from_string(label))
         self.update_property(prop)
@@ -906,7 +901,7 @@ class Engine(IBus.EngineSimple):
         return 'DictMode.' + id
 
     def __dict_mode_activate(self, prop_name, state):
-        if prop_name not in self.__prop_dict.keys():
+        if prop_name not in list(self.__prop_dict.keys()):
             # The prop_name is added. Need to restart.
             return
         i = prop_name.find('.')
@@ -944,7 +939,7 @@ class Engine(IBus.EngineSimple):
         # dict_name is unicode but the argument is str.
         self.__context.do_set_personality(str(dict_name))
 
-        prop = self.__prop_dict[u'DictMode']
+        prop = self.__prop_dict['DictMode']
         section = 'dict/file/' + id
         symbol = self.__prefs.get_value(section, 'short_label')
         label = _("%(description)s (%(symbol)s)") % \
@@ -1012,7 +1007,7 @@ class Engine(IBus.EngineSimple):
     def __normalize_preedit(self, preedit):
         if not self.__is_utf8:
             return preedit
-        for key in romaji_normalize_rule.keys():
+        for key in list(romaji_normalize_rule.keys()):
             if preedit.find(key) >= 0:
                 for value in romaji_normalize_rule[key]:
                     preedit = preedit.replace(key, value)
@@ -1030,14 +1025,14 @@ class Engine(IBus.EngineSimple):
         text, cursor = self.__preedit_ja_string.get_hiragana(True)
 
         text = self.__normalize_preedit(text)
-        self.__context.set_string(text.encode('utf8'))
+        self.__context.set_string(text)
         if Engine.__segment_mode & SEGMENT_SINGLE:
             self.__join_all_segments()
         nr_segments = self.__context.get_nr_segments()
 
-        for i in xrange(0, nr_segments):
+        for i in range(0, nr_segments):
             buf = self.__context.get_segment(i, 0)
-            text = UN(buf)
+            text = buf
             self.__segments.append((0, text))
 
         if Engine.__segment_mode & SEGMENT_IMMEDIATE:
@@ -1052,7 +1047,7 @@ class Engine(IBus.EngineSimple):
             return
 
         self.__convert_mode = CONV_MODE_OFF
-        self.__convert_chars = u''
+        self.__convert_chars = ''
         self.__segments = list()
         self.__cursor_pos = 0
         self.__lookup_table.clear()
@@ -1065,7 +1060,7 @@ class Engine(IBus.EngineSimple):
     def __candidate_cb(self, candidate):
         if not self.__is_utf8:
             return
-        for key in romaji_utf8_rule.keys():
+        for key in list(romaji_utf8_rule.keys()):
             if candidate.find(key) >= 0:
                 for value in romaji_utf8_rule[key]:
                     candidate = candidate.replace(key, value)
@@ -1077,9 +1072,9 @@ class Engine(IBus.EngineSimple):
 
             # fill lookup_table
             self.__lookup_table.clear()
-            for i in xrange(0, seg_stat.nr_predictions):
+            for i in range(0, seg_stat.nr_predictions):
                 buf = self.__context.get_prediction(i)
-                candidate = UN(buf)
+                candidate = buf
                 self.__lookup_table.append_candidate(IBus.Text.new_from_string(candidate))
                 self.__candidate_cb(candidate)
             return
@@ -1089,9 +1084,9 @@ class Engine(IBus.EngineSimple):
 
         # fill lookup_table
         self.__lookup_table.clear()
-        for i in xrange(0, nr_candidates):
+        for i in range(0, nr_candidates):
             buf = self.__context.get_segment(self.__cursor_pos, i)
-            candidate = UN(buf)
+            candidate = buf
             self.__lookup_table.append_candidate(IBus.Text.new_from_string(candidate))
             self.__candidate_cb(candidate)
 
@@ -1114,7 +1109,7 @@ class Engine(IBus.EngineSimple):
 #            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
             text, cursor = self.__preedit_ja_string.get_half_width_katakana(commit)
         else:
-            text, cursor = u'', 0
+            text, cursor = '', 0
         return text, cursor
 
     def __update_input_chars(self):
@@ -1126,7 +1121,7 @@ class Engine(IBus.EngineSimple):
 
         self.update_preedit(text,
             attrs, cursor, not self.__preedit_ja_string.is_empty())
-        self.update_aux_string(u'', IBus.AttrList(), False)
+        self.update_aux_string('', IBus.AttrList(), False)
         self.update_lookup_table(self.__lookup_table,
             self.__lookup_table_visible)
 
@@ -1180,13 +1175,13 @@ class Engine(IBus.EngineSimple):
             0, len(text)))
         self.update_preedit(text, attrs, len(text), True)
 
-        self.update_aux_string(u'',
+        self.update_aux_string('',
             IBus.AttrList(), self.__lookup_table_visible)
         self.update_lookup_table(self.__lookup_table,
             self.__lookup_table_visible)
 
     def __update_anthy_convert_chars(self):
-        self.__convert_chars = u''
+        self.__convert_chars = ''
         pos = 0
         for i, (seg_index, text) in enumerate(self.__segments):
             self.__convert_chars += text
@@ -1200,7 +1195,7 @@ class Engine(IBus.EngineSimple):
         attrs.append(IBus.attr_foreground_new(self.__rgb(0, 0, 0),
                 pos, pos + len(self.__segments[self.__cursor_pos][1])))
         self.update_preedit(self.__convert_chars, attrs, pos, True)
-        aux_string = u'( %d / %d )' % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
+        aux_string = '( %d / %d )' % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
         self.update_aux_string(aux_string,
             IBus.AttrList(), self.__lookup_table_visible)
         self.update_lookup_table(self.__lookup_table,
@@ -1248,7 +1243,7 @@ class Engine(IBus.EngineSimple):
             if self.__lookup_table_visible:
                 if self.__lookup_table.get_number_of_candidates() > 0:
                     self.__lookup_table.set_cursor_pos(0)
-                candidate = UN(self.__lookup_table.get_candidate(0).get_text())
+                candidate = self.__lookup_table.get_candidate(0).get_text()
                 self.__segments[self.__cursor_pos] = 0, candidate
                 self.__lookup_table_visible = False
             elif self.__segments[self.__cursor_pos][0] != \
@@ -1256,7 +1251,7 @@ class Engine(IBus.EngineSimple):
                 buf = self.__context.get_segment(self.__cursor_pos,
                                                  NTH_UNCONVERTED_CANDIDATE)
                 self.__segments[self.__cursor_pos] = \
-                    NTH_UNCONVERTED_CANDIDATE, UN(buf)
+                    NTH_UNCONVERTED_CANDIDATE, buf
             #elif self._chk_mode('25'):
                 '''
                 # FIXME: Delete the last char in the active segment.
@@ -1276,17 +1271,17 @@ class Engine(IBus.EngineSimple):
                 # in self__on_key_common() with multiple key typings.
 
                 # Delete a char in the active segment
-                all_text = u''
+                all_text = ''
                 nr_segments = self.__context.get_nr_segments()
                 for i in xrange(0, nr_segments):
                     buf = self.__context.get_segment(i,
                                                      NTH_UNCONVERTED_CANDIDATE)
-                    text = UN(buf)
+                    text = buf
                     if i == self.__cursor_pos and len(text) > 0:
                         text = text[:len(text) - 1]
                     all_text += text
 
-                if all_text == u'':
+                if all_text == '':
                     return
 
                 # Set self.__preedit_ja_string by anthy context.
@@ -1295,8 +1290,8 @@ class Engine(IBus.EngineSimple):
                 self.__convert_chars = self.__normalize_preedit(all_text)
                 for i in xrange(0, len(self.__convert_chars)):
                     keyval = self.__convert_chars[i]
-                    self.__preedit_ja_string.insert(unichr(ord (keyval)))
-                self.__context.set_string(self.__convert_chars.encode('utf8'))
+                    self.__preedit_ja_string.insert(chr(ord(keyval)))
+                self.__context.set_string(self.__convert_chars)
 
                 # Set self.__segments by anty context
                 # for editable self.__segments,
@@ -1312,7 +1307,7 @@ class Engine(IBus.EngineSimple):
                         index = 0
                     buf = self.__context.get_segment(i,
                                                      index)
-                    text = UN(buf)
+                    text = buf
                     self.__segments[i] = index, text
 
                 # Update self.__lookup_table
@@ -1392,19 +1387,19 @@ class Engine(IBus.EngineSimple):
     '''def __on_key_space(self, wide=False):
         if Engine.__input_mode == INPUT_MODE_WIDE_LATIN or wide:
             # Input Wide space U+3000
-            wide_char = symbol_rule[unichr(IBus.KEY_space)]
+            wide_char = symbol_rule[chr(IBus.KEY_space)]
             self.__commit_string(wide_char)
             return True
 
         if self.__preedit_ja_string.is_empty():
             if Engine.__input_mode in (INPUT_MODE_HIRAGANA, INPUT_MODE_KATAKANA):
                 # Input Wide space U+3000
-                wide_char = symbol_rule[unichr(IBus.KEY_space)]
+                wide_char = symbol_rule[chr(IBus.KEY_space)]
                 self.__commit_string(wide_char)
                 return True
             else:
                 # Input Half space U+0020
-                self.__commit_string(unichr(IBus.KEY_space))
+                self.__commit_string(chr(IBus.KEY_space))
                 return True
 
         if self.__convert_mode != CONV_MODE_ANTHY:
@@ -1542,7 +1537,7 @@ class Engine(IBus.EngineSimple):
 
         elif Engine.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
-            char = unichr(keyval)
+            char = chr(keyval)
             wide_char = None#symbol_rule.get(char, None)
             if wide_char == None:
                 wide_char = unichar_half_to_full(char)
@@ -1567,7 +1562,7 @@ class Engine(IBus.EngineSimple):
         else:
             shift = False
         self.__preedit_ja_string.set_shift(shift)
-        self.__preedit_ja_string.insert(unichr(keyval))
+        self.__preedit_ja_string.insert(chr(keyval))
         if Engine.__segment_mode & SEGMENT_IMMEDIATE:
             self.__begin_anthy_convert()
         self.__invalidate()
@@ -1577,7 +1572,7 @@ class Engine(IBus.EngineSimple):
     @classmethod
     def CONFIG_RELOADED(cls, bus):
         if config.DEBUG:
-            print 'RELOADED'
+            print('RELOADED')
         if not cls.__prefs:
             cls.__prefs = AnthyPrefs(bus)
             cls._init_prefs()
@@ -1589,7 +1584,7 @@ class Engine(IBus.EngineSimple):
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, variant):
         if config.DEBUG:
-            print 'VALUE_CHAMGED =', section, name, variant
+            print('VALUE_CHAMGED =', section, name, variant)
 
         if not section.startswith('engine/anthy'):
             # This value is used for IBus.config.set_value only.
@@ -1616,8 +1611,7 @@ class Engine(IBus.EngineSimple):
             for s in set(value).difference(old):
                 cls.__keybind.setdefault(cls._s_to_key(s), []).append(cmd)
                 cls.__keybind.get(cls._s_to_key(s)).sort(
-                    lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
-
+                        key = lambda a: keys.index(a[13:]))
             cls.__prefs.set_value(sec, name, value)
         elif base_sec == 'common':
             cls.__prefs.set_value(base_sec, name, value)
@@ -1675,7 +1669,7 @@ class Engine(IBus.EngineSimple):
     def _mk_key(keyval, state):
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
             if keyval < 0xff and \
-               unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
+               chr(keyval) in '!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
                 state |= IBus.ModifierType.SHIFT_MASK
             elif IBus.KEY_a <= keyval <= IBus.KEY_z:
                 keyval -= (IBus.KEY_a - IBus.KEY_A)
@@ -1715,7 +1709,7 @@ class Engine(IBus.EngineSimple):
             try:
                 self._MM = self._SS = 0
                 ret = self.__on_key_common(ord(keyval))
-                if (keyval in u',.、。' and
+                if (keyval in ',.、。' and
                     self.__prefs.get_value('common', 'behavior_on_period')):
                     return self.__cmd_convert(keyval, state)
                 return ret
@@ -1726,7 +1720,7 @@ class Engine(IBus.EngineSimple):
             key = self._mk_key(keyval, state)
             for cmd in self.__keybind.get(key, []):
                 if config.DEBUG:
-                    print 'cmd =', cmd
+                    print('cmd =', cmd)
                 try:
                     if getattr(self, cmd)(keyval, state):
                         return True
@@ -1819,9 +1813,9 @@ class Engine(IBus.EngineSimple):
                 elif 0x21 <= keyval <= 0x7e and state & \
                         (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK) == 0:
                     if state & IBus.ModifierType.SHIFT_MASK:
-                        insert(self.__thumb.get_shift_char(keyval, unichr(keyval)))
+                        insert(self.__thumb.get_shift_char(keyval, chr(keyval)))
                     elif self._SS == 0:
-                        insert(unichr(keyval))
+                        insert(chr(keyval))
                 else:
                     if not self.__preedit_ja_string.is_empty():
                         return True
@@ -1854,7 +1848,7 @@ class Engine(IBus.EngineSimple):
         key = self._mk_key(keyval, state)
         for cmd in self.__keybind.get(key, []):
             if config.DEBUG:
-                print 'cmd =', cmd
+                print('cmd =', cmd)
             try:
                 if getattr(self, cmd)(keyval, state):
                     return True
@@ -1881,7 +1875,7 @@ class Engine(IBus.EngineSimple):
                     keyval = IBus.KEY_yen
             ret = self.__on_key_common(keyval, state)
             if (Engine.__input_mode != INPUT_MODE_LATIN and
-                unichr(keyval) in u',.' and
+                chr(keyval) in ',.' and
                 self.__prefs.get_value('common', 'behavior_on_period')):
                 return self.__cmd_convert(keyval, state)
             return ret
@@ -1916,12 +1910,12 @@ class Engine(IBus.EngineSimple):
         id = file
         has_mbcs = False
 
-        for i in xrange(0, len(id)):
+        for i in range(0, len(id)):
             if ord(id[i]) >= 0x7f:
                     has_mbcs = True
                     break
         if has_mbcs:
-            id = id.encode('hex')
+            id = str(binascii.hexlify(id.encode()), 'ascii')
 
         if id.find('/') >=0:
             id = id[id.rindex('/') + 1:]
@@ -1929,7 +1923,7 @@ class Engine(IBus.EngineSimple):
             id = id[:id.rindex('.')]
 
         if id.startswith('0x'):
-            id = id.encode('hex')
+            id = str(binascii.hexlify(id.encode()), 'ascii')
             has_mbcs = True
         if has_mbcs:
             id = '0x' + id
@@ -1954,7 +1948,7 @@ class Engine(IBus.EngineSimple):
                 printerr(directory + ' is not a directory')
                 return
         else:
-            os.makedirs(directory, 0700)
+            os.makedirs(directory, 0o700)
         backup_dir = os.getcwd()
         os.chdir(directory)
         if path.lexists(directory + '/' + name):
@@ -2050,7 +2044,7 @@ class Engine(IBus.EngineSimple):
 
     def __config_value_changed_cb(self, ibus_config, section, name, variant):
         if config.DEBUG:
-            print 'VALUE_CHAMGED =', section, name, variant
+            print('VALUE_CHAMGED =', section, name, variant)
 
         if not section.startswith('engine/anthy'):
             # This value is used for IBus.config.set_value only.
@@ -2093,11 +2087,11 @@ class Engine(IBus.EngineSimple):
 
     def __unset_current_input_mode(self):
         modes = {
-            INPUT_MODE_HIRAGANA: u'InputMode.Hiragana',
-            INPUT_MODE_KATAKANA: u'InputMode.Katakana',
-            INPUT_MODE_HALF_WIDTH_KATAKANA: u'InputMode.HalfWidthKatakana',
-            INPUT_MODE_LATIN: u'InputMode.Latin',
-            INPUT_MODE_WIDE_LATIN: u'InputMode.WideLatin'
+            INPUT_MODE_HIRAGANA: 'InputMode.Hiragana',
+            INPUT_MODE_KATAKANA: 'InputMode.Katakana',
+            INPUT_MODE_HALF_WIDTH_KATAKANA: 'InputMode.HalfWidthKatakana',
+            INPUT_MODE_LATIN: 'InputMode.Latin',
+            INPUT_MODE_WIDE_LATIN: 'InputMode.WideLatin'
         }
         self.__input_mode_activate(modes[Engine.__input_mode],
                                    IBus.PropState.UNCHECKED)
@@ -2106,17 +2100,17 @@ class Engine(IBus.EngineSimple):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
         if Engine.__input_mode == INPUT_MODE_LATIN:
-            return self.__set_input_mode(u'InputMode.Hiragana')
+            return self.__set_input_mode('InputMode.Hiragana')
         else:
-            return self.__set_input_mode(u'InputMode.Latin')
+            return self.__set_input_mode('InputMode.Latin')
 
     def __cmd_circle_input_mode(self, keyval, state):
         modes = {
-            INPUT_MODE_HIRAGANA: u'InputMode.Katakana',
-            INPUT_MODE_KATAKANA: u'InputMode.HalfWidthKatakana',
-            INPUT_MODE_HALF_WIDTH_KATAKANA: u'InputMode.Latin',
-            INPUT_MODE_LATIN: u'InputMode.WideLatin',
-            INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
+            INPUT_MODE_HIRAGANA: 'InputMode.Katakana',
+            INPUT_MODE_KATAKANA: 'InputMode.HalfWidthKatakana',
+            INPUT_MODE_HALF_WIDTH_KATAKANA: 'InputMode.Latin',
+            INPUT_MODE_LATIN: 'InputMode.WideLatin',
+            INPUT_MODE_WIDE_LATIN: 'InputMode.Hiragana'
         }
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
@@ -2124,11 +2118,11 @@ class Engine(IBus.EngineSimple):
 
     def __cmd_circle_kana_mode(self, keyval, state):
         modes = {
-            INPUT_MODE_HIRAGANA: u'InputMode.Katakana',
-            INPUT_MODE_KATAKANA: u'InputMode.HalfWidthKatakana',
-            INPUT_MODE_HALF_WIDTH_KATAKANA: u'InputMode.Hiragana',
-            INPUT_MODE_LATIN: u'InputMode.Hiragana',
-            INPUT_MODE_WIDE_LATIN: u'InputMode.Hiragana'
+            INPUT_MODE_HIRAGANA: 'InputMode.Katakana',
+            INPUT_MODE_KATAKANA: 'InputMode.HalfWidthKatakana',
+            INPUT_MODE_HALF_WIDTH_KATAKANA: 'InputMode.Hiragana',
+            INPUT_MODE_LATIN: 'InputMode.Hiragana',
+            INPUT_MODE_WIDE_LATIN: 'InputMode.Hiragana'
         }
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
@@ -2137,36 +2131,36 @@ class Engine(IBus.EngineSimple):
     def __cmd_latin_mode(self, keyval, state):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
-        return self.__set_input_mode(u'InputMode.Latin')
+        return self.__set_input_mode('InputMode.Latin')
 
     def __cmd_wide_latin_mode(self, keyval, state):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
-        return self.__set_input_mode(u'InputMode.WideLatin')
+        return self.__set_input_mode('InputMode.WideLatin')
 
     def __cmd_hiragana_mode(self, keyval, state):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
-        return self.__set_input_mode(u'InputMode.Hiragana')
+        return self.__set_input_mode('InputMode.Hiragana')
 
     def __cmd_katakana_mode(self, keyval, state):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
-        return self.__set_input_mode(u'InputMode.Katakana')
+        return self.__set_input_mode('InputMode.Katakana')
 
     def __cmd_half_katakana(self, keyval, state):
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_input_mode()
-        return self.__set_input_mode(u'InputMode.HalfWidthKatakana')
+        return self.__set_input_mode('InputMode.HalfWidthKatakana')
 
 #    def __cmd_cancel_pseudo_ascii_mode_key(self, keyval, state):
 #        pass
 
     def __unset_current_typing_mode(self):
         modes = {
-            jastring.TYPING_MODE_ROMAJI: u'TypingMode.Romaji',
-            jastring.TYPING_MODE_KANA: u'TypingMode.Kana',
-            jastring.TYPING_MODE_THUMB_SHIFT: u'TypingMode.ThumbShift',
+            jastring.TYPING_MODE_ROMAJI: 'TypingMode.Romaji',
+            jastring.TYPING_MODE_KANA: 'TypingMode.Kana',
+            jastring.TYPING_MODE_THUMB_SHIFT: 'TypingMode.ThumbShift',
         }
         self.__typing_mode_activate(modes[Engine.__typing_mode],
                                     IBus.PropState.UNCHECKED)
@@ -2176,9 +2170,9 @@ class Engine(IBus.EngineSimple):
             return False
 
         modes = {
-            jastring.TYPING_MODE_THUMB_SHIFT: u'TypingMode.Romaji',
-            jastring.TYPING_MODE_KANA: u'TypingMode.ThumbShift',
-            jastring.TYPING_MODE_ROMAJI: u'TypingMode.Kana',
+            jastring.TYPING_MODE_THUMB_SHIFT: 'TypingMode.Romaji',
+            jastring.TYPING_MODE_KANA: 'TypingMode.ThumbShift',
+            jastring.TYPING_MODE_ROMAJI: 'TypingMode.Kana',
         }
         # ibus 1.5 or later needs to send UNCHECKED
         self.__unset_current_typing_mode()
@@ -2233,7 +2227,7 @@ class Engine(IBus.EngineSimple):
 
         if not self.__preedit_ja_string.is_empty():
             return False
-        self.__commit_string(unichr(IBus.KEY_space))
+        self.__commit_string(chr(IBus.KEY_space))
         return True
 
     def __cmd_insert_wide_space(self, keyval, state):
@@ -2242,7 +2236,7 @@ class Engine(IBus.EngineSimple):
 
         if not self.__preedit_ja_string.is_empty():
             return False
-        char = unichr(IBus.KEY_space)
+        char = chr(IBus.KEY_space)
         wide_char = symbol_rule.get(char, None)
         if wide_char == None:
             wide_char = unichar_half_to_full(char)
@@ -2282,7 +2276,7 @@ class Engine(IBus.EngineSimple):
 
         text, cursor = self.__preedit_ja_string.get_hiragana(True)
 
-        self.__context.set_prediction_string(text.encode('utf8'))
+        self.__context.set_prediction_string(text)
         nr_predictions = self.__context.get_nr_predictions()
 
 #        for i in range(nr_predictions):
@@ -2292,7 +2286,7 @@ class Engine(IBus.EngineSimple):
         if not buf:
             return False
 
-        text = UN(buf)
+        text = buf
         self.__segments.append((0, text))
 
         self.__convert_mode = CONV_MODE_PREDICTION
@@ -2347,17 +2341,17 @@ class Engine(IBus.EngineSimple):
         if clipboard_text == None:
             return False
 
-        self.__convert_chars = UN(clipboard_text)
-        for i in xrange(0, len(self.__convert_chars)):
+        self.__convert_chars = clipboard_text
+        for i in range(0, len(self.__convert_chars)):
             keyval = self.__convert_chars[i]
-            self.__preedit_ja_string.insert(unichr(ord (keyval)))
+            self.__preedit_ja_string.insert(chr(ord(keyval)))
 
-        self.__context.set_string(self.__convert_chars.encode('utf-8'))
+        self.__context.set_string(self.__convert_chars)
         nr_segments = self.__context.get_nr_segments()
 
-        for i in xrange(0, nr_segments):
+        for i in range(0, nr_segments):
             buf = self.__context.get_segment(i, 0)
-            text = UN(buf)
+            text = buf
             self.__segments.append((0, text))
 
         self.__convert_mode = CONV_MODE_ANTHY
@@ -2459,17 +2453,17 @@ class Engine(IBus.EngineSimple):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-            for i in xrange(0, commit_index + 1):
+            for i in range(0, commit_index + 1):
                 (seg_index, text) = self.__segments[i]
                 self.commit_text(IBus.Text.new_from_string(text))
 
             text, cursor = self.__get_preedit()
             commit_length = 0
-            for i in xrange(0, commit_index + 1):
+            for i in range(0, commit_index + 1):
                 buf = self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE)
-                commit_length += len(UN(buf))
+                commit_length += len(buf)
             self.__move_cursor_char_length(commit_length - cursor)
-            for i in xrange(0, commit_length):
+            for i in range(0, commit_length):
                 self.__preedit_ja_string.remove_before()
             self.__move_cursor_char_length(cursor - commit_length)
 
@@ -2484,12 +2478,12 @@ class Engine(IBus.EngineSimple):
                 self.__cursor_pos = 0
             text, cursor = self.__get_preedit()
             self.__convert_chars = text
-            self.__context.set_string(text.encode ('utf-8'))
+            self.__context.set_string(text)
 
         self.__lookup_table.clear()
         self.__lookup_table.set_cursor_visible(False)
         self.__lookup_table_visible = False
-        self.update_aux_string(u'', IBus.AttrList(),
+        self.update_aux_string('', IBus.AttrList(),
             self.__lookup_table_visible)
         self.__fill_lookup_table()
         self.__invalidate()
@@ -2517,7 +2511,7 @@ class Engine(IBus.EngineSimple):
             return False
         self.__lookup_table.set_cursor_pos(real_index)
         index = self.__lookup_table.get_cursor_pos()
-        candidate = UN(self.__lookup_table.get_candidate(index).get_text())
+        candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__lookup_table_visible = False
         self.__on_key_right()
@@ -2648,7 +2642,7 @@ class Engine(IBus.EngineSimple):
     def __convert_segment_to_kana(self, n):
         if self.__convert_mode == CONV_MODE_ANTHY and -4 <= n <= -2:
             buf = self.__context.get_segment(self.__cursor_pos, n)
-            self.__segments[self.__cursor_pos] = n, UN(buf)
+            self.__segments[self.__cursor_pos] = n, buf
             self.__lookup_table_visible = False
             self.__invalidate()
             return True
@@ -2704,12 +2698,12 @@ class Engine(IBus.EngineSimple):
         if self.__convert_mode == CONV_MODE_ANTHY and n in [-100, -101]:
             start = 0
             for i in range(self.__cursor_pos):
-                start += len(UN(self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE)))
-            end = start + len(UN(self.__context.get_segment(self.__cursor_pos, NTH_UNCONVERTED_CANDIDATE)))
+                start += len(self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE))
+            end = start + len(self.__context.get_segment(self.__cursor_pos, NTH_UNCONVERTED_CANDIDATE))
             i, s = self.__segments[self.__cursor_pos]
             s2 = self.__preedit_ja_string.get_raw(start, end)
             if n == -101:
-                s2 = u''.join([unichar_half_to_full(c) for c in s2])
+                s2 = ''.join([unichar_half_to_full(c) for c in s2])
             if i == n:
                 if s == s2.lower():
                     s2 = s2.upper()

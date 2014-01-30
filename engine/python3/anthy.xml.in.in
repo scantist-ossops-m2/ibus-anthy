@@ -1,0 +1,19 @@
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<!-- filename: anthy.xml -->
+<component>
+	<name>org.freedesktop.IBus.Anthy</name>
+	<description>Anthy Component</description>
+	<exec>${libexecdir}/ibus-engine-anthy --ibus</exec>
+	<version>@VERSION@</version>
+	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+	<license>GPL</license>
+	<homepage>http://code.google.com/p/ibus</homepage>
+	<textdomain>ibus-anthy</textdomain>
+
+	<!-- for engines -->
+	<observed-paths>
+		<path>~/.config/ibus-anthy/engines.xml</path>
+		<path>${pkgdatadir}/engine/default.xml</path>
+	</observed-paths>
+	<engines exec=\"${libexecdir}/ibus-engine-anthy --xml\" />
+</component>
