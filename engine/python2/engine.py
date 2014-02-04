@@ -21,6 +21,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import io
 import os
 from os import environ, path
 import signal
@@ -123,6 +124,8 @@ class Engine(IBus.EngineSimple):
                                      object_path=object_path)
 
         # create anthy context
+        if not self.__verify_anthy_journal_file():
+            return
         self.__context = Anthy.GContext()
         self.__context.set_encoding(Anthy.UTF8_ENCODING)
 
@@ -173,6 +176,35 @@ class Engine(IBus.EngineSimple):
                 IBus.MAJOR_VERSION + IBus.MINOR_VERSION / 1000.0 + \
                 IBus.MICRO_VERSION / 1000000.0
         return self.__ibus_version
+
+    # http://en.sourceforge.jp/ticket/browse.php?group_id=14&tid=33075
+    def __verify_anthy_journal_file(self):
+        journal = get_userhome() + '/.anthy/last-record2_default.utf8'
+        try:
+            f = io.open(file=journal, mode='rb')
+        except FileNotFoundError:
+            return True
+        f.seek(-1, io.SEEK_END)
+        last = f.read(1)
+        f.close()
+        if ord(last) == 0xa:
+            return True
+        from gi.repository import Gtk
+        message= N_("Could not enable Anthy.\n" \
+                    "The end of the content of the file " \
+                    ".anthy/last-record2_default.utf8 in your home " \
+                    "directory is not '\\n'. I.e. not correct text format.\n" \
+                    "Please fix the file or remove it by manual and " \
+                    "restart IBus.")
+        printerr(message)
+        dlg = Gtk.MessageDialog(parent=None,
+                                flags=Gtk.DialogFlags.MODAL,
+                                message_type=Gtk.MessageType.ERROR,
+                                buttons=Gtk.ButtonsType.OK,
+                                message_format=_(message))
+        dlg.run()
+        dlg.destroy()
+        return False
 
     # reset values of engine
     def __reset(self):
