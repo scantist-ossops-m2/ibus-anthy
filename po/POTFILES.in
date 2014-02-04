@@ -1,8 +1,14 @@
 # Files with translatable strings.
 # Please keep this file in alphabetical order.
-engine/engine.py
-engine/factory.py
-setup/anthyprefs.py.in
-setup/ibus-setup-anthy.desktop.in.in
-setup/main.py
-[type: gettext/glade]setup/setup.ui
+engine/python2/engine.py
+engine/python2/factory.py
+engine/python3/engine.py
+engine/python3/factory.py
+setup/python2/anthyprefs.py.in
+setup/python2/ibus-setup-anthy.desktop.in.in
+setup/python2/main.py
+[type: gettext/glade]setup/python2/setup.ui
+setup/python3/anthyprefs.py.in
+setup/python3/ibus-setup-anthy.desktop.in.in
+setup/python3/main.py
+[type: gettext/glade]setup/python3/setup.ui

@@ -1,4 +1,6 @@
 # Files with translatable strings to skip.
 # Please keep this file in alphabetical order.
-setup/anthyprefs.py
-setup/ibus-setup-anthy.desktop.in
+setup/python2/anthyprefs.py
+setup/python2/ibus-setup-anthy.desktop.in
+setup/python3/anthyprefs.py
+setup/python3/ibus-setup-anthy.desktop.in
