@@ -1410,14 +1410,14 @@ class AnthySetup(object):
             dlg = Gtk.FileChooserDialog(title=_("Open Dictionary File"),
                                         parent=self.__builder.get_object('main'),
                                         action=Gtk.FileChooserAction.OPEN,
-                                        buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                                 Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+                                        buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
+                                                 _("_Open"), Gtk.ResponseType.OK))
         if Gtk.Buildable.get_name(widget) == 'dict:btn_edit':
             dlg = Gtk.Dialog(title=_("Edit Dictionary File"),
                              parent=self.__builder.get_object('main'),
                              flags=Gtk.DialogFlags.MODAL,
-                             buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                      Gtk.STOCK_OK, Gtk.ResponseType.OK))
+                             buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
+                                      _("_OK"), Gtk.ResponseType.OK))
 
         vbox = self.__builder.get_object('dict:add_extra_vbox')
         if Gtk.Buildable.get_name(widget) == 'dict:btn_add':
@@ -1512,7 +1512,7 @@ class AnthySetup(object):
         dlg = Gtk.Dialog(title=_("View Dictionary File"),
                          parent=self.__builder.get_object('main'),
                          flags=Gtk.DialogFlags.MODAL,
-                         buttons=(Gtk.STOCK_OK, Gtk.ResponseType.OK))
+                         buttons=(_("_OK"), Gtk.ResponseType.OK))
         buffer = Gtk.TextBuffer()
         buffer.set_text (lines)
         text_view = Gtk.TextView.new_with_buffer(buffer)
