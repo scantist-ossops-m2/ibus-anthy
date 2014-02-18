@@ -7,16 +7,16 @@
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus-anthy HEAD\n"
+"Project-Id-Version: IBus-Anthy\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2014-02-04 15:45+0900\n"
-"PO-Revision-Date: 2014-02-04 07:04+0000\n"
+"POT-Creation-Date: 2014-02-18 17:18+0900\n"
+"PO-Revision-Date: 2014-02-18 08:42+0000\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../engine/python2/engine.py:193 ../engine/python3/engine.py:194
@@ -24,10 +24,7 @@ msgid ""
 "Could not enable Anthy.\n"
 "The end of the content of the file .anthy/last-record2_default.utf8 in your home directory is not '\\n'. I.e. not correct text format.\n"
 "Please fix the file or remove it by manual and restart IBus."
-msgstr ""
-"Anthy を有効にできませんでした。\n"
-"ホームディレクトリにある .anthy/last-record2_default.utf8 の中身の最後が '\\n' でありません。つまり正しくないテキストフォーマットです。\n"
-"手動でファイルを修正するか削除して IBus をリスタートしてください。"
+msgstr "Anthy を有効にできませんでした。\nホームディレクトリにある .anthy/last-record2_default.utf8 の中身の最後が '\\n' でありません。つまり正しくないテキストフォーマットです。\n手動でファイルを修正するか削除して IBus をリスタートしてください。"
 
 #: ../engine/python2/engine.py:241 ../engine/python3/engine.py:242
 #: ../setup/python2/main.py:393 ../setup/python3/main.py:398
@@ -280,8 +277,8 @@ msgstr "右"
 msgid "Customize Romaji Key Table"
 msgstr "ローマ字キーテーブルのカスタマイズ"
 
-#: ../setup/python2/main.py:593 ../setup/python2/setup.ui.h:52
-#: ../setup/python3/main.py:598 ../setup/python3/setup.ui.h:52
+#: ../setup/python2/main.py:593 ../setup/python2/setup.ui.h:53
+#: ../setup/python3/main.py:598 ../setup/python3/setup.ui.h:53
 msgid "_Romaji Key Table:"
 msgstr "ローマ字キーテーブル(_R):"
 
@@ -301,8 +298,8 @@ msgstr "デフォルト"
 msgid "Customize Kana Key Table"
 msgstr "かなキーテーブルのカスタマイズ"
 
-#: ../setup/python2/main.py:599 ../setup/python2/setup.ui.h:54
-#: ../setup/python3/main.py:604 ../setup/python3/setup.ui.h:54
+#: ../setup/python2/main.py:599 ../setup/python2/setup.ui.h:55
+#: ../setup/python3/main.py:604 ../setup/python3/setup.ui.h:55
 msgid "_Kana Key Table:"
 msgstr "かなキーテーブル(_K):"
 
@@ -443,9 +440,25 @@ msgstr "ファイルは存在しません: "
 msgid "Open Dictionary File"
 msgstr "辞書ファイルを開く"
 
+#: ../setup/python2/main.py:1419 ../setup/python2/main.py:1425
+#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1413
+#: ../setup/python3/main.py:1419 ../setup/python3/setup.ui.h:89
+msgid "_Cancel"
+msgstr "キャンセル(_C)"
+
+#: ../setup/python2/main.py:1420 ../setup/python3/main.py:1414
+msgid "_Open"
+msgstr "開く(_O)"
+
 #: ../setup/python2/main.py:1422 ../setup/python3/main.py:1416
 msgid "Edit Dictionary File"
 msgstr "辞書ファイルの編集"
+
+#: ../setup/python2/main.py:1426 ../setup/python2/main.py:1521
+#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1420
+#: ../setup/python3/main.py:1515 ../setup/python3/setup.ui.h:90
+msgid "_OK"
+msgstr "OK(_O)"
 
 #: ../setup/python2/main.py:1436 ../setup/python3/main.py:1430
 msgid "Your choosed file is not correct."
@@ -628,196 +641,232 @@ msgid "De_fault"
 msgstr "デフォルト(_F)"
 
 #: ../setup/python2/setup.ui.h:51 ../setup/python3/setup.ui.h:51
+msgid "_Edit"
+msgstr "編集(_E)"
+
+#: ../setup/python2/setup.ui.h:52 ../setup/python3/setup.ui.h:52
 msgid "Key Binding"
 msgstr "キー割り当て"
 
-#: ../setup/python2/setup.ui.h:53 ../setup/python3/setup.ui.h:53
+#: ../setup/python2/setup.ui.h:54 ../setup/python3/setup.ui.h:54
 msgid "<b>Romaji</b>"
 msgstr "<b>ローマ字</b>"
 
-#: ../setup/python2/setup.ui.h:55 ../setup/python3/setup.ui.h:55
+#: ../setup/python2/setup.ui.h:56 ../setup/python3/setup.ui.h:56
 msgid "<b>Kana</b>"
 msgstr "<b>かな</b>"
 
-#: ../setup/python2/setup.ui.h:56 ../setup/python3/setup.ui.h:56
+#: ../setup/python2/setup.ui.h:57 ../setup/python3/setup.ui.h:57
 msgid "Keyboad _layout:"
 msgstr "キーボードレイアウト(_L):"
 
-#: ../setup/python2/setup.ui.h:57 ../setup/python3/setup.ui.h:57
+#: ../setup/python2/setup.ui.h:58 ../setup/python3/setup.ui.h:58
 msgid "<b>Keyboard layout</b>"
 msgstr "<b>キーボードレイアウト</b>"
 
-#: ../setup/python2/setup.ui.h:58 ../setup/python3/setup.ui.h:58
+#: ../setup/python2/setup.ui.h:59 ../setup/python3/setup.ui.h:59
 msgid "Typing Method"
 msgstr "入力タイプ"
 
-#: ../setup/python2/setup.ui.h:59 ../setup/python3/setup.ui.h:59
+#: ../setup/python2/setup.ui.h:60 ../setup/python3/setup.ui.h:60
 msgid "_Left Thumb Shift Key:"
 msgstr "左親指シフトキー(_L):"
 
-#: ../setup/python2/setup.ui.h:60 ../setup/python3/setup.ui.h:60
+#: ../setup/python2/setup.ui.h:61 ../setup/python3/setup.ui.h:61
 msgid "Right _Thumb Shift Key:"
 msgstr "右親指シフトキー(_T):"
 
-#: ../setup/python2/setup.ui.h:61 ../setup/python3/setup.ui.h:61
+#: ../setup/python2/setup.ui.h:62 ../setup/python3/setup.ui.h:62
 msgid "Adjust _input method layout to system keyboard layout"
 msgstr "インプットメソッドレイアウトをシステムキーボードレイアウトに合わせる(_I)"
 
-#: ../setup/python2/setup.ui.h:62 ../setup/python3/setup.ui.h:62
+#: ../setup/python2/setup.ui.h:63 ../setup/python3/setup.ui.h:63
 msgid "Adjust IM layout to XKB layout"
 msgstr "IM レイアウトを XKB レイアウトに合わせる"
 
-#: ../setup/python2/setup.ui.h:63 ../setup/python3/setup.ui.h:63
+#: ../setup/python2/setup.ui.h:64 ../setup/python3/setup.ui.h:64
 msgid "Input _Method Layout:"
 msgstr "インプットメソッドレイアウト(_M):"
 
-#: ../setup/python2/setup.ui.h:64 ../setup/python3/setup.ui.h:64
+#: ../setup/python2/setup.ui.h:65 ../setup/python3/setup.ui.h:65
 msgid "Restart IBus when you change the keyboard layout"
 msgstr "キーボードレイアウトを変更するときは IBus をリスタートしてください"
 
-#: ../setup/python2/setup.ui.h:65 ../setup/python3/setup.ui.h:65
+#: ../setup/python2/setup.ui.h:66 ../setup/python3/setup.ui.h:66
 msgid "Restart IBus when you change XKB"
 msgstr "XKB を変更するときは IBus を再起動してください"
 
-#: ../setup/python2/setup.ui.h:66 ../setup/python3/setup.ui.h:66
+#: ../setup/python2/setup.ui.h:67 ../setup/python3/setup.ui.h:67
 msgid "_Additional Key Arrangement:"
 msgstr "追加のキー割り当て(_A):"
 
-#: ../setup/python2/setup.ui.h:67 ../setup/python3/setup.ui.h:67
+#: ../setup/python2/setup.ui.h:68 ../setup/python3/setup.ui.h:68
 msgid ""
 "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with "
 "Thumb Shift key"
 msgstr "親指シフトキーで '&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' 等を入力することが可能です"
 
-#: ../setup/python2/setup.ui.h:68 ../setup/python3/setup.ui.h:68
+#: ../setup/python2/setup.ui.h:69 ../setup/python3/setup.ui.h:69
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
 "Key Arrangement\" since this option changes input method layout only in case"
 " input method is turned on."
 msgstr "このオプションはインプットメソッドがオンの場合にインプットメソッドレイアウトのみを変更するので「追加のキー割り当て」のためにシステムキーボードレイアウトを再構成する必要はありません。"
 
-#: ../setup/python2/setup.ui.h:69 ../setup/python3/setup.ui.h:69
+#: ../setup/python2/setup.ui.h:70 ../setup/python3/setup.ui.h:70
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
 msgstr "このオプションは IM オンで IM レイアウトのみを変更するので XKB を再構成する必要はありません。"
 
-#: ../setup/python2/setup.ui.h:70 ../setup/python3/setup.ui.h:70
+#: ../setup/python2/setup.ui.h:71 ../setup/python3/setup.ui.h:71
 msgid "_Enable semi-voiced sound mark with Shift key"
 msgstr "シフトキーで半濁点を可能にする(_E)"
 
-#: ../setup/python2/setup.ui.h:71 ../setup/python3/setup.ui.h:71
+#: ../setup/python2/setup.ui.h:72 ../setup/python3/setup.ui.h:72
 msgid "Seion + Shift can output Handakuon"
 msgstr "清音 + シフトで半濁音を出力することが可能です"
 
-#: ../setup/python2/setup.ui.h:72 ../setup/python3/setup.ui.h:72
+#: ../setup/python2/setup.ui.h:73 ../setup/python3/setup.ui.h:73
 msgid "Thumb _Shift Key Table:"
 msgstr "親指シフトキーテーブル(_S):"
 
-#: ../setup/python2/setup.ui.h:73 ../setup/python3/setup.ui.h:73
+#: ../setup/python2/setup.ui.h:74 ../setup/python3/setup.ui.h:74
 msgid "<b>Thumb Shift Layout</b>"
 msgstr "<b>親指シフトレイアウト</b>"
 
-#: ../setup/python2/setup.ui.h:74 ../setup/python3/setup.ui.h:74
+#: ../setup/python2/setup.ui.h:75 ../setup/python3/setup.ui.h:75
 msgid "Thumb Shift"
 msgstr "親指シフト"
 
-#: ../setup/python2/setup.ui.h:75 ../setup/python3/setup.ui.h:75
+#: ../setup/python2/setup.ui.h:76 ../setup/python3/setup.ui.h:76
 msgid "_Edit Dictionary Command:"
 msgstr "辞書の編集コマンド(_E):"
 
-#: ../setup/python2/setup.ui.h:76 ../setup/python3/setup.ui.h:76
+#: ../setup/python2/setup.ui.h:77 ../setup/python3/setup.ui.h:77
 msgid "_Add Word Command:"
 msgstr "単語の追加コマンド(_A):"
 
-#: ../setup/python2/setup.ui.h:77 ../setup/python3/setup.ui.h:77
+#: ../setup/python2/setup.ui.h:78 ../setup/python3/setup.ui.h:78
 msgid "<b>Default Dictionary Configuration</b>"
 msgstr "<b>デフォルト辞書の構成</b>"
 
-#: ../setup/python2/setup.ui.h:78 ../setup/python3/setup.ui.h:78
+#: ../setup/python2/setup.ui.h:79 ../setup/python3/setup.ui.h:79
 msgid "_View"
 msgstr "表示(_V)"
 
-#: ../setup/python2/setup.ui.h:79 ../setup/python3/setup.ui.h:79
+#: ../setup/python2/setup.ui.h:80 ../setup/python3/setup.ui.h:80
+msgid "_Add"
+msgstr "追加(_A)"
+
+#: ../setup/python2/setup.ui.h:81 ../setup/python3/setup.ui.h:81
+msgid "_Delete"
+msgstr "削除(_D)"
+
+#: ../setup/python2/setup.ui.h:82 ../setup/python3/setup.ui.h:82
+msgid "_Up"
+msgstr "上へ(_U)"
+
+#: ../setup/python2/setup.ui.h:83 ../setup/python3/setup.ui.h:83
 msgid "You can change the order on language bar"
 msgstr "言語バー上で順序を変更することが可能です"
 
-#: ../setup/python2/setup.ui.h:80 ../setup/python3/setup.ui.h:80
+#: ../setup/python2/setup.ui.h:84 ../setup/python3/setup.ui.h:84
+msgid "_Down"
+msgstr "下へ(_D)"
+
+#: ../setup/python2/setup.ui.h:85 ../setup/python3/setup.ui.h:85
 msgid "<b>Extended Dictionaries</b>"
 msgstr "<b>拡張辞書</b>"
 
-#: ../setup/python2/setup.ui.h:81 ../setup/python3/setup.ui.h:81
+#: ../setup/python2/setup.ui.h:86 ../setup/python3/setup.ui.h:86
 msgid "Dictionary"
 msgstr "辞書"
 
-#: ../setup/python2/setup.ui.h:82 ../setup/python3/setup.ui.h:82
+#: ../setup/python2/setup.ui.h:87 ../setup/python3/setup.ui.h:87
 msgid "About"
 msgstr "情報"
 
-#: ../setup/python2/setup.ui.h:83 ../setup/python3/setup.ui.h:83
+#: ../setup/python2/setup.ui.h:88 ../setup/python3/setup.ui.h:88
+msgid "_Apply"
+msgstr "適用(_A)"
+
+#: ../setup/python2/setup.ui.h:91 ../setup/python3/setup.ui.h:91
 msgid "Edit Shortcut"
 msgstr "ショートカットの編集"
 
-#: ../setup/python2/setup.ui.h:84 ../setup/python3/setup.ui.h:84
+#: ../setup/python2/setup.ui.h:92 ../setup/python3/setup.ui.h:92
 msgid "Key Code:"
 msgstr "キーコード:"
 
-#: ../setup/python2/setup.ui.h:85 ../setup/python3/setup.ui.h:85
+#: ../setup/python2/setup.ui.h:93 ../setup/python3/setup.ui.h:93
 msgid "Modifier:"
 msgstr "キー修飾:"
 
-#: ../setup/python2/setup.ui.h:86 ../setup/python3/setup.ui.h:86
+#: ../setup/python2/setup.ui.h:94 ../setup/python3/setup.ui.h:94
 msgid "A_lternate"
 msgstr "A_lt"
 
-#: ../setup/python2/setup.ui.h:87 ../setup/python3/setup.ui.h:87
+#: ../setup/python2/setup.ui.h:95 ../setup/python3/setup.ui.h:95
 msgid "Co_ntrol"
 msgstr "Co_ntrol"
 
-#: ../setup/python2/setup.ui.h:88 ../setup/python3/setup.ui.h:88
+#: ../setup/python2/setup.ui.h:96 ../setup/python3/setup.ui.h:96
 msgid "_Shift"
 msgstr "_Shift"
 
-#: ../setup/python2/setup.ui.h:89 ../setup/python3/setup.ui.h:89
+#: ../setup/python2/setup.ui.h:97 ../setup/python3/setup.ui.h:97
+msgid "_Refresh"
+msgstr "更新(_R)"
+
+#: ../setup/python2/setup.ui.h:98 ../setup/python3/setup.ui.h:98
 msgid "_Input Characters"
 msgstr "入力文字(_I)"
 
-#: ../setup/python2/setup.ui.h:90 ../setup/python3/setup.ui.h:90
+#: ../setup/python2/setup.ui.h:99 ../setup/python3/setup.ui.h:99
 msgid "_Output Characters"
 msgstr "出力文字(_O)"
 
-#: ../setup/python2/setup.ui.h:91 ../setup/python3/setup.ui.h:91
+#: ../setup/python2/setup.ui.h:100 ../setup/python3/setup.ui.h:100
 msgid "_Left Thumb Shift"
 msgstr "左親指シフト(_L)"
 
-#: ../setup/python2/setup.ui.h:92 ../setup/python3/setup.ui.h:92
+#: ../setup/python2/setup.ui.h:101 ../setup/python3/setup.ui.h:101
 msgid "_Right Thumb Shift"
 msgstr "右親指シフト(_R)"
 
-#: ../setup/python2/setup.ui.h:93 ../setup/python3/setup.ui.h:93
+#: ../setup/python2/setup.ui.h:102 ../setup/python3/setup.ui.h:102
+msgid "_Remove"
+msgstr "削除(_R)"
+
+#: ../setup/python2/setup.ui.h:103 ../setup/python3/setup.ui.h:103
+msgid "_Close"
+msgstr "閉じる(_C)"
+
+#: ../setup/python2/setup.ui.h:104 ../setup/python3/setup.ui.h:104
 msgid "_Short Label:"
 msgstr "短ラベル(_S):"
 
-#: ../setup/python2/setup.ui.h:94 ../setup/python3/setup.ui.h:94
+#: ../setup/python2/setup.ui.h:105 ../setup/python3/setup.ui.h:105
 msgid "_Description:"
 msgstr "説明(_D):"
 
-#: ../setup/python2/setup.ui.h:95 ../setup/python3/setup.ui.h:95
+#: ../setup/python2/setup.ui.h:106 ../setup/python3/setup.ui.h:106
 msgid "_Use your dictionary alone with switching dictionaries"
 msgstr "辞書を切り替えることで選択した辞書を単独で使用する(_U)"
 
-#: ../setup/python2/setup.ui.h:96 ../setup/python3/setup.ui.h:96
+#: ../setup/python2/setup.ui.h:107 ../setup/python3/setup.ui.h:107
 msgid "_Embed your dictionary in the system dictionary"
 msgstr "システム辞書にユーザー辞書を組み込む(_E)"
 
-#: ../setup/python2/setup.ui.h:97 ../setup/python3/setup.ui.h:97
+#: ../setup/python2/setup.ui.h:108 ../setup/python3/setup.ui.h:108
 msgid "Enable the _reverse conversion"
 msgstr "逆変換を可能にする(_R)"
 
-#: ../setup/python2/setup.ui.h:98 ../setup/python3/setup.ui.h:98
+#: ../setup/python2/setup.ui.h:109 ../setup/python3/setup.ui.h:109
 msgid "The Anthy engine for the IBus input platform"
 msgstr "IBus 入力プラットフォーム用 Anthy エンジン"
 
-#: ../setup/python2/setup.ui.h:99 ../setup/python3/setup.ui.h:99
+#: ../setup/python2/setup.ui.h:110 ../setup/python3/setup.ui.h:110
 msgid "translator_credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"

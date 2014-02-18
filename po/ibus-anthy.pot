@@ -1,4 +1,5 @@
 # Source translation of ibus-anthy.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (C) 2009-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus-anthy package.
 #
