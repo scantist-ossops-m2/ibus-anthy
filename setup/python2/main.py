@@ -82,22 +82,37 @@ class AnthySetup(object):
         builder.add_from_file(builder_file)
 
         toplevel = builder.get_object('main')
+        parent_xid = 0
+        parent_wmname = None
+        parent_wmclass = None
 
         try:
-            gnome_control_center_xid = int(environ['GNOME_CONTROL_CENTER_XID'])
+            parent_xid = int(environ['IBUS_SETUP_XID'])
+            if parent_xid != 0:
+                parent_wmname = 'ibus-setup'
+                parent_wmclass = 'Ibus-setup'
         except:
-            gnome_control_center_xid = 0
+            pass
 
-        if gnome_control_center_xid != 0:
+        try:
+            if parent_xid == 0:
+                parent_xid = int(environ['GNOME_CONTROL_CENTER_XID'])
+                if parent_xid != 0:
+                    parent_wmname = 'gnome-conrol-center'
+                    parent_wmclass = 'Gnome-conrol-center'
+        except:
+            pass
+
+        if parent_xid != 0:
             def set_transient(obj, pspec):
                 window = toplevel.get_window()
                 if window == None:
                     return
                 parent_window = GdkX11.X11Window.foreign_new_for_display(Gdk.Display.get_default(),
-                                                                         gnome_control_center_xid)
+                                                                         parent_xid)
                 if parent_window != None:
                     window.set_transient_for(parent_window)
-            toplevel.set_wmclass('gnome-control-center', 'Gnome-control-center')
+            toplevel.set_wmclass(parent_wmname, parent_wmclass)
             toplevel.set_modal(True)
             toplevel.set_type_hint(Gdk.WindowTypeHint.DIALOG)
             toplevel.connect('notify::window', set_transient)
