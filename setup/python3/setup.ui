@@ -1469,6 +1469,7 @@
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="wrap">True</property>
+                                    <property name="max_width_chars">74</property>
                                     <property name="label" translatable="yes">You do not have to reconfigure the system keyboard layout for "Additional Key Arrangement" since this option changes input method layout only in case input method is turned on.</property>
                                     <property name="tooltip_text" translatable="yes">You do not have to reconfigure XKB since this option changes IM layout only with IM on.</property>
                                   </object>
