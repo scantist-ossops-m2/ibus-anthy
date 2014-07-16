@@ -328,11 +328,11 @@ class AnthySetup(object):
         return (section, key)
 
     def __run_message_dialog(self, message, type=Gtk.MessageType.INFO):
-        dlg = Gtk.MessageDialog(parent=self.__builder.get_object('main'),
-                                flags=Gtk.DialogFlags.MODAL,
-                                message_type=type,
-                                buttons=Gtk.ButtonsType.OK,
-                                message_format=message)
+        dlg = Gtk.MessageDialog(
+                transient_for=self.__builder.get_object('main'),
+                message_type=type,
+                buttons=Gtk.ButtonsType.OK,
+                text=message)
         dlg.run()
         dlg.destroy()
 
@@ -425,6 +425,7 @@ class AnthySetup(object):
         for key, value in sorted(list(rule.items()), \
             key = functools.cmp_to_key(self.__japanese_tuple_sort)):
             ls.append(['romaji', key, value])
+        tv.set_model(None)
         tv.append_column(Gtk.TreeViewColumn(_(_("Input Chars")),
                                             Gtk.CellRendererText(), text=1))
         tv.append_column(Gtk.TreeViewColumn(_(_("Output Chars")),
@@ -460,6 +461,7 @@ class AnthySetup(object):
         for key, value in sorted(list(rule.items()), \
             key = functools.cmp_to_key(self.__japanese_tuple_sort)):
             ls.append(['kana', key, value])
+        tv.set_model(None)
         tv.append_column(Gtk.TreeViewColumn(_(_("Input Chars")),
                                             Gtk.CellRendererText(), text=1))
         tv.append_column(Gtk.TreeViewColumn(_(_("Output Chars")),
@@ -507,6 +509,7 @@ class AnthySetup(object):
         for key, value in sorted(list(rule.items()), \
             key = functools.cmp_to_key(self.__japanese_thumb_sort)):
             ls.append(['thumb', key, value[0], value[2], value[1]])
+        tv.set_model(None)
         tv.append_column(Gtk.TreeViewColumn(_(_("Input")),
                                             Gtk.CellRendererText(), text=1))
         tv.append_column(Gtk.TreeViewColumn(_(_("Single")),
@@ -587,9 +590,10 @@ class AnthySetup(object):
         combobox.clear()
         combobox.disconnect_by_func(self.on_cb_custom_key_table_changed)
 
-    def __run_dialog_custom_key_table(self, mode):
+    def __run_dialog_custom_key_table(self, widget, mode):
         prefs = self.prefs
         dlg = self.__builder.get_object('dialog_custom_key_table')
+        dlg.set_transient_for(widget.get_toplevel())
         label = self.__builder.get_object('label_custom_key_table')
         label_output = self.__builder.get_object('label_output_custom_key')
         list_labels = []
@@ -1128,6 +1132,7 @@ class AnthySetup(object):
             Gtk.main_quit()
             return True
         dlg = self.__builder.get_object('quit_check')
+        dlg.set_transient_for(widget.get_toplevel())
         dlg.set_markup('<big><b>%s</b></big>' % _("Confirmation"))
         dlg.format_secondary_text(
                 _("You are about to close the setup dialog, is that OK?"))
@@ -1144,6 +1149,7 @@ class AnthySetup(object):
             Gtk.main_quit()
             return True
         dlg = self.__builder.get_object('quit_check_without_save')
+        dlg.set_transient_for(widget.get_toplevel())
         dlg.set_markup('<big><b>%s</b></big>' % _("Notice!"))
         dlg.format_secondary_text(
                 _("You are about to close the setup dialog without saving your changes, is that OK?"))
@@ -1219,6 +1225,7 @@ class AnthySetup(object):
         for w in ['es:checkbutton_ctrl', 'es:checkbutton_alt', 'es:checkbutton_shift']:
             self.__builder.get_object(w).set_active(False)
         dlg = self.__builder.get_object('edit_shortcut')
+        dlg.set_transient_for(widget.get_toplevel())
         id = dlg.run()
         dlg.hide()
         if id == Gtk.ResponseType.OK:
@@ -1239,13 +1246,13 @@ class AnthySetup(object):
             self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_romaji_custom_table_clicked(self, widget):
-        self.__run_dialog_custom_key_table('romaji')
+        self.__run_dialog_custom_key_table(widget, 'romaji')
 
     def on_btn_kana_custom_table_clicked(self, widget):
-        self.__run_dialog_custom_key_table('kana')
+        self.__run_dialog_custom_key_table(widget, 'kana')
 
     def on_btn_thumb_custom_table_clicked(self, widget):
-        self.__run_dialog_custom_key_table('thumb')
+        self.__run_dialog_custom_key_table(widget, 'thumb')
 
     def on_btn_add_custom_key(self, widget, user_data):
         prefs = self.prefs
@@ -1374,6 +1381,7 @@ class AnthySetup(object):
         for w in ['es:checkbutton_ctrl', 'es:checkbutton_alt', 'es:checkbutton_shift']:
             self.__builder.get_object(w).set_active(False)
         dlg = self.__builder.get_object('edit_shortcut')
+        dlg.set_transient_for(widget.get_toplevel())
         id = dlg.run()
         dlg.hide()
         self.__builder.get_object('es:button_add').show()
@@ -1408,16 +1416,17 @@ class AnthySetup(object):
 
         if Gtk.Buildable.get_name(widget) == 'dict:btn_add':
             dlg = Gtk.FileChooserDialog(title=_("Open Dictionary File"),
-                                        parent=self.__builder.get_object('main'),
-                                        action=Gtk.FileChooserAction.OPEN,
-                                        buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
-                                                 _("_Open"), Gtk.ResponseType.OK))
+                                        transient_for=widget.get_toplevel(),
+                                        action=Gtk.FileChooserAction.OPEN)
+            buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
+                     _("_Open"), Gtk.ResponseType.OK)
+            dlg.add_buttons(*buttons)
         if Gtk.Buildable.get_name(widget) == 'dict:btn_edit':
             dlg = Gtk.Dialog(title=_("Edit Dictionary File"),
-                             parent=self.__builder.get_object('main'),
-                             flags=Gtk.DialogFlags.MODAL,
-                             buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
-                                      _("_OK"), Gtk.ResponseType.OK))
+                             transient_for=widget.get_toplevel())
+            buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
+                     _("_OK"), Gtk.ResponseType.OK)
+            dlg.add_buttons(*buttons)
 
         vbox = self.__builder.get_object('dict:add_extra_vbox')
         if Gtk.Buildable.get_name(widget) == 'dict:btn_add':
@@ -1510,9 +1519,9 @@ class AnthySetup(object):
             lines = str(lines, encoding)
 
         dlg = Gtk.Dialog(title=_("View Dictionary File"),
-                         parent=self.__builder.get_object('main'),
-                         flags=Gtk.DialogFlags.MODAL,
-                         buttons=(_("_OK"), Gtk.ResponseType.OK))
+                         transient_for=widget.get_toplevel())
+        buttons=(_("_OK"), Gtk.ResponseType.OK)
+        dlg.add_buttons(*buttons)
         buffer = Gtk.TextBuffer()
         buffer.set_text (lines)
         text_view = Gtk.TextView.new_with_buffer(buffer)
@@ -1660,6 +1669,7 @@ class AnthySetup(object):
 
     def on_es_button_run_input_clicked(self, widget):
         dlg = self.__builder.get_object('key_input_dialog')
+        dlg.set_transient_for(widget.get_toplevel())
         dlg.set_markup('<big><b>%s</b></big>' % _("Please press a key (or a key combination)"))
         dlg.format_secondary_text(_("The dialog will be closed when the key is released"))
         id = dlg.run()
@@ -1680,6 +1690,7 @@ class AnthySetup(object):
         s = self.__builder.get_object('es:entry').get_text()
         if not s or not IBus.keyval_from_name(s):
             dlg = self.__builder.get_object('invalid_keysym')
+            dlg.set_transient_for(widget.get_toplevel())
             dlg.set_markup('<big><b>%s</b></big>' % _("Invalid keysym"))
             dlg.format_secondary_text(_("This keysym is not valid"))
             dlg.run()
@@ -1700,6 +1711,7 @@ class AnthySetup(object):
         s = self.__builder.get_object('es:entry').get_text()
         if not s or not IBus.keyval_from_name(s):
             dlg = self.__builder.get_object('invalid_keysym')
+            dlg.set_transient_for(widget.get_toplevel())
             dlg.set_markup('<big><b>%s</b></big>' % _("Invalid keysym"))
             dlg.format_secondary_text(_("This keysym is not valid"))
             dlg.run()
