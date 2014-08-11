@@ -182,7 +182,7 @@ class Engine(IBus.EngineSimple):
         journal = get_userhome() + '/.anthy/last-record2_default.utf8'
         try:
             f = io.open(file=journal, mode='rb')
-        except FileNotFoundError:
+        except IOError:
             return True
         f.seek(-1, io.SEEK_END)
         last = f.read(1)
