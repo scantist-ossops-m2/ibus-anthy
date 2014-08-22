@@ -1106,7 +1106,7 @@ _config = {
         'icon': None,
         'short_label': '〒',
         'long_label': N_("Zip Code Conversion"),
-        'preview_lines': 30,
+        'preview_lines': -1,
         'reverse': False,
         'is_system': True,
     },
