@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2010-2013 Red Hat, Inc.
+# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2014 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 dicts_DATA = \
+	emoji.t \
 	era.t \
 	oldchar.t \
 	symbol.t \
@@ -37,6 +38,7 @@ CLEANFILES = zipcode.t
 endif
 
 EXTRA_DIST = \
+        emoji.t \
         era.t \
         oldchar.t \
         symbol.t \
