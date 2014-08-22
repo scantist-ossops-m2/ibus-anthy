@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus-Anthy\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2014-02-18 17:18+0900\n"
+"POT-Creation-Date: 2014-08-21 18:57+0900\n"
 "PO-Revision-Date: 2014-02-18 08:42+0000\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -22,12 +22,13 @@ msgstr ""
 #: ../engine/python2/engine.py:193 ../engine/python3/engine.py:194
 msgid ""
 "Could not enable Anthy.\n"
-"The end of the content of the file .anthy/last-record2_default.utf8 in your home directory is not '\\n'. I.e. not correct text format.\n"
+"The end of the content of the file .anthy/last-record2_default.utf8 in your "
+"home directory is not '\\n'. I.e. not correct text format.\n"
 "Please fix the file or remove it by manual and restart IBus."
 msgstr "Anthy を有効にできませんでした。\nホームディレクトリにある .anthy/last-record2_default.utf8 の中身の最後が '\\n' でありません。つまり正しくないテキストフォーマットです。\n手動でファイルを修正するか削除して IBus をリスタートしてください。"
 
 #: ../engine/python2/engine.py:241 ../engine/python3/engine.py:242
-#: ../setup/python2/main.py:393 ../setup/python3/main.py:398
+#: ../setup/python2/main.py:408 ../setup/python3/main.py:413
 msgid "Preferences - Anthy"
 msgstr "設定 - Anthy"
 
@@ -52,7 +53,7 @@ msgstr "%(description)s (%(symbol)s)"
 
 #: ../engine/python2/engine.py:281 ../engine/python2/engine.py:843
 #: ../engine/python3/engine.py:282 ../engine/python3/engine.py:838
-#: ../setup/python2/main.py:378 ../setup/python3/main.py:383
+#: ../setup/python2/main.py:393 ../setup/python3/main.py:398
 msgid "Input mode"
 msgstr "入力モード"
 
@@ -88,7 +89,7 @@ msgstr "全角英数"
 #: ../engine/python2/engine.py:369 ../engine/python2/engine.py:871
 #: ../engine/python2/engine.py:895 ../engine/python3/engine.py:370
 #: ../engine/python3/engine.py:866 ../engine/python3/engine.py:890
-#: ../setup/python2/main.py:381 ../setup/python3/main.py:386
+#: ../setup/python2/main.py:396 ../setup/python3/main.py:401
 msgid "Typing method"
 msgstr "入力タイプ"
 
@@ -113,7 +114,7 @@ msgstr "親指シフト"
 
 #: ../engine/python2/engine.py:436 ../engine/python2/engine.py:921
 #: ../engine/python3/engine.py:437 ../engine/python3/engine.py:916
-#: ../setup/python2/main.py:384 ../setup/python3/main.py:389
+#: ../setup/python2/main.py:399 ../setup/python3/main.py:404
 msgid "Segment mode"
 msgstr "文節モード"
 
@@ -143,7 +144,7 @@ msgstr "逐次変換 (単文節)"
 
 #: ../engine/python2/engine.py:512 ../engine/python2/engine.py:983
 #: ../engine/python3/engine.py:513 ../engine/python3/engine.py:978
-#: ../setup/python2/main.py:387 ../setup/python3/main.py:392
+#: ../setup/python2/main.py:402 ../setup/python3/main.py:407
 msgid "Dictionary mode"
 msgstr "辞書モード"
 
@@ -152,7 +153,7 @@ msgid "Switch dictionary"
 msgstr "辞書を切り替えます"
 
 #: ../engine/python2/engine.py:601 ../engine/python3/engine.py:601
-#: ../setup/python2/main.py:390 ../setup/python3/main.py:395
+#: ../setup/python2/main.py:405 ../setup/python3/main.py:410
 msgid "Dictionary - Anthy"
 msgstr "辞書 - Anthy"
 
@@ -181,30 +182,35 @@ msgstr "単語を追加する"
 msgid "Add words to the dictionary"
 msgstr "辞書に単語を追加する"
 
-#: ../setup/python2/anthyprefs.py.in:1102 ../setup/python2/setup.ui.h:35
-#: ../setup/python3/anthyprefs.py.in:1095 ../setup/python3/setup.ui.h:35
+#: ../setup/python2/anthyprefs.py.in:1104 ../setup/python2/setup.ui.h:35
+#: ../setup/python3/anthyprefs.py.in:1097 ../setup/python3/setup.ui.h:35
 msgid "General"
 msgstr "一般"
 
-#: ../setup/python2/anthyprefs.py.in:1113
-#: ../setup/python3/anthyprefs.py.in:1106
+#: ../setup/python2/anthyprefs.py.in:1115
+#: ../setup/python3/anthyprefs.py.in:1108
 msgid "Zip Code Conversion"
 msgstr "郵便番号変換"
 
-#: ../setup/python2/anthyprefs.py.in:1124
-#: ../setup/python3/anthyprefs.py.in:1117
+#: ../setup/python2/anthyprefs.py.in:1126
+#: ../setup/python3/anthyprefs.py.in:1119
 msgid "Symbol"
 msgstr "記号"
 
-#: ../setup/python2/anthyprefs.py.in:1135
-#: ../setup/python3/anthyprefs.py.in:1128
+#: ../setup/python2/anthyprefs.py.in:1137
+#: ../setup/python3/anthyprefs.py.in:1130
 msgid "Old Character Style"
 msgstr "旧字体"
 
-#: ../setup/python2/anthyprefs.py.in:1145
-#: ../setup/python3/anthyprefs.py.in:1138
+#: ../setup/python2/anthyprefs.py.in:1147
+#: ../setup/python3/anthyprefs.py.in:1140
 msgid "Era"
 msgstr "年号"
+
+#: ../setup/python2/anthyprefs.py.in:1157
+#: ../setup/python3/anthyprefs.py.in:1150
+msgid "Emoji"
+msgstr "絵文字"
 
 #: ../setup/python2/ibus-setup-anthy.desktop.in.in.h:1
 #: ../setup/python3/ibus-setup-anthy.desktop.in.in.h:1
@@ -217,280 +223,280 @@ msgid "Set up IBus Anthy engine"
 msgstr "IBus Anthy エンジンの設定"
 
 #. self.__run_message_dialog needs self.__builder.
-#: ../setup/python2/main.py:110 ../setup/python3/main.py:113
+#: ../setup/python2/main.py:125 ../setup/python3/main.py:128
 msgid "ibus is not running."
 msgstr "ibus が起動していません。"
 
-#: ../setup/python2/main.py:165 ../setup/python3/main.py:168
+#: ../setup/python2/main.py:180 ../setup/python3/main.py:183
 msgid "Menu label"
 msgstr "メニューラベル"
 
-#: ../setup/python2/main.py:184 ../setup/python3/main.py:187
+#: ../setup/python2/main.py:199 ../setup/python3/main.py:202
 msgid "Command"
 msgstr "コマンド"
 
-#: ../setup/python2/main.py:188 ../setup/python3/main.py:191
+#: ../setup/python2/main.py:203 ../setup/python3/main.py:206
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: ../setup/python2/main.py:233 ../setup/python3/main.py:236
+#: ../setup/python2/main.py:248 ../setup/python3/main.py:251
 msgid "Description"
 msgstr "説明"
 
 #. Translators: "Embd" is an abbreviation of "embedded".
-#: ../setup/python2/main.py:241 ../setup/python3/main.py:244
+#: ../setup/python2/main.py:256 ../setup/python3/main.py:259
 msgid "Embd"
 msgstr "組"
 
 #. Translators: "Sgl" is an abbreviation of "single".
-#: ../setup/python2/main.py:249 ../setup/python3/main.py:252
+#: ../setup/python2/main.py:264 ../setup/python3/main.py:267
 msgid "Sgl"
 msgstr "単"
 
-#: ../setup/python2/main.py:423 ../setup/python2/main.py:458
-#: ../setup/python3/main.py:428 ../setup/python3/main.py:463
+#: ../setup/python2/main.py:439 ../setup/python2/main.py:475
+#: ../setup/python3/main.py:444 ../setup/python3/main.py:480
 msgid "Input Chars"
 msgstr "入力文字"
 
-#: ../setup/python2/main.py:425 ../setup/python2/main.py:460
-#: ../setup/python3/main.py:430 ../setup/python3/main.py:465
+#: ../setup/python2/main.py:441 ../setup/python2/main.py:477
+#: ../setup/python3/main.py:446 ../setup/python3/main.py:482
 msgid "Output Chars"
 msgstr "出力文字"
 
-#: ../setup/python2/main.py:505 ../setup/python3/main.py:510
+#: ../setup/python2/main.py:523 ../setup/python3/main.py:528
 msgid "Input"
 msgstr "入力"
 
-#: ../setup/python2/main.py:507 ../setup/python3/main.py:512
+#: ../setup/python2/main.py:525 ../setup/python3/main.py:530
 msgid "Single"
 msgstr "単"
 
-#: ../setup/python2/main.py:509 ../setup/python3/main.py:514
+#: ../setup/python2/main.py:527 ../setup/python3/main.py:532
 msgid "Left"
 msgstr "左"
 
-#: ../setup/python2/main.py:511 ../setup/python3/main.py:516
+#: ../setup/python2/main.py:529 ../setup/python3/main.py:534
 msgid "Right"
 msgstr "右"
 
-#: ../setup/python2/main.py:592 ../setup/python3/main.py:597
+#: ../setup/python2/main.py:611 ../setup/python3/main.py:616
 msgid "Customize Romaji Key Table"
 msgstr "ローマ字キーテーブルのカスタマイズ"
 
-#: ../setup/python2/main.py:593 ../setup/python2/setup.ui.h:53
-#: ../setup/python3/main.py:598 ../setup/python3/setup.ui.h:53
+#: ../setup/python2/main.py:612 ../setup/python2/setup.ui.h:53
+#: ../setup/python3/main.py:617 ../setup/python3/setup.ui.h:53
 msgid "_Romaji Key Table:"
 msgstr "ローマ字キーテーブル(_R):"
 
-#: ../setup/python2/main.py:594 ../setup/python2/main.py:600
-#: ../setup/python3/main.py:599 ../setup/python3/main.py:605
+#: ../setup/python2/main.py:613 ../setup/python2/main.py:619
+#: ../setup/python3/main.py:618 ../setup/python3/main.py:624
 msgid "_Output Chars"
 msgstr "出力文字(_O)"
 
-#: ../setup/python2/main.py:595 ../setup/python2/main.py:1095
-#: ../setup/python2/main.py:1175 ../setup/python2/setup.ui.h:26
-#: ../setup/python3/main.py:600 ../setup/python3/main.py:1089
-#: ../setup/python3/main.py:1169 ../setup/python3/setup.ui.h:26
+#: ../setup/python2/main.py:614 ../setup/python2/main.py:1114
+#: ../setup/python2/main.py:1196 ../setup/python2/setup.ui.h:26
+#: ../setup/python3/main.py:619 ../setup/python3/main.py:1108
+#: ../setup/python3/main.py:1190 ../setup/python3/setup.ui.h:26
 msgid "Default"
 msgstr "デフォルト"
 
-#: ../setup/python2/main.py:598 ../setup/python3/main.py:603
+#: ../setup/python2/main.py:617 ../setup/python3/main.py:622
 msgid "Customize Kana Key Table"
 msgstr "かなキーテーブルのカスタマイズ"
 
-#: ../setup/python2/main.py:599 ../setup/python2/setup.ui.h:55
-#: ../setup/python3/main.py:604 ../setup/python3/setup.ui.h:55
+#: ../setup/python2/main.py:618 ../setup/python2/setup.ui.h:55
+#: ../setup/python3/main.py:623 ../setup/python3/setup.ui.h:55
 msgid "_Kana Key Table:"
 msgstr "かなキーテーブル(_K):"
 
-#: ../setup/python2/main.py:601 ../setup/python3/main.py:606
+#: ../setup/python2/main.py:620 ../setup/python3/main.py:625
 msgid "Japanese Keyboard Layout"
 msgstr "日本語キーボードレイアウト"
 
-#: ../setup/python2/main.py:602 ../setup/python3/main.py:607
+#: ../setup/python2/main.py:621 ../setup/python3/main.py:626
 msgid "U.S. Keyboard Layout"
 msgstr "U.S. キーボードレイアウト"
 
-#: ../setup/python2/main.py:605 ../setup/python3/main.py:610
+#: ../setup/python2/main.py:624 ../setup/python3/main.py:629
 msgid "Customize Thumb Shift Key Table"
 msgstr "親指シフトキーテーブルのカスタマイズ"
 
-#: ../setup/python2/main.py:606 ../setup/python3/main.py:611
+#: ../setup/python2/main.py:625 ../setup/python3/main.py:630
 msgid "_Thumb Shift Key Table:"
 msgstr "親指シフトキーテーブル(_T):"
 
-#: ../setup/python2/main.py:607 ../setup/python3/main.py:612
+#: ../setup/python2/main.py:626 ../setup/python3/main.py:631
 msgid "Single _Output Chars"
 msgstr "単出力文字(_O)"
 
-#: ../setup/python2/main.py:608 ../setup/python3/main.py:613
+#: ../setup/python2/main.py:627 ../setup/python3/main.py:632
 msgid "Base"
 msgstr "基本"
 
-#: ../setup/python2/main.py:609 ../setup/python3/main.py:614
+#: ../setup/python2/main.py:628 ../setup/python3/main.py:633
 msgid "NICOLA-J key extension"
 msgstr "NICOLA-J キー拡張"
 
-#: ../setup/python2/main.py:610 ../setup/python3/main.py:615
+#: ../setup/python2/main.py:629 ../setup/python3/main.py:634
 msgid "NICOLA-A key extension"
 msgstr "NICOLA-A キー拡張"
 
-#: ../setup/python2/main.py:611 ../setup/python3/main.py:616
+#: ../setup/python2/main.py:630 ../setup/python3/main.py:635
 msgid "NICOLA-F key extension"
 msgstr "NICOLA-F キー拡張"
 
-#: ../setup/python2/main.py:612 ../setup/python3/main.py:617
+#: ../setup/python2/main.py:631 ../setup/python3/main.py:636
 msgid "FMV KB231-J key extension"
 msgstr "FMV KB231-J キー拡張"
 
-#: ../setup/python2/main.py:613 ../setup/python3/main.py:618
+#: ../setup/python2/main.py:632 ../setup/python3/main.py:637
 msgid "FMV KB231-A key extension"
 msgstr "FMV KB231-A キー拡張"
 
-#: ../setup/python2/main.py:614 ../setup/python3/main.py:619
+#: ../setup/python2/main.py:633 ../setup/python3/main.py:638
 msgid "FMV KB231-F key extension"
 msgstr "FMV KB231-F キー拡張"
 
-#: ../setup/python2/main.py:615 ../setup/python3/main.py:620
+#: ../setup/python2/main.py:634 ../setup/python3/main.py:639
 msgid "FMV KB611-J key extension"
 msgstr "FMV KB611-J キー拡張"
 
-#: ../setup/python2/main.py:616 ../setup/python3/main.py:621
+#: ../setup/python2/main.py:635 ../setup/python3/main.py:640
 msgid "FMV KB611-A key extension"
 msgstr "FMV KB611-A キー拡張"
 
-#: ../setup/python2/main.py:617 ../setup/python3/main.py:622
+#: ../setup/python2/main.py:636 ../setup/python3/main.py:641
 msgid "FMV KB611-F key extension"
 msgstr "FMV KB611-F キー拡張"
 
-#: ../setup/python2/main.py:761 ../setup/python3/main.py:766
+#: ../setup/python2/main.py:780 ../setup/python3/main.py:785
 msgid "Your choosed file has already been added: "
 msgstr "選択したファイルはすでに追加されています: "
 
-#: ../setup/python2/main.py:765 ../setup/python3/main.py:770
+#: ../setup/python2/main.py:784 ../setup/python3/main.py:789
 msgid "The file you have chosen does not exist: "
 msgstr "選択したファイルは存在しません: "
 
-#: ../setup/python2/main.py:769 ../setup/python3/main.py:774
+#: ../setup/python2/main.py:788 ../setup/python3/main.py:793
 msgid "Your choosed file is a directory: "
 msgstr "選択したファイルはディレクトリです: "
 
-#: ../setup/python2/main.py:773 ../setup/python3/main.py:778
+#: ../setup/python2/main.py:792 ../setup/python3/main.py:797
 msgid "You cannot add dictionaries in the anthy private directory: "
 msgstr "Anthy 私用ディレクトリにあるファイルを追加することはできません: "
 
-#: ../setup/python2/main.py:780 ../setup/python3/main.py:785
+#: ../setup/python2/main.py:799 ../setup/python3/main.py:804
 msgid "Your file path is not good: "
 msgstr "ファイルパスはよくないです: "
 
-#: ../setup/python2/main.py:959 ../setup/python3/main.py:962
+#: ../setup/python2/main.py:978 ../setup/python3/main.py:981
 msgid "The engine xml file does not exist: "
 msgstr "エンジン xml ファイルは存在しません: "
 
-#: ../setup/python2/main.py:1075 ../setup/python3/main.py:1069
+#: ../setup/python2/main.py:1094 ../setup/python3/main.py:1088
 msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
 msgstr "Anthy キーボードレイアウトが変更されました。レイアウトを再読み込みするために ibus を再起動してください。"
 
-#: ../setup/python2/main.py:1137 ../setup/python3/main.py:1131
+#: ../setup/python2/main.py:1157 ../setup/python3/main.py:1151
 msgid "Confirmation"
 msgstr "確認"
 
-#: ../setup/python2/main.py:1139 ../setup/python3/main.py:1133
+#: ../setup/python2/main.py:1159 ../setup/python3/main.py:1153
 msgid "You are about to close the setup dialog, is that OK?"
 msgstr "この設定ツールを終了します。よろしいですか？"
 
-#: ../setup/python2/main.py:1153 ../setup/python3/main.py:1147
+#: ../setup/python2/main.py:1174 ../setup/python3/main.py:1168
 msgid "Notice!"
 msgstr "注意！"
 
-#: ../setup/python2/main.py:1155 ../setup/python3/main.py:1149
+#: ../setup/python2/main.py:1176 ../setup/python3/main.py:1170
 msgid ""
-"You are about to close the setup dialog without saving your changes, is that"
-" OK?"
+"You are about to close the setup dialog without saving your changes, is that "
+"OK?"
 msgstr "変更を保存せずに終了します。よろしいですか？"
 
-#: ../setup/python2/main.py:1275 ../setup/python3/main.py:1269
+#: ../setup/python2/main.py:1297 ../setup/python3/main.py:1291
 msgid "Please specify Input Chars"
 msgstr "入力文字を指定してください"
 
-#: ../setup/python2/main.py:1278 ../setup/python3/main.py:1272
+#: ../setup/python2/main.py:1300 ../setup/python3/main.py:1294
 msgid "Please specify Output Chars"
 msgstr "出力文字を指定してください"
 
-#: ../setup/python2/main.py:1281 ../setup/python3/main.py:1275
+#: ../setup/python2/main.py:1303 ../setup/python3/main.py:1297
 msgid "Please specify Left Thumb Shift Chars"
 msgstr "左親指シフト文字を指定してください"
 
-#: ../setup/python2/main.py:1284 ../setup/python3/main.py:1278
+#: ../setup/python2/main.py:1306 ../setup/python3/main.py:1300
 msgid "Please specify Right Thumb Shift Chars"
 msgstr "右親指シフト文字を指定してください"
 
-#: ../setup/python2/main.py:1297 ../setup/python2/main.py:1341
-#: ../setup/python3/main.py:1291 ../setup/python3/main.py:1335
+#: ../setup/python2/main.py:1319 ../setup/python2/main.py:1363
+#: ../setup/python3/main.py:1313 ../setup/python3/main.py:1357
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr "カスタムキーがどのセクションにも割り当てられていません。たぶんバグです。"
 
-#: ../setup/python2/main.py:1406 ../setup/python2/main.py:1492
-#: ../setup/python3/main.py:1400 ../setup/python3/main.py:1486
+#: ../setup/python2/main.py:1429 ../setup/python2/main.py:1516
+#: ../setup/python3/main.py:1423 ../setup/python3/main.py:1510
 msgid "Your file does not exist: "
 msgstr "ファイルは存在しません: "
 
-#: ../setup/python2/main.py:1416 ../setup/python3/main.py:1410
+#: ../setup/python2/main.py:1439 ../setup/python3/main.py:1433
 msgid "Open Dictionary File"
 msgstr "辞書ファイルを開く"
 
-#: ../setup/python2/main.py:1419 ../setup/python2/main.py:1425
-#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1413
-#: ../setup/python3/main.py:1419 ../setup/python3/setup.ui.h:89
+#: ../setup/python2/main.py:1442 ../setup/python2/main.py:1448
+#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1436
+#: ../setup/python3/main.py:1442 ../setup/python3/setup.ui.h:89
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
-#: ../setup/python2/main.py:1420 ../setup/python3/main.py:1414
+#: ../setup/python2/main.py:1443 ../setup/python3/main.py:1437
 msgid "_Open"
 msgstr "開く(_O)"
 
-#: ../setup/python2/main.py:1422 ../setup/python3/main.py:1416
+#: ../setup/python2/main.py:1446 ../setup/python3/main.py:1440
 msgid "Edit Dictionary File"
 msgstr "辞書ファイルの編集"
 
-#: ../setup/python2/main.py:1426 ../setup/python2/main.py:1521
-#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1420
-#: ../setup/python3/main.py:1515 ../setup/python3/setup.ui.h:90
+#: ../setup/python2/main.py:1449 ../setup/python2/main.py:1544
+#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1443
+#: ../setup/python3/main.py:1538 ../setup/python3/setup.ui.h:90
 msgid "_OK"
 msgstr "OK(_O)"
 
-#: ../setup/python2/main.py:1436 ../setup/python3/main.py:1430
+#: ../setup/python2/main.py:1460 ../setup/python3/main.py:1454
 msgid "Your choosed file is not correct."
 msgstr "選択したファイルは正しくありません。"
 
-#: ../setup/python2/main.py:1465 ../setup/python3/main.py:1459
+#: ../setup/python2/main.py:1489 ../setup/python3/main.py:1483
 msgid "You cannot delete the system dictionary."
 msgstr "システム辞書を削除することはできません。"
 
-#: ../setup/python2/main.py:1488 ../setup/python3/main.py:1482
+#: ../setup/python2/main.py:1512 ../setup/python3/main.py:1506
 msgid "Your file is not good."
 msgstr "ファイルは良くないです。"
 
-#: ../setup/python2/main.py:1518 ../setup/python3/main.py:1512
+#: ../setup/python2/main.py:1542 ../setup/python3/main.py:1536
 msgid "View Dictionary File"
 msgstr "辞書ファイルの表示"
 
-#: ../setup/python2/main.py:1669 ../setup/python3/main.py:1663
+#: ../setup/python2/main.py:1694 ../setup/python3/main.py:1688
 msgid "Please press a key (or a key combination)"
 msgstr "キーを入力してください"
 
-#: ../setup/python2/main.py:1670 ../setup/python3/main.py:1664
+#: ../setup/python2/main.py:1695 ../setup/python3/main.py:1689
 msgid "The dialog will be closed when the key is released"
 msgstr "このダイアログはキーリリース時に閉じられます"
 
-#: ../setup/python2/main.py:1689 ../setup/python2/main.py:1709
-#: ../setup/python3/main.py:1683 ../setup/python3/main.py:1703
+#: ../setup/python2/main.py:1715 ../setup/python2/main.py:1736
+#: ../setup/python3/main.py:1709 ../setup/python3/main.py:1730
 msgid "Invalid keysym"
 msgstr "無効なキーシンボル"
 
-#: ../setup/python2/main.py:1690 ../setup/python2/main.py:1710
-#: ../setup/python3/main.py:1684 ../setup/python3/main.py:1704
+#: ../setup/python2/main.py:1716 ../setup/python2/main.py:1737
+#: ../setup/python3/main.py:1710 ../setup/python3/main.py:1731
 msgid "This keysym is not valid"
 msgstr "このキーシンボルは有効ではありません"
 
@@ -709,8 +715,8 @@ msgstr "親指シフトキーで '&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' 等�
 #: ../setup/python2/setup.ui.h:69 ../setup/python3/setup.ui.h:69
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
-"Key Arrangement\" since this option changes input method layout only in case"
-" input method is turned on."
+"Key Arrangement\" since this option changes input method layout only in case "
+"input method is turned on."
 msgstr "このオプションはインプットメソッドがオンの場合にインプットメソッドレイアウトのみを変更するので「追加のキー割り当て」のためにシステムキーボードレイアウトを再構成する必要はありません。"
 
 #: ../setup/python2/setup.ui.h:70 ../setup/python3/setup.ui.h:70
