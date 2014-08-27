@@ -1127,6 +1127,72 @@ class AnthySetup(object):
         if self.__keymap != None:
             self.__save_keymap()
 
+    def __search_and_mark(self, buffer, text, start, end, onetime, forward):
+        if forward:
+            match = start.forward_search(text, 0, end)
+        else:
+            match = start.backward_search(text, 0, end)
+        if match == None:
+            return False
+        match_start, match_end = match
+        if onetime:
+            buffer.place_cursor(match_start)
+            buffer.select_range(match_start, match_end)
+            return True
+        buffer.apply_tag(buffer.tag_found, match_start, match_end)
+        self.__search_and_mark(buffer, text, match_end, end, onetime, forward)
+        return True
+
+    def __filter_search(self, entry, onetime, forward):
+        text = entry.get_text()
+        self.__filter_timeout_id = 0
+
+        text_view = entry.text_view
+        buffer = text_view.get_buffer()
+        start = buffer.get_start_iter()
+        if onetime:
+            bounds = buffer.get_selection_bounds()
+            if len(bounds) != 0:
+                start, end = bounds
+                if forward:
+                    start = end
+        end = buffer.get_end_iter()
+        if not forward:
+            end = buffer.get_start_iter()
+        if not onetime:
+            buffer.remove_all_tags(start, end)
+        if text == '':
+            return
+        found = self.__search_and_mark(buffer, text, start, end, onetime, forward)
+        if not found and onetime and forward:
+            end = start
+            start = buffer.get_start_iter()
+            self.__search_and_mark(buffer, text, start, end, onetime, forward)
+
+    def __do_filter(self, entry):
+        self.__filter_search(entry, False, True)
+        return False
+
+    def __filter_changed(self, entry):
+        if self.__filter_timeout_id != 0:
+            return
+        self.__filter_timeout_id = GLib.timeout_add(150,
+                                                    self.__do_filter,
+                                                    entry)
+
+    def __filter_key_release_event(self, entry, event):
+        pressed, keyval = event.get_keyval()
+        if keyval == IBus.KEY_Return:
+            forward = True
+            if event.get_state() & Gdk.ModifierType.SHIFT_MASK:
+                forward = False
+            self.__filter_search(entry, True, forward)
+            text_view = entry.text_view
+            buffer = text_view.get_buffer()
+            text_view.scroll_to_mark(buffer.get_insert(),
+                                     0.25, False, 0.0, 0.0)
+        return False
+
     def on_selection_changed(self, widget, id):
         set_sensitive = lambda a, b: self.__builder.get_object(a).set_sensitive(b)
         flg = True if widget.get_selected()[1] else False
@@ -1545,6 +1611,7 @@ class AnthySetup(object):
         dlg.add_buttons(*buttons)
         buffer = Gtk.TextBuffer()
         buffer.set_text (lines)
+        buffer.tag_found = buffer.create_tag('found', background = 'yellow')
         text_view = Gtk.TextView.new_with_buffer(buffer)
         text_view.set_editable(False)
         sw = Gtk.ScrolledWindow()
@@ -1554,6 +1621,22 @@ class AnthySetup(object):
         parent_vbox.add(sw)
         sw.show_all()
         dlg.set_default_size(500, 500)
+        self.__filter_timeout_id = 0
+
+        if hasattr(Gtk, 'SearchEntry'):
+            filter_entry = Gtk.SearchEntry(hexpand = True,
+                                           margin_left = 6,
+                                           margin_right = 6,
+                                           margin_top = 6,
+                                           margin_bottom = 6)
+            filter_entry.text_view = text_view
+            filter_entry.connect('search-changed', self.__filter_changed)
+            filter_entry.connect('key-release-event',
+                                 self.__filter_key_release_event)
+            parent_vbox.add(filter_entry)
+            filter_entry.show_all()
+
+        sw.show_all()
         dlg.run()
         dlg.destroy()
 
