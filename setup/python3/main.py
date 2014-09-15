@@ -1617,7 +1617,9 @@ class AnthySetup(object):
         dlg.set_default_size(500, 500)
         self.__filter_timeout_id = 0
 
-        if hasattr(Gtk, 'SearchEntry'):
+        if hasattr(Gtk, 'SearchEntry') and \
+           hasattr(Gtk, 'SearchEntryClass') and \
+           hasattr(Gtk.SearchEntryClass, 'search_changed'):
             filter_entry = Gtk.SearchEntry(hexpand = True,
                                            margin_left = 6,
                                            margin_right = 6,
