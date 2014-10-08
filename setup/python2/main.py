@@ -1706,14 +1706,14 @@ class AnthySetup(object):
 
     def on_shortcut_key_release_event(self, widget, event):
         if event.hardware_keycode in [36, 65]:
-            self.on_btn_edit_clicked(None)
+            self.on_btn_edit_clicked(widget)
 
     def on_shortcut_click_event(self, widget, event):
         if event.type == Gdk.EventType._2BUTTON_PRESS:
             widget.dc = True
         elif event.type == Gdk.EventType.BUTTON_RELEASE:
             if hasattr(widget, 'dc') and widget.dc:
-                self.on_btn_edit_clicked(None)
+                self.on_btn_edit_clicked(widget)
                 widget.dc = False
 
     def on_key_input_dialog_key_press_event(self, widget, event):
