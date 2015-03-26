@@ -1,46 +1,18 @@
-# Japanese translation of ibus-anthy.
-# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2009-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# This file is distributed under the same license as the ibus-anthy package.
-#
-# Translators:
-# UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy HEAD\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2015-03-26 18:41+0900\n"
+"POT-Creation-Date: 2014-08-21 18:57+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-02-18 03:42-0500\n"
-"Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
-"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
-"Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"PO-Revision-Date: 2015-03-19 06:34-0400\n"
+"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
+"Language-Team: Catalan\n"
+"Language: ca\n"
 "X-Generator: Zanata 3.5.1\n"
-
-#: ../data/anthy.appdata.xml.in.h:1
-msgid "Japanese input method"
-msgstr "日本語入力方式"
-
-#: ../data/anthy.appdata.xml.in.h:2
-msgid ""
-"<p> The Anthy input method is designed for entering Japanese text. </p> <p> "
-"Input methods are typing systems allowing users to input complex languages. "
-"They are necessary because these contain too many characters to simply be "
-"laid out on a traditional keyboard. </p>"
-msgstr ""
-"<p> Anthy 入力方式は日本語のテキストを入力するために設計されています。 </p> "
-"<p> "
-"入力方式はユーザーに複雑な言語入力を可能にさせる文字入力システムです。 "
-"入力方式は従来のキーボード上で簡単に割り当てられた多くの文字を含んでいるため"
-"に必要とされています。 </p>"
-
-#: ../engine/python2/default.xml.in.in.h:1
-#: ../engine/python3/default.xml.in.in.h:1
-msgid "Anthy Input Method"
-msgstr "Anthy 入力方式"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: ../engine/python2/engine.py:193 ../engine/python3/engine.py:194
 msgid ""
@@ -49,19 +21,20 @@ msgid ""
 "home directory is not '\\n'. I.e. not correct text format.\n"
 "Please fix the file or remove it by manual and restart IBus."
 msgstr ""
-"Anthy を有効にできませんでした。\n"
-"ホームディレクトリにある .anthy/last-record2_default.utf8 の中身の最後が '\\n' "
-"でありません。つまり正しくないテキストフォーマットです。\n"
-"手動でファイルを修正するか削除して IBus をリスタートしてください。"
+"No es pot habilitar l'Anthy.\n"
+"El final del contingut del fitxer .anthy/last-record2_default.utf8 del "
+"vostre directori d'inici no és '\\n'. p.ex. format de text no correcte.\n"
+"Si us plau corregiu el fitxer o elimineu-lo manualment i torneu a iniciar "
+"l'IBus."
 
 #: ../engine/python2/engine.py:241 ../engine/python3/engine.py:242
 #: ../setup/python2/main.py:408 ../setup/python3/main.py:413
 msgid "Preferences - Anthy"
-msgstr "設定 - Anthy"
+msgstr "Anthy - Preferències"
 
 #: ../engine/python2/engine.py:243 ../engine/python3/engine.py:244
 msgid "Configure Anthy"
-msgstr "Anthy を構成します"
+msgstr "Configura Anthy"
 
 #. Translators: Specify the order of %s with your translation.
 #. It will be "Input Mode (A)" for example.
@@ -82,450 +55,460 @@ msgstr "%(description)s (%(symbol)s)"
 #: ../engine/python3/engine.py:282 ../engine/python3/engine.py:838
 #: ../setup/python2/main.py:393 ../setup/python3/main.py:398
 msgid "Input mode"
-msgstr "入力モード"
+msgstr "Mode d'entrada"
 
 #: ../engine/python2/engine.py:287 ../engine/python3/engine.py:288
 msgid "Switch input mode"
-msgstr "入力モードを切り替えます"
+msgstr "Commuta el mode d'entrada"
 
 #: ../engine/python2/engine.py:297 ../engine/python3/engine.py:298
 #: ../setup/python2/setup.ui.h:1 ../setup/python3/setup.ui.h:1
 msgid "Hiragana"
-msgstr "ひらがな"
+msgstr "Hiragana"
 
 #: ../engine/python2/engine.py:306 ../engine/python3/engine.py:307
 #: ../setup/python2/setup.ui.h:2 ../setup/python3/setup.ui.h:2
 msgid "Katakana"
-msgstr "カタカナ"
+msgstr "Katakana"
 
 #: ../engine/python2/engine.py:315 ../engine/python3/engine.py:316
 #: ../setup/python2/setup.ui.h:3 ../setup/python3/setup.ui.h:3
 msgid "Halfwidth Katakana"
-msgstr "半角カタカナ"
+msgstr "Katakana d'amplada mitja"
 
 #: ../engine/python2/engine.py:324 ../engine/python3/engine.py:325
 #: ../setup/python2/setup.ui.h:4 ../setup/python3/setup.ui.h:4
 msgid "Latin"
-msgstr "英数"
+msgstr "Llatí"
 
 #: ../engine/python2/engine.py:333 ../engine/python3/engine.py:334
 #: ../setup/python2/setup.ui.h:5 ../setup/python3/setup.ui.h:5
 msgid "Wide Latin"
-msgstr "全角英数"
+msgstr "Llatí ampli"
 
 #: ../engine/python2/engine.py:369 ../engine/python2/engine.py:871
 #: ../engine/python2/engine.py:895 ../engine/python3/engine.py:370
 #: ../engine/python3/engine.py:866 ../engine/python3/engine.py:890
 #: ../setup/python2/main.py:396 ../setup/python3/main.py:401
 msgid "Typing method"
-msgstr "入力タイプ"
+msgstr "mètode mecanogràfic"
 
 #: ../engine/python2/engine.py:375 ../engine/python3/engine.py:376
 msgid "Switch typing method"
-msgstr "入力タイプを切り替えます"
+msgstr "Commuta el mètode mecanogràfic"
 
 #: ../engine/python2/engine.py:385 ../engine/python3/engine.py:386
 #: ../setup/python2/setup.ui.h:12 ../setup/python3/setup.ui.h:12
 msgid "Romaji"
-msgstr "ローマ字"
+msgstr "Romaji"
 
 #: ../engine/python2/engine.py:394 ../engine/python3/engine.py:395
 #: ../setup/python2/setup.ui.h:13 ../setup/python3/setup.ui.h:13
 msgid "Kana"
-msgstr "かな"
+msgstr "Kana"
 
 #: ../engine/python2/engine.py:403 ../engine/python3/engine.py:404
 #: ../setup/python2/setup.ui.h:14 ../setup/python3/setup.ui.h:14
 msgid "Thumb shift"
-msgstr "親指シフト"
+msgstr "Alternança amb el polze"
 
 #: ../engine/python2/engine.py:436 ../engine/python2/engine.py:921
 #: ../engine/python3/engine.py:437 ../engine/python3/engine.py:916
 #: ../setup/python2/main.py:399 ../setup/python3/main.py:404
 msgid "Segment mode"
-msgstr "文節モード"
+msgstr "Mode de segment"
 
 #: ../engine/python2/engine.py:442 ../engine/python3/engine.py:443
 msgid "Switch conversion mode"
-msgstr "変換モードを切り替えます"
+msgstr "Commuta al mode de conversió"
 
 #: ../engine/python2/engine.py:452 ../engine/python3/engine.py:453
 #: ../setup/python2/setup.ui.h:15 ../setup/python3/setup.ui.h:15
 msgid "Multiple segment"
-msgstr "連文節"
+msgstr "Segment múltiple"
 
 #: ../engine/python2/engine.py:461 ../engine/python3/engine.py:462
 #: ../setup/python2/setup.ui.h:16 ../setup/python3/setup.ui.h:16
 msgid "Single segment"
-msgstr "単文節"
+msgstr "Segment individual"
 
 #: ../engine/python2/engine.py:470 ../engine/python3/engine.py:471
 #: ../setup/python2/setup.ui.h:17 ../setup/python3/setup.ui.h:17
 msgid "Immediate conversion (multiple segment)"
-msgstr "逐次変換 (連文節)"
+msgstr "Conversió immediata (segment múltiple)"
 
 #: ../engine/python2/engine.py:479 ../engine/python3/engine.py:480
 #: ../setup/python2/setup.ui.h:18 ../setup/python3/setup.ui.h:18
 msgid "Immediate conversion (single segment)"
-msgstr "逐次変換 (単文節)"
+msgstr "Conversió immediata (segment individual)"
 
 #: ../engine/python2/engine.py:512 ../engine/python2/engine.py:983
 #: ../engine/python3/engine.py:513 ../engine/python3/engine.py:978
 #: ../setup/python2/main.py:402 ../setup/python3/main.py:407
 msgid "Dictionary mode"
-msgstr "辞書モード"
+msgstr "Mode de diccionari"
 
 #: ../engine/python2/engine.py:518 ../engine/python3/engine.py:519
 msgid "Switch dictionary"
-msgstr "辞書を切り替えます"
+msgstr "Commuta el diccionari"
 
 #: ../engine/python2/engine.py:601 ../engine/python3/engine.py:601
 #: ../setup/python2/main.py:405 ../setup/python3/main.py:410
 msgid "Dictionary - Anthy"
-msgstr "辞書 - Anthy"
+msgstr "Anthy - Diccionari"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
 #: ../engine/python2/engine.py:607 ../engine/python3/engine.py:606
 msgid "Dic"
-msgstr "辞"
+msgstr "Dic"
 
 #: ../engine/python2/engine.py:614 ../engine/python3/engine.py:613
 msgid "Configure dictionaries"
-msgstr "辞書を構成します"
+msgstr "Configura els diccionaris"
 
 #: ../engine/python2/engine.py:624 ../engine/python3/engine.py:623
 msgid "Edit dictionaries"
-msgstr "辞書を編集する"
+msgstr "Edita els diccionaris"
 
 #: ../engine/python2/engine.py:626 ../engine/python3/engine.py:625
 msgid "Launch the dictionary tool"
-msgstr "辞書ツールを起動する"
+msgstr "Llança l'eina de diccionari"
 
 #: ../engine/python2/engine.py:633 ../engine/python3/engine.py:632
 msgid "Add words"
-msgstr "単語を追加する"
+msgstr "Afegeix paraules"
 
 #: ../engine/python2/engine.py:635 ../engine/python3/engine.py:634
 msgid "Add words to the dictionary"
-msgstr "辞書に単語を追加する"
+msgstr "Afegeix paraules al diccionari"
 
 #: ../setup/python2/anthyprefs.py.in:1104 ../setup/python2/setup.ui.h:35
 #: ../setup/python3/anthyprefs.py.in:1097 ../setup/python3/setup.ui.h:35
 msgid "General"
-msgstr "一般"
+msgstr "General"
 
 #: ../setup/python2/anthyprefs.py.in:1115
 #: ../setup/python3/anthyprefs.py.in:1108
 msgid "Zip Code Conversion"
-msgstr "郵便番号変換"
+msgstr "Conversió del codi postal"
 
 #: ../setup/python2/anthyprefs.py.in:1126
 #: ../setup/python3/anthyprefs.py.in:1119
 msgid "Symbol"
-msgstr "記号"
+msgstr "Símbol"
 
 #: ../setup/python2/anthyprefs.py.in:1137
 #: ../setup/python3/anthyprefs.py.in:1130
 msgid "Old Character Style"
-msgstr "旧字体"
+msgstr "Estil de caràcter antic"
 
 #: ../setup/python2/anthyprefs.py.in:1147
 #: ../setup/python3/anthyprefs.py.in:1140
 msgid "Era"
-msgstr "年号"
+msgstr "Era"
 
 #: ../setup/python2/anthyprefs.py.in:1157
 #: ../setup/python3/anthyprefs.py.in:1150
 msgid "Emoji"
-msgstr "絵文字"
+msgstr "Emoji"
 
 #: ../setup/python2/ibus-setup-anthy.desktop.in.in.h:1
 #: ../setup/python3/ibus-setup-anthy.desktop.in.in.h:1
 msgid "IBus Anthy Setup"
-msgstr "IBus Anthy の設定"
+msgstr "Ajust Anthy IBus"
 
 #: ../setup/python2/ibus-setup-anthy.desktop.in.in.h:2
 #: ../setup/python3/ibus-setup-anthy.desktop.in.in.h:2
 msgid "Set up IBus Anthy engine"
-msgstr "IBus Anthy エンジンの設定"
+msgstr "Prepara el motor Anthy d'IBus"
 
 #. self.__run_message_dialog needs self.__builder.
 #: ../setup/python2/main.py:125 ../setup/python3/main.py:128
 msgid "ibus is not running."
-msgstr "ibus が起動していません。"
+msgstr "No s'està executant l'ibus."
 
 #: ../setup/python2/main.py:180 ../setup/python3/main.py:183
 msgid "Menu label"
-msgstr "メニューラベル"
+msgstr "Etiqueta de menú"
 
 #: ../setup/python2/main.py:199 ../setup/python3/main.py:202
 msgid "Command"
-msgstr "コマンド"
+msgstr "Ordre"
 
 #: ../setup/python2/main.py:203 ../setup/python3/main.py:206
 msgid "Shortcut"
-msgstr "ショートカット"
+msgstr "Drecera"
 
 #: ../setup/python2/main.py:248 ../setup/python3/main.py:251
 msgid "Description"
-msgstr "説明"
+msgstr "Descripció"
 
 #. Translators: "Embd" is an abbreviation of "embedded".
 #: ../setup/python2/main.py:256 ../setup/python3/main.py:259
 msgid "Embd"
-msgstr "組"
+msgstr "Embd"
 
 #. Translators: "Sgl" is an abbreviation of "single".
 #: ../setup/python2/main.py:264 ../setup/python3/main.py:267
 msgid "Sgl"
-msgstr "単"
+msgstr "Sgl"
 
 #: ../setup/python2/main.py:439 ../setup/python2/main.py:475
 #: ../setup/python3/main.py:444 ../setup/python3/main.py:480
 msgid "Input Chars"
-msgstr "入力文字"
+msgstr "Caràcters d'entrada"
 
 #: ../setup/python2/main.py:441 ../setup/python2/main.py:477
 #: ../setup/python3/main.py:446 ../setup/python3/main.py:482
 msgid "Output Chars"
-msgstr "出力文字"
+msgstr "Caràcters de sortida"
 
 #: ../setup/python2/main.py:523 ../setup/python3/main.py:528
 msgid "Input"
-msgstr "入力"
+msgstr "Entrada"
 
 #: ../setup/python2/main.py:525 ../setup/python3/main.py:530
 msgid "Single"
-msgstr "単"
+msgstr "Individual"
 
 #: ../setup/python2/main.py:527 ../setup/python3/main.py:532
 msgid "Left"
-msgstr "左"
+msgstr "Esquerra"
 
 #: ../setup/python2/main.py:529 ../setup/python3/main.py:534
 msgid "Right"
-msgstr "右"
+msgstr "Dreta"
 
 #: ../setup/python2/main.py:611 ../setup/python3/main.py:616
 msgid "Customize Romaji Key Table"
-msgstr "ローマ字キーテーブルのカスタマイズ"
+msgstr "Personalitza la taula de tecles romaji"
 
 #: ../setup/python2/main.py:612 ../setup/python2/setup.ui.h:53
 #: ../setup/python3/main.py:617 ../setup/python3/setup.ui.h:53
 msgid "_Romaji Key Table:"
-msgstr "ローマ字キーテーブル(_R):"
+msgstr "Taula de tecles _romaji:"
 
 #: ../setup/python2/main.py:613 ../setup/python2/main.py:619
 #: ../setup/python3/main.py:618 ../setup/python3/main.py:624
 msgid "_Output Chars"
-msgstr "出力文字(_O)"
+msgstr "Caràcters de _sortida"
 
 #: ../setup/python2/main.py:614 ../setup/python2/main.py:1114
-#: ../setup/python2/main.py:1262 ../setup/python2/setup.ui.h:26
+#: ../setup/python2/main.py:1196 ../setup/python2/setup.ui.h:26
 #: ../setup/python3/main.py:619 ../setup/python3/main.py:1108
-#: ../setup/python3/main.py:1256 ../setup/python3/setup.ui.h:26
+#: ../setup/python3/main.py:1190 ../setup/python3/setup.ui.h:26
 msgid "Default"
-msgstr "デフォルト"
+msgstr "Per defecte"
 
 #: ../setup/python2/main.py:617 ../setup/python3/main.py:622
 msgid "Customize Kana Key Table"
-msgstr "かなキーテーブルのカスタマイズ"
+msgstr "Personalitza la taula de tecles kana"
 
 #: ../setup/python2/main.py:618 ../setup/python2/setup.ui.h:55
 #: ../setup/python3/main.py:623 ../setup/python3/setup.ui.h:55
 msgid "_Kana Key Table:"
-msgstr "かなキーテーブル(_K):"
+msgstr "Taula de tecles _kana"
 
 #: ../setup/python2/main.py:620 ../setup/python3/main.py:625
 msgid "Japanese Keyboard Layout"
-msgstr "日本語キーボードレイアウト"
+msgstr "Disposició de teclat japonesa"
 
 #: ../setup/python2/main.py:621 ../setup/python3/main.py:626
 msgid "U.S. Keyboard Layout"
-msgstr "U.S. キーボードレイアウト"
+msgstr "Disposició de teclat dels EUA"
 
 #: ../setup/python2/main.py:624 ../setup/python3/main.py:629
 msgid "Customize Thumb Shift Key Table"
-msgstr "親指シフトキーテーブルのカスタマイズ"
+msgstr "Personalitza la taula de tecles d'alternança amb el polze"
 
 #: ../setup/python2/main.py:625 ../setup/python3/main.py:630
 msgid "_Thumb Shift Key Table:"
-msgstr "親指シフトキーテーブル(_T):"
+msgstr "_Taula de tecles d'alternança amb el polze:"
 
 #: ../setup/python2/main.py:626 ../setup/python3/main.py:631
 msgid "Single _Output Chars"
-msgstr "単出力文字(_O)"
+msgstr "Caràcters de s_ortida individual"
 
 #: ../setup/python2/main.py:627 ../setup/python3/main.py:632
 msgid "Base"
-msgstr "基本"
+msgstr "Base"
 
 #: ../setup/python2/main.py:628 ../setup/python3/main.py:633
 msgid "NICOLA-J key extension"
-msgstr "NICOLA-J キー拡張"
+msgstr "Extensió de tecles NICOLA-J"
 
 #: ../setup/python2/main.py:629 ../setup/python3/main.py:634
 msgid "NICOLA-A key extension"
-msgstr "NICOLA-A キー拡張"
+msgstr "Extensió de tecles NICOLA-A"
 
 #: ../setup/python2/main.py:630 ../setup/python3/main.py:635
 msgid "NICOLA-F key extension"
-msgstr "NICOLA-F キー拡張"
+msgstr "Extensió de tecles NICOLA-F"
 
 #: ../setup/python2/main.py:631 ../setup/python3/main.py:636
 msgid "FMV KB231-J key extension"
-msgstr "FMV KB231-J キー拡張"
+msgstr "Extensió de tecles FMV KB231-J"
 
 #: ../setup/python2/main.py:632 ../setup/python3/main.py:637
 msgid "FMV KB231-A key extension"
-msgstr "FMV KB231-A キー拡張"
+msgstr "Extensió de tecles FMV KB231-A"
 
 #: ../setup/python2/main.py:633 ../setup/python3/main.py:638
 msgid "FMV KB231-F key extension"
-msgstr "FMV KB231-F キー拡張"
+msgstr "Extensió de tecles FMV KB231-F"
 
 #: ../setup/python2/main.py:634 ../setup/python3/main.py:639
 msgid "FMV KB611-J key extension"
-msgstr "FMV KB611-J キー拡張"
+msgstr "Extensió de tecles FMV KB611-J"
 
 #: ../setup/python2/main.py:635 ../setup/python3/main.py:640
 msgid "FMV KB611-A key extension"
-msgstr "FMV KB611-A キー拡張"
+msgstr "Extensió de tecles FMV KB611-A"
 
 #: ../setup/python2/main.py:636 ../setup/python3/main.py:641
 msgid "FMV KB611-F key extension"
-msgstr "FMV KB611-F キー拡張"
+msgstr "Extensió de tecles FMV KB611-F"
 
 #: ../setup/python2/main.py:780 ../setup/python3/main.py:785
 msgid "Your choosed file has already been added: "
-msgstr "選択したファイルはすでに追加されています: "
+msgstr "El fitxer que heu triat ja ha estat afegit:"
 
 #: ../setup/python2/main.py:784 ../setup/python3/main.py:789
 msgid "The file you have chosen does not exist: "
-msgstr "選択したファイルは存在しません: "
+msgstr "El fitxer que heu triat no existeix:"
 
 #: ../setup/python2/main.py:788 ../setup/python3/main.py:793
 msgid "Your choosed file is a directory: "
-msgstr "選択したファイルはディレクトリです: "
+msgstr "El fitxer que heu triat és un directori:"
 
 #: ../setup/python2/main.py:792 ../setup/python3/main.py:797
 msgid "You cannot add dictionaries in the anthy private directory: "
-msgstr "Anthy 私用ディレクトリにあるファイルを追加することはできません: "
+msgstr "No podeu afegir diccionaris al directori privat de l'anthy."
 
 #: ../setup/python2/main.py:799 ../setup/python3/main.py:804
 msgid "Your file path is not good: "
-msgstr "ファイルパスはよくないです: "
+msgstr "El camí al vostre fitxer no és bó:"
 
 #: ../setup/python2/main.py:978 ../setup/python3/main.py:981
 msgid "The engine xml file does not exist: "
-msgstr "エンジン xml ファイルは存在しません: "
+msgstr "El fitxer xml del motor no existeix:"
 
 #: ../setup/python2/main.py:1094 ../setup/python3/main.py:1088
 msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
-msgstr "Anthy キーボードレイアウトが変更されました。レイアウトを再読み込みするために ibus を再起動してください。"
+msgstr ""
+"La disposició del teclat anthy ha canviat.  Si us plau, reinicieu l'ibus per "
+"tornar a carregar la distribució."
 
-#: ../setup/python2/main.py:1223 ../setup/python3/main.py:1217
+#: ../setup/python2/main.py:1157 ../setup/python3/main.py:1151
 msgid "Confirmation"
-msgstr "確認"
+msgstr "Confirmació"
 
-#: ../setup/python2/main.py:1225 ../setup/python3/main.py:1219
+#: ../setup/python2/main.py:1159 ../setup/python3/main.py:1153
 msgid "You are about to close the setup dialog, is that OK?"
-msgstr "この設定ツールを終了します。よろしいですか？"
+msgstr "Esteu a punt de tancar el diàleg d'ajust, és això correcte?"
 
-#: ../setup/python2/main.py:1240 ../setup/python3/main.py:1234
+#: ../setup/python2/main.py:1174 ../setup/python3/main.py:1168
 msgid "Notice!"
-msgstr "注意！"
+msgstr "Notificació!"
 
-#: ../setup/python2/main.py:1242 ../setup/python3/main.py:1236
+#: ../setup/python2/main.py:1176 ../setup/python3/main.py:1170
 msgid ""
 "You are about to close the setup dialog without saving your changes, is that "
 "OK?"
-msgstr "変更を保存せずに終了します。よろしいですか？"
+msgstr ""
+"Esteu a punt de tancar el diàleg d'ajust sense desar els vostres canvis, és "
+"això correcte?"
 
-#: ../setup/python2/main.py:1363 ../setup/python3/main.py:1357
+#: ../setup/python2/main.py:1297 ../setup/python3/main.py:1291
 msgid "Please specify Input Chars"
-msgstr "入力文字を指定してください"
+msgstr "Si us plau especifique els caràcters d'entrada"
 
-#: ../setup/python2/main.py:1366 ../setup/python3/main.py:1360
+#: ../setup/python2/main.py:1300 ../setup/python3/main.py:1294
 msgid "Please specify Output Chars"
-msgstr "出力文字を指定してください"
+msgstr "Si us plau especifique els caràcters de sortida"
 
-#: ../setup/python2/main.py:1369 ../setup/python3/main.py:1363
+#: ../setup/python2/main.py:1303 ../setup/python3/main.py:1297
 msgid "Please specify Left Thumb Shift Chars"
-msgstr "左親指シフト文字を指定してください"
+msgstr ""
+"Si us plau especifiqueu els caràcters de taula de tecles d'alternança amb el "
+"polze esquerre"
 
-#: ../setup/python2/main.py:1372 ../setup/python3/main.py:1366
+#: ../setup/python2/main.py:1306 ../setup/python3/main.py:1300
 msgid "Please specify Right Thumb Shift Chars"
-msgstr "右親指シフト文字を指定してください"
+msgstr ""
+"Si us plau especifiqueu els caràcters de taula de tecles d'alternança amb el "
+"polze dret"
 
-#: ../setup/python2/main.py:1385 ../setup/python2/main.py:1429
-#: ../setup/python3/main.py:1379 ../setup/python3/main.py:1423
+#: ../setup/python2/main.py:1319 ../setup/python2/main.py:1363
+#: ../setup/python3/main.py:1313 ../setup/python3/main.py:1357
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
-msgstr "カスタムキーがどのセクションにも割り当てられていません。たぶんバグです。"
+msgstr ""
+"La vostra tecla personalitzada no està assignada en cap secció. Potser és un "
+"error de programari."
 
-#: ../setup/python2/main.py:1495 ../setup/python2/main.py:1582
-#: ../setup/python3/main.py:1489 ../setup/python3/main.py:1576
+#: ../setup/python2/main.py:1429 ../setup/python2/main.py:1516
+#: ../setup/python3/main.py:1423 ../setup/python3/main.py:1510
 msgid "Your file does not exist: "
-msgstr "ファイルは存在しません: "
+msgstr "El vostre fitxer no existeix:"
 
-#: ../setup/python2/main.py:1505 ../setup/python3/main.py:1499
+#: ../setup/python2/main.py:1439 ../setup/python3/main.py:1433
 msgid "Open Dictionary File"
-msgstr "辞書ファイルを開く"
+msgstr "Obre el fitxer de diccionari"
 
-#: ../setup/python2/main.py:1508 ../setup/python2/main.py:1514
-#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1502
-#: ../setup/python3/main.py:1508 ../setup/python3/setup.ui.h:89
+#: ../setup/python2/main.py:1442 ../setup/python2/main.py:1448
+#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1436
+#: ../setup/python3/main.py:1442 ../setup/python3/setup.ui.h:89
 msgid "_Cancel"
-msgstr "キャンセル(_C)"
+msgstr "_Cancel·la"
 
-#: ../setup/python2/main.py:1509 ../setup/python3/main.py:1503
+#: ../setup/python2/main.py:1443 ../setup/python3/main.py:1437
 msgid "_Open"
-msgstr "開く(_O)"
+msgstr "_Obre"
+
+#: ../setup/python2/main.py:1446 ../setup/python3/main.py:1440
+msgid "Edit Dictionary File"
+msgstr "Edita el fitxer de diccionari"
+
+#: ../setup/python2/main.py:1449 ../setup/python2/main.py:1544
+#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1443
+#: ../setup/python3/main.py:1538 ../setup/python3/setup.ui.h:90
+msgid "_OK"
+msgstr "D'ac_ord"
+
+#: ../setup/python2/main.py:1460 ../setup/python3/main.py:1454
+msgid "Your choosed file is not correct."
+msgstr "El fitxer que heu triat no és vàlid."
+
+#: ../setup/python2/main.py:1489 ../setup/python3/main.py:1483
+msgid "You cannot delete the system dictionary."
+msgstr "No podeu eliminar el diccionari del sistema."
 
 #: ../setup/python2/main.py:1512 ../setup/python3/main.py:1506
-msgid "Edit Dictionary File"
-msgstr "辞書ファイルの編集"
-
-#: ../setup/python2/main.py:1515 ../setup/python2/main.py:1610
-#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1509
-#: ../setup/python3/main.py:1604 ../setup/python3/setup.ui.h:90
-msgid "_OK"
-msgstr "OK(_O)"
-
-#: ../setup/python2/main.py:1526 ../setup/python3/main.py:1520
-msgid "Your choosed file is not correct."
-msgstr "選択したファイルは正しくありません。"
-
-#: ../setup/python2/main.py:1555 ../setup/python3/main.py:1549
-msgid "You cannot delete the system dictionary."
-msgstr "システム辞書を削除することはできません。"
-
-#: ../setup/python2/main.py:1578 ../setup/python3/main.py:1572
 msgid "Your file is not good."
-msgstr "ファイルは良くないです。"
+msgstr "El vostre fitxer no està bé."
 
-#: ../setup/python2/main.py:1608 ../setup/python3/main.py:1602
+#: ../setup/python2/main.py:1542 ../setup/python3/main.py:1536
 msgid "View Dictionary File"
-msgstr "辞書ファイルの表示"
+msgstr "Visualitza el fitxer de diccionari"
 
-#: ../setup/python2/main.py:1779 ../setup/python3/main.py:1773
+#: ../setup/python2/main.py:1694 ../setup/python3/main.py:1688
 msgid "Please press a key (or a key combination)"
-msgstr "キーを入力してください"
+msgstr "Si us plau premeu una tecla (o una combinació de tecles)"
 
-#: ../setup/python2/main.py:1780 ../setup/python3/main.py:1774
+#: ../setup/python2/main.py:1695 ../setup/python3/main.py:1689
 msgid "The dialog will be closed when the key is released"
-msgstr "このダイアログはキーリリース時に閉じられます"
+msgstr "El diàleg es tancarà quan es deixi anar la tecla"
 
-#: ../setup/python2/main.py:1800 ../setup/python2/main.py:1821
-#: ../setup/python3/main.py:1794 ../setup/python3/main.py:1815
+#: ../setup/python2/main.py:1715 ../setup/python2/main.py:1736
+#: ../setup/python3/main.py:1709 ../setup/python3/main.py:1730
 msgid "Invalid keysym"
-msgstr "無効なキーシンボル"
+msgstr "keysym no vàlid"
 
-#: ../setup/python2/main.py:1801 ../setup/python2/main.py:1822
-#: ../setup/python3/main.py:1795 ../setup/python3/main.py:1816
+#: ../setup/python2/main.py:1716 ../setup/python2/main.py:1737
+#: ../setup/python3/main.py:1710 ../setup/python3/main.py:1731
 msgid "This keysym is not valid"
-msgstr "このキーシンボルは有効ではありません"
+msgstr "Aquest keysym no és vàlid"
 
 #: ../setup/python2/setup.ui.h:6 ../setup/python3/setup.ui.h:6
 msgid "NICOLA-J"
@@ -541,43 +524,43 @@ msgstr "NICOLA-F"
 
 #: ../setup/python2/setup.ui.h:9 ../setup/python3/setup.ui.h:9
 msgid "None"
-msgstr "なし"
+msgstr "Cap"
 
 #: ../setup/python2/setup.ui.h:10 ../setup/python3/setup.ui.h:10
 msgid "FMV KB231 key extension"
-msgstr "FMV KB231 キー拡張"
+msgstr "Extensió de tecles FMV KB231"
 
 #: ../setup/python2/setup.ui.h:11 ../setup/python3/setup.ui.h:11
 msgid "FMV KB611 key extension"
-msgstr "FMV KB611 キー拡張"
+msgstr "Extensió de tecles FMV KB611"
 
 #: ../setup/python2/setup.ui.h:19 ../setup/python3/setup.ui.h:19
 msgid "Keep numpad codes"
-msgstr "テンキーコードのまま"
+msgstr "Manté els codis del teclat numèric"
 
 #: ../setup/python2/setup.ui.h:20 ../setup/python3/setup.ui.h:20
 msgid "Convert characters"
-msgstr "文字を変換"
+msgstr "Converteix els caràcters"
 
 #: ../setup/python2/setup.ui.h:21 ../setup/python3/setup.ui.h:21
 msgid "Do nothing"
-msgstr "何もしない"
+msgstr "No fer res"
 
 #: ../setup/python2/setup.ui.h:22 ../setup/python3/setup.ui.h:22
 msgid "Automatically convert"
-msgstr "自動変換"
+msgstr "Converteix automàticament"
 
 #: ../setup/python2/setup.ui.h:23 ../setup/python3/setup.ui.h:23
 msgid "Clear"
-msgstr "消去"
+msgstr "Neteja"
 
 #: ../setup/python2/setup.ui.h:24 ../setup/python3/setup.ui.h:24
 msgid "Commit"
-msgstr "確定"
+msgstr "Consigna"
 
 #: ../setup/python2/setup.ui.h:25 ../setup/python3/setup.ui.h:25
 msgid "Hold"
-msgstr "保持"
+msgstr "Aguanta"
 
 #: ../setup/python2/setup.ui.h:27 ../setup/python3/setup.ui.h:27
 msgid "ATOK"
@@ -589,155 +572,161 @@ msgstr "Wnn"
 
 #: ../setup/python2/setup.ui.h:29 ../setup/python3/setup.ui.h:29
 msgid "Setup - IBus-Anthy"
-msgstr "IBus-Anthy の設定"
+msgstr "Ajust - IBus-Anthy"
 
 #: ../setup/python2/setup.ui.h:30 ../setup/python3/setup.ui.h:30
 msgid "_Input Mode:"
-msgstr "入力モード(_I):"
+msgstr "_Mode d'entrada:"
 
 #: ../setup/python2/setup.ui.h:31 ../setup/python3/setup.ui.h:31
 msgid "_Typing Method:"
-msgstr "入力タイプ(_T):"
+msgstr "Mètode d'_escriptura:"
 
 #: ../setup/python2/setup.ui.h:32 ../setup/python3/setup.ui.h:32
 msgid "Conversion _Mode:"
-msgstr "変換モード(_M):"
+msgstr "_Mode de conversió:"
 
 #: ../setup/python2/setup.ui.h:33 ../setup/python3/setup.ui.h:33
 msgid "<b>Initial Setting</b>"
-msgstr "<b>初期値の設定</b>"
+msgstr "<b>Ajust inicial</b>"
 
 #: ../setup/python2/setup.ui.h:34 ../setup/python3/setup.ui.h:34
 msgid "<b>Menu Visibility on Status Icon</b>"
-msgstr "<b>ステータスアイコン上のメニューの表示</b>"
+msgstr "<b>Visibilitat del menú en la icona d'estat</b>"
 
 #: ../setup/python2/setup.ui.h:36 ../setup/python3/setup.ui.h:36
 msgid "_Period Style:"
-msgstr "句読点スタイル(_P):"
+msgstr "Estil de _punt:"
 
 #: ../setup/python2/setup.ui.h:37 ../setup/python3/setup.ui.h:37
 msgid "Symbo_l Style:"
-msgstr "記号スタイル(_L):"
+msgstr "Esti_l de símbol:"
 
 #: ../setup/python2/setup.ui.h:38 ../setup/python3/setup.ui.h:38
 msgid "Numpad _Key Type:"
-msgstr "テンキータイプ(_K):"
+msgstr "Tipus de tecla del teclat _numèric:"
 
 #: ../setup/python2/setup.ui.h:39 ../setup/python3/setup.ui.h:39
 msgid "_Behavior on Period:"
-msgstr "句読点入力時の動作(_B):"
+msgstr "_Comportament sobre el punt:"
 
 #: ../setup/python2/setup.ui.h:40 ../setup/python3/setup.ui.h:40
 msgid "Behavior on _Focus Out:"
-msgstr "フォーカスアウト時の動作(_F):"
+msgstr "Comportament sobre la pèrdua d'en_focament:"
 
 #: ../setup/python2/setup.ui.h:41 ../setup/python3/setup.ui.h:41
 msgid "<b>Behavior</b>"
-msgstr "<b>動作</b>"
+msgstr "<b>Comportament</b>"
 
 #: ../setup/python2/setup.ui.h:42 ../setup/python3/setup.ui.h:42
 msgid "Candidate _Window Page Size:"
-msgstr "候補ウインドウの項目数(_W):"
+msgstr "Mida de la pàgina de la _finestra dels candidats::"
 
 #: ../setup/python2/setup.ui.h:43 ../setup/python3/setup.ui.h:43
 msgid "Convert _symbols with the one column width"
-msgstr "記号を半角で変換する(_S)"
+msgstr "Converteix els _símbols amb l'amplada d'una columna"
 
 #: ../setup/python2/setup.ui.h:44 ../setup/python3/setup.ui.h:44
 msgid "Convert _numbers with the one column width"
-msgstr "数字を半角で変換する(_N)"
+msgstr "Converteix els _números amb l'amplada d'una columna"
 
 #: ../setup/python2/setup.ui.h:45 ../setup/python3/setup.ui.h:45
 msgid "Con_vert spaces with the one column width"
-msgstr "空白を半角で変換する(_V)"
+msgstr "Con_verteix els espais amb l'amplada d'una columna"
 
 #: ../setup/python2/setup.ui.h:46 ../setup/python3/setup.ui.h:46
 msgid ""
 "Swi_tch “Hiragana” and “Latin” with Shift key and Hiragana–Katakana key in "
 "preedit"
-msgstr "前変換候補において「ひらがな」と「英数」をシフトキーとひらがな・カタカナキーで切り替える(_T)"
+msgstr ""
+"Commu_ta “Hiragana” i “Llatí” amb la tecla Maj.  La tecla hiragana–katakana "
+"en la pre-edició"
 
 #: ../setup/python2/setup.ui.h:47 ../setup/python3/setup.ui.h:47
 msgid "<b>Other</b>"
-msgstr "<b>その他</b>"
+msgstr "<b>Altres</b>"
 
 #: ../setup/python2/setup.ui.h:48 ../setup/python3/setup.ui.h:48
 msgid "Conversion"
-msgstr "変換"
+msgstr "Conversió"
 
 #: ../setup/python2/setup.ui.h:49 ../setup/python3/setup.ui.h:49
 msgid "_Shortcut Type:"
-msgstr "ショートカットタイプ(_S):"
+msgstr "Tipu_s de drecera:"
 
 #: ../setup/python2/setup.ui.h:50 ../setup/python3/setup.ui.h:50
 msgid "De_fault"
-msgstr "デフォルト(_F)"
+msgstr "Per de_fecte"
 
 #: ../setup/python2/setup.ui.h:51 ../setup/python3/setup.ui.h:51
 msgid "_Edit"
-msgstr "編集(_E)"
+msgstr "_Edita"
 
 #: ../setup/python2/setup.ui.h:52 ../setup/python3/setup.ui.h:52
 msgid "Key Binding"
-msgstr "キー割り当て"
+msgstr "Vinculació de tecles"
 
 #: ../setup/python2/setup.ui.h:54 ../setup/python3/setup.ui.h:54
 msgid "<b>Romaji</b>"
-msgstr "<b>ローマ字</b>"
+msgstr "<b>Romaji</b>"
 
 #: ../setup/python2/setup.ui.h:56 ../setup/python3/setup.ui.h:56
 msgid "<b>Kana</b>"
-msgstr "<b>かな</b>"
+msgstr "<b>Kana</b>"
 
 #: ../setup/python2/setup.ui.h:57 ../setup/python3/setup.ui.h:57
 msgid "Keyboad _layout:"
-msgstr "キーボードレイアウト(_L):"
+msgstr "Disposició de tec_lat:"
 
 #: ../setup/python2/setup.ui.h:58 ../setup/python3/setup.ui.h:58
 msgid "<b>Keyboard layout</b>"
-msgstr "<b>キーボードレイアウト</b>"
+msgstr "<b>Disposició de teclat</b>"
 
 #: ../setup/python2/setup.ui.h:59 ../setup/python3/setup.ui.h:59
 msgid "Typing Method"
-msgstr "入力タイプ"
+msgstr "Mètode mecanogràfic"
 
 #: ../setup/python2/setup.ui.h:60 ../setup/python3/setup.ui.h:60
 msgid "_Left Thumb Shift Key:"
-msgstr "左親指シフトキー(_L):"
+msgstr "Tecla d'alternança amb el po_lze esquerre:"
 
 #: ../setup/python2/setup.ui.h:61 ../setup/python3/setup.ui.h:61
 msgid "Right _Thumb Shift Key:"
-msgstr "右親指シフトキー(_T):"
+msgstr "_Tecla d'alternança amb el polze dret:"
 
 #: ../setup/python2/setup.ui.h:62 ../setup/python3/setup.ui.h:62
 msgid "Adjust _input method layout to system keyboard layout"
-msgstr "インプットメソッドレイアウトをシステムキーボードレイアウトに合わせる(_I)"
+msgstr ""
+"Ajusta la d_isposició del mètode d'entrada am la disposició del teclat del "
+"sistema"
 
 #: ../setup/python2/setup.ui.h:63 ../setup/python3/setup.ui.h:63
 msgid "Adjust IM layout to XKB layout"
-msgstr "IM レイアウトを XKB レイアウトに合わせる"
+msgstr "Ajusta la disposició del mètode d'entrada amb la disposició de l'XKB"
 
 #: ../setup/python2/setup.ui.h:64 ../setup/python3/setup.ui.h:64
 msgid "Input _Method Layout:"
-msgstr "インプットメソッドレイアウト(_M):"
+msgstr "Disposició del _mètode d'entrada:"
 
 #: ../setup/python2/setup.ui.h:65 ../setup/python3/setup.ui.h:65
 msgid "Restart IBus when you change the keyboard layout"
-msgstr "キーボードレイアウトを変更するときは IBus をリスタートしてください"
+msgstr "Torneu a iniciar l'IBus quan canvieu la disposició del teclau"
 
 #: ../setup/python2/setup.ui.h:66 ../setup/python3/setup.ui.h:66
 msgid "Restart IBus when you change XKB"
-msgstr "XKB を変更するときは IBus を再起動してください"
+msgstr "Torneu a iniciar l'IBus quan canvieu l'XKB"
 
 #: ../setup/python2/setup.ui.h:67 ../setup/python3/setup.ui.h:67
 msgid "_Additional Key Arrangement:"
-msgstr "追加のキー割り当て(_A):"
+msgstr "Concertació de tecles addicionals:"
 
 #: ../setup/python2/setup.ui.h:68 ../setup/python3/setup.ui.h:68
 msgid ""
 "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with "
 "Thumb Shift key"
-msgstr "親指シフトキーで '&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' 等を入力することが可能です"
+msgstr ""
+"'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' i així successivament es poden "
+"emetre amb la tecla d'alternança amb el polze"
 
 #: ../setup/python2/setup.ui.h:69 ../setup/python3/setup.ui.h:69
 msgid ""
@@ -745,101 +734,106 @@ msgid ""
 "Key Arrangement\" since this option changes input method layout only in case "
 "input method is turned on."
 msgstr ""
-"このオプションはインプットメソッドがオンの場合にインプットメソッドレイアウトのみを変更するので「追加のキー割り当て」のためにシステムキーボードレイアウトを再構成する必要はありません。"
+"No heu de tornar a configurar la disposició de teclat del sistema per a la "
+"\"Concertació de tecles addicionals\" ja que aquesta opció canvia la "
+"disposició del mètode d'entrada tan sols en el cas que el mètode d'entrada "
+"estigui engegat."
 
 #: ../setup/python2/setup.ui.h:70 ../setup/python3/setup.ui.h:70
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
-msgstr "このオプションは IM オンで IM レイアウトのみを変更するので XKB を再構成する必要はありません。"
+msgstr ""
+"No heu de tornar a configurar l'XKB ja que aquesta opció canvia la "
+"disposició del mètode d'entrada tan sols amb el mètode d'entrada engegat."
 
 #: ../setup/python2/setup.ui.h:71 ../setup/python3/setup.ui.h:71
 msgid "_Enable semi-voiced sound mark with Shift key"
-msgstr "シフトキーで半濁点を可能にする(_E)"
+msgstr "Habilita la marca del só quasi-sonor amb la t_ecla Maj."
 
 #: ../setup/python2/setup.ui.h:72 ../setup/python3/setup.ui.h:72
 msgid "Seion + Shift can output Handakuon"
-msgstr "清音 + シフトで半濁音を出力することが可能です"
+msgstr "Seion + Maj. pot emetre handakuon"
 
 #: ../setup/python2/setup.ui.h:73 ../setup/python3/setup.ui.h:73
 msgid "Thumb _Shift Key Table:"
-msgstr "親指シフトキーテーブル(_S):"
+msgstr "Taula de tecle_s d'alternança amb el polze:"
 
 #: ../setup/python2/setup.ui.h:74 ../setup/python3/setup.ui.h:74
 msgid "<b>Thumb Shift Layout</b>"
-msgstr "<b>親指シフトレイアウト</b>"
+msgstr "<b>Disposició d'alternança amb el polze</b>"
 
 #: ../setup/python2/setup.ui.h:75 ../setup/python3/setup.ui.h:75
 msgid "Thumb Shift"
-msgstr "親指シフト"
+msgstr "Alternança amb el polze"
 
 #: ../setup/python2/setup.ui.h:76 ../setup/python3/setup.ui.h:76
 msgid "_Edit Dictionary Command:"
-msgstr "辞書の編集コマンド(_E):"
+msgstr "Ordre per _editar el diccionari:"
 
 #: ../setup/python2/setup.ui.h:77 ../setup/python3/setup.ui.h:77
 msgid "_Add Word Command:"
-msgstr "単語の追加コマンド(_A):"
+msgstr "Ordre per _afegir una paraula:"
 
 #: ../setup/python2/setup.ui.h:78 ../setup/python3/setup.ui.h:78
 msgid "<b>Default Dictionary Configuration</b>"
-msgstr "<b>デフォルト辞書の構成</b>"
+msgstr "<b>Configuració del diccionari per defecte</b>"
 
 #: ../setup/python2/setup.ui.h:79 ../setup/python3/setup.ui.h:79
 msgid "_View"
-msgstr "表示(_V)"
+msgstr "_Visualitza"
 
 #: ../setup/python2/setup.ui.h:80 ../setup/python3/setup.ui.h:80
 msgid "_Add"
-msgstr "追加(_A)"
+msgstr "_Afegeix"
 
 #: ../setup/python2/setup.ui.h:81 ../setup/python3/setup.ui.h:81
 msgid "_Delete"
-msgstr "削除(_D)"
+msgstr "_Elimina"
 
 #: ../setup/python2/setup.ui.h:82 ../setup/python3/setup.ui.h:82
 msgid "_Up"
-msgstr "上へ(_U)"
+msgstr "A_munt"
 
 #: ../setup/python2/setup.ui.h:83 ../setup/python3/setup.ui.h:83
 msgid "You can change the order on language bar"
-msgstr "言語バー上で順序を変更することが可能です"
+msgstr "Podeu canviar l'ordre en la barra de l'idioma"
 
 #: ../setup/python2/setup.ui.h:84 ../setup/python3/setup.ui.h:84
 msgid "_Down"
-msgstr "下へ(_D)"
+msgstr "A_vall"
 
 #: ../setup/python2/setup.ui.h:85 ../setup/python3/setup.ui.h:85
 msgid "<b>Extended Dictionaries</b>"
-msgstr "<b>拡張辞書</b>"
+msgstr "<b>Diccionaris estesos</b>"
 
 #: ../setup/python2/setup.ui.h:86 ../setup/python3/setup.ui.h:86
 msgid "Dictionary"
-msgstr "辞書"
+msgstr "Diccionari"
 
 #: ../setup/python2/setup.ui.h:87 ../setup/python3/setup.ui.h:87
 msgid "About"
-msgstr "情報"
+msgstr "Sobre"
 
 #: ../setup/python2/setup.ui.h:88 ../setup/python3/setup.ui.h:88
 msgid "_Apply"
-msgstr "適用(_A)"
+msgstr "_Aplica"
 
 #: ../setup/python2/setup.ui.h:91 ../setup/python3/setup.ui.h:91
 msgid "Edit Shortcut"
-msgstr "ショートカットの編集"
+msgstr "Edita la drecera"
 
 #: ../setup/python2/setup.ui.h:92 ../setup/python3/setup.ui.h:92
 msgid "Key Code:"
-msgstr "キーコード:"
+msgstr "Codi de la tecla:"
 
 #: ../setup/python2/setup.ui.h:93 ../setup/python3/setup.ui.h:93
 msgid "Modifier:"
-msgstr "キー修飾:"
+msgstr "Modificador:"
 
 #: ../setup/python2/setup.ui.h:94 ../setup/python3/setup.ui.h:94
 msgid "A_lternate"
-msgstr "A_lt"
+msgstr "A_lterna"
 
 #: ../setup/python2/setup.ui.h:95 ../setup/python3/setup.ui.h:95
 msgid "Co_ntrol"
@@ -847,60 +841,60 @@ msgstr "Co_ntrol"
 
 #: ../setup/python2/setup.ui.h:96 ../setup/python3/setup.ui.h:96
 msgid "_Shift"
-msgstr "_Shift"
+msgstr "_Majúscules"
 
 #: ../setup/python2/setup.ui.h:97 ../setup/python3/setup.ui.h:97
 msgid "_Refresh"
-msgstr "更新(_R)"
+msgstr "_Refresca"
 
 #: ../setup/python2/setup.ui.h:98 ../setup/python3/setup.ui.h:98
 msgid "_Input Characters"
-msgstr "入力文字(_I)"
+msgstr "Caràcters d'_entrada"
 
 #: ../setup/python2/setup.ui.h:99 ../setup/python3/setup.ui.h:99
 msgid "_Output Characters"
-msgstr "出力文字(_O)"
+msgstr "Caràcters de s_ortida"
 
 #: ../setup/python2/setup.ui.h:100 ../setup/python3/setup.ui.h:100
 msgid "_Left Thumb Shift"
-msgstr "左親指シフト(_L)"
+msgstr "Alternança amb el po_lze esquerre"
 
 #: ../setup/python2/setup.ui.h:101 ../setup/python3/setup.ui.h:101
 msgid "_Right Thumb Shift"
-msgstr "右親指シフト(_R)"
+msgstr "Alternança amb el polze d_ret"
 
 #: ../setup/python2/setup.ui.h:102 ../setup/python3/setup.ui.h:102
 msgid "_Remove"
-msgstr "削除(_R)"
+msgstr "Sup_rimeix"
 
 #: ../setup/python2/setup.ui.h:103 ../setup/python3/setup.ui.h:103
 msgid "_Close"
-msgstr "閉じる(_C)"
+msgstr "_Tanca"
 
 #: ../setup/python2/setup.ui.h:104 ../setup/python3/setup.ui.h:104
 msgid "_Short Label:"
-msgstr "短ラベル(_S):"
+msgstr "Etiqueta breu:"
 
 #: ../setup/python2/setup.ui.h:105 ../setup/python3/setup.ui.h:105
 msgid "_Description:"
-msgstr "説明(_D):"
+msgstr "_Descripció:"
 
 #: ../setup/python2/setup.ui.h:106 ../setup/python3/setup.ui.h:106
 msgid "_Use your dictionary alone with switching dictionaries"
-msgstr "辞書を切り替えることで選択した辞書を単独で使用する(_U)"
+msgstr "_Utilitza sols el diccionari amb la commutació de diccionaris"
 
 #: ../setup/python2/setup.ui.h:107 ../setup/python3/setup.ui.h:107
 msgid "_Embed your dictionary in the system dictionary"
-msgstr "システム辞書にユーザー辞書を組み込む(_E)"
+msgstr "Integra _el vostre diccionari al diccionari del sistema"
 
 #: ../setup/python2/setup.ui.h:108 ../setup/python3/setup.ui.h:108
 msgid "Enable the _reverse conversion"
-msgstr "逆変換を可能にする(_R)"
+msgstr "Habilita la conversió inve_rsa"
 
 #: ../setup/python2/setup.ui.h:109 ../setup/python3/setup.ui.h:109
 msgid "The Anthy engine for the IBus input platform"
-msgstr "IBus 入力プラットフォーム用 Anthy エンジン"
+msgstr "El motor Anthy per a la plataforma d'entrada IBus"
 
 #: ../setup/python2/setup.ui.h:110 ../setup/python3/setup.ui.h:110
 msgid "translator_credits"
-msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
+msgstr "Robert Antoni Buj i Gelonch <rbuj@fedoraproject.org>"
