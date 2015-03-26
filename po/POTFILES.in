@@ -1,7 +1,9 @@
 # Files with translatable strings.
 # Please keep this file in alphabetical order.
+engine/python2/default.xml.in.in
 engine/python2/engine.py
 engine/python2/factory.py
+engine/python3/default.xml.in.in
 engine/python3/engine.py
 engine/python3/factory.py
 setup/python2/anthyprefs.py.in

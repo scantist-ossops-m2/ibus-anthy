@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -77,21 +77,11 @@ componentdir = $(datadir)/ibus/component
 engine_DATA = default.xml
 enginedir = $(pkgdatadir)/engine
 
-anthy.xml: anthy.xml.in
-	( \
-		libexecdir=${libexecdir}; \
-		pkgdatadir=${pkgdatadir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
-
-default.xml: default.xml.in
-	( \
-		libexecdir=${libexecdir}; \
-		pkgdatadir=${pkgdatadir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+%.xml: %.xml.in
+	sed -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
+	    -e "s|_description|description|g" \
+	$< > $@
 
 _config.py: _config.py.in
 	( \
