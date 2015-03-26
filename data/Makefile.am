@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2010-2014 Red Hat, Inc.
+# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,16 +28,29 @@ dicts_DATA = \
 
 dictsdir = $(pkgdatadir)/dicts
 
+appdata_in_files = anthy.appdata.xml.in
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+appdatadir=$(datadir)/appdata
+
+$(appdata_DATA): $(appdata_in_files) Makefile
+	$(AM_V_GEN) sed \
+	        -e "s|_summary|summary|g" \
+	        -e "s|_description|description|g" \
+	        $< > $@.tmp && mv $@.tmp $@
+
+CLEANFILES = $(appdata_DATA)
+
 if ENABLE_ZIPCODE
 dicts_DATA += zipcode.t
 
 zipcode.t: $(ANTHY_ZIPCODE_FILE)
 	$(PYTHON) zipcode-textdic.py $<
 
-CLEANFILES = zipcode.t
+CLEANFILES += zipcode.t
 endif
 
 EXTRA_DIST = \
+        $(appdata_in_files) \
         emoji.t \
         era.t \
         oldchar.t \

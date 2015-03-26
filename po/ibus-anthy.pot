@@ -1,13 +1,13 @@
 # Source translation of ibus-anthy.
 # Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2009-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2009-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus-anthy package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy HEAD\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2014-08-21 18:57+0900\n"
+"POT-Creation-Date: 2015-03-26 18:41+0900\n"
 "PO-Revision-Date: 2011-05-13 14:54+0900\n"
 "Last-Translator: Takao Fujiwara <takao.fujiwara1@gmail.com>\n"
 "Language-Team: Source\n"
@@ -15,6 +15,23 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/anthy.appdata.xml.in.h:1
+msgid "Japanese input method"
+msgstr ""
+
+#: ../data/anthy.appdata.xml.in.h:2
+msgid ""
+"<p> The Anthy input method is designed for entering Japanese text. </p> <p> "
+"Input methods are typing systems allowing users to input complex languages. "
+"They are necessary because these contain too many characters to simply be "
+"laid out on a traditional keyboard. </p>"
+msgstr ""
+
+#: ../engine/python2/default.xml.in.in.h:1
+#: ../engine/python3/default.xml.in.in.h:1
+msgid "Anthy Input Method"
+msgstr ""
 
 #: ../engine/python2/engine.py:193 ../engine/python3/engine.py:194
 msgid ""
@@ -291,9 +308,9 @@ msgid "_Output Chars"
 msgstr ""
 
 #: ../setup/python2/main.py:614 ../setup/python2/main.py:1114
-#: ../setup/python2/main.py:1196 ../setup/python2/setup.ui.h:26
+#: ../setup/python2/main.py:1262 ../setup/python2/setup.ui.h:26
 #: ../setup/python3/main.py:619 ../setup/python3/main.py:1108
-#: ../setup/python3/main.py:1190 ../setup/python3/setup.ui.h:26
+#: ../setup/python3/main.py:1256 ../setup/python3/setup.ui.h:26
 msgid "Default"
 msgstr ""
 
@@ -395,105 +412,105 @@ msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
 msgstr ""
 
-#: ../setup/python2/main.py:1157 ../setup/python3/main.py:1151
+#: ../setup/python2/main.py:1223 ../setup/python3/main.py:1217
 msgid "Confirmation"
 msgstr ""
 
-#: ../setup/python2/main.py:1159 ../setup/python3/main.py:1153
+#: ../setup/python2/main.py:1225 ../setup/python3/main.py:1219
 msgid "You are about to close the setup dialog, is that OK?"
 msgstr ""
 
-#: ../setup/python2/main.py:1174 ../setup/python3/main.py:1168
+#: ../setup/python2/main.py:1240 ../setup/python3/main.py:1234
 msgid "Notice!"
 msgstr ""
 
-#: ../setup/python2/main.py:1176 ../setup/python3/main.py:1170
+#: ../setup/python2/main.py:1242 ../setup/python3/main.py:1236
 msgid ""
 "You are about to close the setup dialog without saving your changes, is that "
 "OK?"
 msgstr ""
 
-#: ../setup/python2/main.py:1297 ../setup/python3/main.py:1291
+#: ../setup/python2/main.py:1363 ../setup/python3/main.py:1357
 msgid "Please specify Input Chars"
 msgstr ""
 
-#: ../setup/python2/main.py:1300 ../setup/python3/main.py:1294
+#: ../setup/python2/main.py:1366 ../setup/python3/main.py:1360
 msgid "Please specify Output Chars"
 msgstr ""
 
-#: ../setup/python2/main.py:1303 ../setup/python3/main.py:1297
+#: ../setup/python2/main.py:1369 ../setup/python3/main.py:1363
 msgid "Please specify Left Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/python2/main.py:1306 ../setup/python3/main.py:1300
+#: ../setup/python2/main.py:1372 ../setup/python3/main.py:1366
 msgid "Please specify Right Thumb Shift Chars"
 msgstr ""
 
-#: ../setup/python2/main.py:1319 ../setup/python2/main.py:1363
-#: ../setup/python3/main.py:1313 ../setup/python3/main.py:1357
+#: ../setup/python2/main.py:1385 ../setup/python2/main.py:1429
+#: ../setup/python3/main.py:1379 ../setup/python3/main.py:1423
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr ""
 
-#: ../setup/python2/main.py:1429 ../setup/python2/main.py:1516
-#: ../setup/python3/main.py:1423 ../setup/python3/main.py:1510
+#: ../setup/python2/main.py:1495 ../setup/python2/main.py:1582
+#: ../setup/python3/main.py:1489 ../setup/python3/main.py:1576
 msgid "Your file does not exist: "
 msgstr ""
 
-#: ../setup/python2/main.py:1439 ../setup/python3/main.py:1433
+#: ../setup/python2/main.py:1505 ../setup/python3/main.py:1499
 msgid "Open Dictionary File"
 msgstr ""
 
-#: ../setup/python2/main.py:1442 ../setup/python2/main.py:1448
-#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1436
-#: ../setup/python3/main.py:1442 ../setup/python3/setup.ui.h:89
+#: ../setup/python2/main.py:1508 ../setup/python2/main.py:1514
+#: ../setup/python2/setup.ui.h:89 ../setup/python3/main.py:1502
+#: ../setup/python3/main.py:1508 ../setup/python3/setup.ui.h:89
 msgid "_Cancel"
 msgstr ""
 
-#: ../setup/python2/main.py:1443 ../setup/python3/main.py:1437
+#: ../setup/python2/main.py:1509 ../setup/python3/main.py:1503
 msgid "_Open"
 msgstr ""
 
-#: ../setup/python2/main.py:1446 ../setup/python3/main.py:1440
+#: ../setup/python2/main.py:1512 ../setup/python3/main.py:1506
 msgid "Edit Dictionary File"
 msgstr ""
 
-#: ../setup/python2/main.py:1449 ../setup/python2/main.py:1544
-#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1443
-#: ../setup/python3/main.py:1538 ../setup/python3/setup.ui.h:90
+#: ../setup/python2/main.py:1515 ../setup/python2/main.py:1610
+#: ../setup/python2/setup.ui.h:90 ../setup/python3/main.py:1509
+#: ../setup/python3/main.py:1604 ../setup/python3/setup.ui.h:90
 msgid "_OK"
 msgstr ""
 
-#: ../setup/python2/main.py:1460 ../setup/python3/main.py:1454
+#: ../setup/python2/main.py:1526 ../setup/python3/main.py:1520
 msgid "Your choosed file is not correct."
 msgstr ""
 
-#: ../setup/python2/main.py:1489 ../setup/python3/main.py:1483
+#: ../setup/python2/main.py:1555 ../setup/python3/main.py:1549
 msgid "You cannot delete the system dictionary."
 msgstr ""
 
-#: ../setup/python2/main.py:1512 ../setup/python3/main.py:1506
+#: ../setup/python2/main.py:1578 ../setup/python3/main.py:1572
 msgid "Your file is not good."
 msgstr ""
 
-#: ../setup/python2/main.py:1542 ../setup/python3/main.py:1536
+#: ../setup/python2/main.py:1608 ../setup/python3/main.py:1602
 msgid "View Dictionary File"
 msgstr ""
 
-#: ../setup/python2/main.py:1694 ../setup/python3/main.py:1688
+#: ../setup/python2/main.py:1779 ../setup/python3/main.py:1773
 msgid "Please press a key (or a key combination)"
 msgstr ""
 
-#: ../setup/python2/main.py:1695 ../setup/python3/main.py:1689
+#: ../setup/python2/main.py:1780 ../setup/python3/main.py:1774
 msgid "The dialog will be closed when the key is released"
 msgstr ""
 
-#: ../setup/python2/main.py:1715 ../setup/python2/main.py:1736
-#: ../setup/python3/main.py:1709 ../setup/python3/main.py:1730
+#: ../setup/python2/main.py:1800 ../setup/python2/main.py:1821
+#: ../setup/python3/main.py:1794 ../setup/python3/main.py:1815
 msgid "Invalid keysym"
 msgstr ""
 
-#: ../setup/python2/main.py:1716 ../setup/python2/main.py:1737
-#: ../setup/python3/main.py:1710 ../setup/python3/main.py:1731
+#: ../setup/python2/main.py:1801 ../setup/python2/main.py:1822
+#: ../setup/python3/main.py:1795 ../setup/python3/main.py:1816
 msgid "This keysym is not valid"
 msgstr ""
 
