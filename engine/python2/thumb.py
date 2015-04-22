@@ -5,8 +5,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ __all__ = (
         'ThumbShiftKeyboard',
         'ThumbShiftSegment',
     )
+
+import sys
 
 from gi.repository import GLib
 from gi.repository import IBus
@@ -411,7 +413,6 @@ class ThumbShiftKeyboard:
                                 0, 1024, 0)[3]
             layout_list = prop.split('\0')
         except TypeError:
-            import sys
             print >> sys.stderr, \
               'This problem is fixed in the latest gobject-introspection'
             print >> sys.stderr, \
