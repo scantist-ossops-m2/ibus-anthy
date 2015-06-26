@@ -366,6 +366,21 @@ else
     AC_MSG_ERROR([ibus 1.5 or later supports version in IBus.EngineDesc])
 fi
 
+dnl - check icon_prop_key in IBus.EngineDesc
+AC_MSG_CHECKING([if IBus.EngineDesc has get_icon_prop_key])
+ICON_PROP_KEY_TEST="from gi.repository import IBus
+exit(not hasattr(IBus.EngineDesc, 'get_icon_prop_key'))
+"
+$PYTHON -c "$ICON_PROP_KEY_TEST"
+if test $? -eq 0; then
+    ICON_PROP_KEY_XML="<icon_prop_key>InputMode</icon_prop_key>"
+    AC_MSG_RESULT([yes])
+else
+    ICON_PROP_KEY_XML="<!-- <icon_prop_key>InputMode</icon_prop_key> -->"
+    AC_MSG_RESULT([ibus 1.5.11 or later supports icon-prop-key in IBus.EngineDesc])
+fi
+AC_SUBST(ICON_PROP_KEY_XML)
+
 dnl - set ibus-anthy layout
 AC_ARG_WITH(layout,
            [AC_HELP_STRING([--with-layout=LAYOUT],
@@ -452,5 +467,6 @@ ICON_PREFERENCE             $ICON_PREFERENCE
 ON_OFF_KEYS                 $ON_OFF_KEYS
 HOTKEYS_XML                 $HOTKEYS_XML
 SYMBOL_XML                  $SYMBOL_XML
+ICON_PROP_KEY_XML           $ICON_PROP_KEY_XML
 LAYOUT_XML                  $LAYOUT_XML
 "
