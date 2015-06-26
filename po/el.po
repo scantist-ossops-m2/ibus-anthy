@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus-Anthy\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus-anthy/issues\n"
 "POT-Creation-Date: 2014-08-21 18:57+0900\n"
 "PO-Revision-Date: 2014-02-18 08:42+0000\n"
 "Last-Translator: dm3k <meidei@windowslive.com>\n"

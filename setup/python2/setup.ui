@@ -2780,7 +2780,7 @@ Copyright © 2009–2014 Takao Fujiwara
 Copyright © 2007–2014 Red Hat, Inc.</property>
     <property name="comments" translatable="yes">The Anthy engine for the IBus input platform</property>
     <property name="license">GPL</property>
-    <property name="website">http://code.google.com/p/ibus/</property>
+    <property name="website">https://github.com/ibus/ibus/wiki</property>
     <property name="authors">Takao Fujiwara &lt;takao.fujiwara1@gmail.com&gt;</property>
     <property name="translator-credits" translatable="yes">translator_credits</property>
     <property name="logo-icon-name"/>

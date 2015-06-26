@@ -6,13 +6,13 @@ Installation
 ============
 
 The following is the online document:
-http://code.google.com/p/ibus/wiki/Install
+https://github.com/ibus/ibus/wiki/Install
 
 #1. Build & Install IBus
 * Obtain source code
 
 IBus source code can either be download from IBus download page
-(http://code.google.com/p/ibus/downloads/list)
+(https://github.com/ibus/ibus/releases)
 (If you use ibus for the first time, the download page is more stable than 
 git.)
 
@@ -23,7 +23,7 @@ git.)
 
 or obtained from git with following commands:
 
- $ git clone git://github.com/phuang/ibus.git ibus
+ $ git clone git://github.com/ibus/ibus.git ibus
  $ cd ibus
 
     * 'git clone --help' shows the usage. 
@@ -114,9 +114,9 @@ your system.)
 
 #4. Build & Install IBus Anthy
    Download ibus-anthy source from IBus download page
-   (http://code.google.com/p/ibus/downloads/list)
+   (https://github.com/ibus/ibus-anthy/releases)
    or
-   Use git clone git://github.com/fujiwarat/ibus-anthy.git ibus-anthy
+   Use git clone git://github.com/ibus/ibus-anthy.git ibus-anthy
 
        $ zcat ibus-anthy-xx.tar.gz | tar xfv -
        $ cd ibus-anthy
@@ -183,7 +183,7 @@ To enable input method, Type Ctrl + Space.
 
 Bug Reports
 ===========
-http://code.google.com/p/ibus/issues/list
+https://github.com/ibus/ibus/wiki/BugReport
 
 
 Questions
