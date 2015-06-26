@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,22 +21,23 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 dnl - if not 1, append datestamp to the version number.
-m4_define([ibus_released], [1])
-m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [5])
-m4_define([ibus_micro_version], [6])
+m4_define([ibus_anthy_released], [1])
+m4_define([ibus_anthy_major_version], [1])
+m4_define([ibus_anthy_minor_version], [5])
+m4_define([ibus_anthy_micro_version], [6])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
-          [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
+          [m4_eval(100 * ibus_anthy_minor_version + ibus_anthy_micro_version)])
 m4_define([ibus_abi_age], [0])
 m4_define(ibus_maybe_datestamp,
-    m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
+    m4_esyscmd([if test x]ibus_anthy_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
-m4_define([ibus_version],
-    ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
+m4_define([ibus_anthy_version],
+    ibus_anthy_major_version.ibus_anthy_minor_version.ibus_anthy_micro_version[]ibus_maybe_datestamp)
+m4_define([ibus_required_version], [1.5.0])
 m4_define([glib_required_version], [2.26.0])
 
-AC_INIT([ibus-anthy], [ibus_version], [http://code.google.com/p/ibus/issues/entry],[ibus-anthy])
+AC_INIT([ibus-anthy], [ibus_anthy_version], [https://github.com/ibus/ibus-anthy/issues],[ibus-anthy])
 AM_INIT_AUTOMAKE([1.10])
 AC_GNU_SOURCE
 
@@ -152,18 +153,16 @@ AM_CONDITIONAL([ENABLE_PYTHON3], [test x"$enable_python3" = x"yes"])
 dnl - check the supported ibus version
 AC_MSG_CHECKING([if your ibus version is supported])
 IBUS_VERSION_TEST="
-def _ibus_check_version(major, minor):
-    return (IBus.MAJOR_VERSION > (major) or \
-    (IBus.MAJOR_VERSION == (major) and IBus.MINOR_VERSION >= (minor)))
-
 from gi.repository import IBus
-retval = _ibus_check_version (ibus_major_version,
-                              ibus_minor_version)
-if not retval:
-    print ('your ibus version %d.%d.%d is old against %d.%d.%d' \
-        % ( IBus.MAJOR_VERSION, IBus.MINOR_VERSION, IBus.MICRO_VERSION, \
-            ibus_major_version, ibus_minor_version, ibus_micro_version ))
-    exit (-1)
+def _ibus_check_version(v):
+    major = IBus.MAJOR_VERSION
+    minor = IBus.MINOR_VERSION
+    micro = IBus.MICRO_VERSION
+    if (major, minor, micro) < tuple(map(int, (v.split('.')))):
+        raise ValueError('Required ibus %s but version of ibus is %d.%d.%d' % \
+                         (v, major, minor, micro))
+
+_ibus_check_version('ibus_required_version')
 exit(0)
 "
 $PYTHON -c "$IBUS_VERSION_TEST"
@@ -430,7 +429,7 @@ m4/Makefile
 
 AC_OUTPUT
 echo "
-                IBus-Anthy version ibus_version
+                IBus-Anthy version ibus_anthy_version
 
 GOBJECT2_CFLAGS             $GOBJECT2_CFLAGS
 GOBJECT2_LIBS               $GOBJECT2_LIBS

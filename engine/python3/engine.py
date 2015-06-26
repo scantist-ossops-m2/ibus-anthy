@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -141,7 +141,12 @@ class Engine(IBus.EngineSimple):
             self.__is_utf8 = (getpreferredencoding().lower() == 'utf-8')
         except:
             self.__is_utf8 = False
-        self.__ibus_version = 0.0
+        self.__has_update_preedit_text_with_mode = True
+        try:
+            self.__ibus_check_version('1.3')
+        except ValueError as e:
+            printerr('Disable update_preedit_text_with_mode(): %s' % str(e))
+            self.__has_update_preedit_text_with_mode = False
 
 #        self.__lookup_table = ibus.LookupTable.new(page_size=9,
 #                                                   cursor_pos=0,
@@ -171,12 +176,13 @@ class Engine(IBus.EngineSimple):
             ibus_config.connect('value-changed',
                                 self.__config_value_changed_cb)
 
-    def __get_ibus_version(self):
-        if self.__ibus_version == 0.0:
-            self.__ibus_version = \
-                IBus.MAJOR_VERSION + IBus.MINOR_VERSION / 1000.0 + \
-                IBus.MICRO_VERSION / 1000000.0
-        return self.__ibus_version
+    def __ibus_check_version(self, v):
+        major = IBus.MAJOR_VERSION
+        minor = IBus.MINOR_VERSION
+        micro = IBus.MICRO_VERSION
+        if (major, minor, micro) < tuple(map(int, (v.split('.')))):
+            raise ValueError('Required ibus %s but version of ibus is ' \
+                             '%d.%d.%d' % (v, major, minor, micro))
 
     # http://en.sourceforge.jp/ticket/browse.php?group_id=14&tid=33075
     def __verify_anthy_journal_file(self):
@@ -681,7 +687,7 @@ class Engine(IBus.EngineSimple):
                                   attr.get_end_index())
             i += 1
         mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
-        if self.__get_ibus_version() >= 1.003 and mode == 1:
+        if self.__has_update_preedit_text_with_mode and mode == 1:
             self.update_preedit_text_with_mode(text,
                                                cursor_pos, visible,
                                                IBus.PreeditFocusMode.COMMIT)
