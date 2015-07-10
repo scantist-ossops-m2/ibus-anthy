@@ -10,15 +10,14 @@ msgstr ""
 "Project-Id-Version: IBus-Anthy\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus-anthy/issues\n"
 "POT-Creation-Date: 2014-08-21 18:57+0900\n"
-"PO-Revision-Date: 2014-02-20 10:01+0100\n"
+"PO-Revision-Date: 2015-07-10 23:21+0900\n"
 "Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
-"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"Language-Team: French <trans-fr@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.4\n"
 
 #: ../engine/python2/engine.py:193 ../engine/python3/engine.py:194
 msgid ""
@@ -26,13 +25,7 @@ msgid ""
 "The end of the content of the file .anthy/last-record2_default.utf8 in your "
 "home directory is not '\\n'. I.e. not correct text format.\n"
 "Please fix the file or remove it by manual and restart IBus."
-msgstr ""
-"Anthy n'a pas pu être activé.\n"
-"Le contenu à la fin du fichier .anthy/last-record2_default.utf8 de votre "
-"dossier personnel n'est pas\n"
-"dans un format texte correct.\n"
-"Veuillez corriger le fichier ou le supprimer manuellement, puis redémarrer "
-"IBus."
+msgstr "Anthy n'a pas pu être activé.\nLe contenu à la fin du fichier .anthy/last-record2_default.utf8 de votre dossier personnel n'est pas\ndans un format texte correct.\nVeuillez corriger le fichier ou le supprimer manuellement, puis redémarrer IBus."
 
 #: ../engine/python2/engine.py:241 ../engine/python3/engine.py:242
 #: ../setup/python2/main.py:408 ../setup/python3/main.py:413
@@ -217,7 +210,7 @@ msgstr "Ère"
 #: ../setup/python2/anthyprefs.py.in:1157
 #: ../setup/python3/anthyprefs.py.in:1150
 msgid "Emoji"
-msgstr ""
+msgstr "Emoji"
 
 #: ../setup/python2/ibus-setup-anthy.desktop.in.in.h:1
 #: ../setup/python3/ibus-setup-anthy.desktop.in.in.h:1
@@ -318,7 +311,7 @@ msgstr "Table des touches _Kana :"
 
 #: ../setup/python2/main.py:620 ../setup/python3/main.py:625
 msgid "Japanese Keyboard Layout"
-msgstr "Disposition clavier japonais"
+msgstr "Disposition clavier japonais"
 
 #: ../setup/python2/main.py:621 ../setup/python3/main.py:626
 msgid "U.S. Keyboard Layout"
@@ -390,8 +383,7 @@ msgstr "Le fichier que vous avez sélectionné est un dossier : "
 
 #: ../setup/python2/main.py:792 ../setup/python3/main.py:797
 msgid "You cannot add dictionaries in the anthy private directory: "
-msgstr ""
-"Vous ne pouvez pas ajouter de dictionnaire dans le dossier privé d’Anthy : "
+msgstr "Vous ne pouvez pas ajouter de dictionnaire dans le dossier privé d’Anthy : "
 
 #: ../setup/python2/main.py:799 ../setup/python3/main.py:804
 msgid "Your file path is not good: "
@@ -404,9 +396,7 @@ msgstr "Le fichier xml du moteur n’existe pas : "
 #: ../setup/python2/main.py:1094 ../setup/python3/main.py:1088
 msgid ""
 "Anthy keyboard layout is changed. Please restart ibus to reload the layout."
-msgstr ""
-"La disposition clavier Anthy a changée. Veuillez redémarrer ibus pour "
-"charger la nouvelle disposition."
+msgstr "La disposition clavier Anthy a changée. Veuillez redémarrer ibus pour charger la nouvelle disposition."
 
 #: ../setup/python2/main.py:1157 ../setup/python3/main.py:1151
 msgid "Confirmation"
@@ -424,9 +414,7 @@ msgstr "Attention !"
 msgid ""
 "You are about to close the setup dialog without saving your changes, is that "
 "OK?"
-msgstr ""
-"Êtes-vous sûr de vouloir fermer la fenêtre de configuration sans sauver les "
-"modifications ?"
+msgstr "Êtes-vous sûr de vouloir fermer la fenêtre de configuration sans sauver les modifications ?"
 
 #: ../setup/python2/main.py:1297 ../setup/python3/main.py:1291
 msgid "Please specify Input Chars"
@@ -447,9 +435,7 @@ msgstr "Veuillez spécifier les caractères Thumb Shift Droit"
 #: ../setup/python2/main.py:1319 ../setup/python2/main.py:1363
 #: ../setup/python3/main.py:1313 ../setup/python3/main.py:1357
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
-msgstr ""
-"Votre touche personnalisée n’est assignée à aucune section. Cela est sans "
-"doute un bogue."
+msgstr "Votre touche personnalisée n’est assignée à aucune section. Cela est sans doute un bogue."
 
 #: ../setup/python2/main.py:1429 ../setup/python2/main.py:1516
 #: ../setup/python3/main.py:1423 ../setup/python3/main.py:1510
@@ -507,12 +493,12 @@ msgstr "La fenêtre se fermera lorsque la touche sera relâchée"
 #: ../setup/python2/main.py:1715 ../setup/python2/main.py:1736
 #: ../setup/python3/main.py:1709 ../setup/python3/main.py:1730
 msgid "Invalid keysym"
-msgstr "« keysym » invalide"
+msgstr "« keysym » invalide"
 
 #: ../setup/python2/main.py:1716 ../setup/python2/main.py:1737
 #: ../setup/python3/main.py:1710 ../setup/python3/main.py:1731
 msgid "This keysym is not valid"
-msgstr "Ce « keysym » n’est pas valide"
+msgstr "Ce « keysym » n’est pas valide"
 
 #: ../setup/python2/setup.ui.h:6 ../setup/python3/setup.ui.h:6
 msgid "NICOLA-J"
@@ -580,7 +566,7 @@ msgstr "Configuration – IBus-Anthy"
 
 #: ../setup/python2/setup.ui.h:30 ../setup/python3/setup.ui.h:30
 msgid "_Input Mode:"
-msgstr "Méthode d’E_ntrée :"
+msgstr "Méthode d’E_ntrée :"
 
 #: ../setup/python2/setup.ui.h:31 ../setup/python3/setup.ui.h:31
 msgid "_Typing Method:"
@@ -588,7 +574,7 @@ msgstr "Méthode de Sa_isie :"
 
 #: ../setup/python2/setup.ui.h:32 ../setup/python3/setup.ui.h:32
 msgid "Conversion _Mode:"
-msgstr "Mode de _Conversion :"
+msgstr "Mode de _Conversion :"
 
 #: ../setup/python2/setup.ui.h:33 ../setup/python3/setup.ui.h:33
 msgid "<b>Initial Setting</b>"
@@ -642,9 +628,7 @@ msgstr "Convertir les _espaces en espaces d’une seule colonne de largeur"
 msgid ""
 "Swi_tch “Hiragana” and “Latin” with Shift key and Hiragana–Katakana key in "
 "preedit"
-msgstr ""
-"Permuter entre les modes « Hiragana » et « Latin » avec la touche Maj et la "
-"touche Hiragana-Katakana en pré-édition"
+msgstr "Permuter entre les modes « Hiragana » et « Latin » avec la touche Maj et la touche Hiragana-Katakana en pré-édition"
 
 #: ../setup/python2/setup.ui.h:47 ../setup/python3/setup.ui.h:47
 msgid "<b>Other</b>"
@@ -652,7 +636,7 @@ msgstr "<b>Autres options</b>"
 
 #: ../setup/python2/setup.ui.h:48 ../setup/python3/setup.ui.h:48
 msgid "Conversion"
-msgstr "Mode de conversion "
+msgstr "Mode de conversion"
 
 #: ../setup/python2/setup.ui.h:49 ../setup/python3/setup.ui.h:49
 msgid "_Shortcut Type:"
@@ -708,7 +692,7 @@ msgstr "Utilise la disposition clavier utilisée par XKB pour l’IME"
 
 #: ../setup/python2/setup.ui.h:64 ../setup/python3/setup.ui.h:64
 msgid "Input _Method Layout:"
-msgstr "Disposition de la _Méthode de saisie :"
+msgstr "Disposition de la _Méthode de saisie :"
 
 #: ../setup/python2/setup.ui.h:65 ../setup/python3/setup.ui.h:65
 msgid "Restart IBus when you change the keyboard layout"
@@ -720,34 +704,26 @@ msgstr "Redémarrez IBus lorsque vous changer la configuration XKB"
 
 #: ../setup/python2/setup.ui.h:67 ../setup/python3/setup.ui.h:67
 msgid "_Additional Key Arrangement:"
-msgstr "_Arrangements des Touches Additionnelles :"
+msgstr "_Arrangements des Touches Additionnelles :"
 
 #: ../setup/python2/setup.ui.h:68 ../setup/python3/setup.ui.h:68
 msgid ""
 "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with "
 "Thumb Shift key"
-msgstr ""
-"'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;', etc. peuvent être tapés avec la "
-"méthode Thumb Shift"
+msgstr "'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;', etc. peuvent être tapés avec la méthode Thumb Shift"
 
 #: ../setup/python2/setup.ui.h:69 ../setup/python3/setup.ui.h:69
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
 "Key Arrangement\" since this option changes input method layout only in case "
 "input method is turned on."
-msgstr ""
-"Vous n’avez pas besoin de reconfigurer la disposition clavier système pour "
-"profiter des « Arrangements des Touches Additionnelles », puisque cette "
-"option ne change la disposition de la méthode de saisie que lorsque la "
-"méthode de saisie est activée."
+msgstr "Vous n’avez pas besoin de reconfigurer la disposition clavier système pour profiter des « Arrangements des Touches Additionnelles », puisque cette option ne change la disposition de la méthode de saisie que lorsque la méthode de saisie est activée."
 
 #: ../setup/python2/setup.ui.h:70 ../setup/python3/setup.ui.h:70
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
-msgstr ""
-"Vous n’avez pas besoin de reconfigurer XKB, puisque cette option ne change "
-"que la disposition de l’IME lorsque l’IME est activé."
+msgstr "Vous n’avez pas besoin de reconfigurer XKB, puisque cette option ne change que la disposition de l’IME lorsque l’IME est activé."
 
 #: ../setup/python2/setup.ui.h:71 ../setup/python3/setup.ui.h:71
 msgid "_Enable semi-voiced sound mark with Shift key"
@@ -759,7 +735,7 @@ msgstr "Seion + Majuscule peut imprimer Handakuon"
 
 #: ../setup/python2/setup.ui.h:73 ../setup/python3/setup.ui.h:73
 msgid "Thumb _Shift Key Table:"
-msgstr "Table des touches Thumb _Shift :"
+msgstr "Table des touches Thumb _Shift :"
 
 #: ../setup/python2/setup.ui.h:74 ../setup/python3/setup.ui.h:74
 msgid "<b>Thumb Shift Layout</b>"
@@ -771,11 +747,11 @@ msgstr "Thumb Shift"
 
 #: ../setup/python2/setup.ui.h:76 ../setup/python3/setup.ui.h:76
 msgid "_Edit Dictionary Command:"
-msgstr "Commande permettant l’éd_ition du Dictionnaire :"
+msgstr "Commande permettant l’éd_ition du Dictionnaire :"
 
 #: ../setup/python2/setup.ui.h:77 ../setup/python3/setup.ui.h:77
 msgid "_Add Word Command:"
-msgstr "Commande permettant l’a_jout d’un mot :"
+msgstr "Commande permettant l’a_jout d’un mot :"
 
 #: ../setup/python2/setup.ui.h:78 ../setup/python3/setup.ui.h:78
 msgid "<b>Default Dictionary Configuration</b>"
@@ -827,11 +803,11 @@ msgstr "Éditer le raccourci"
 
 #: ../setup/python2/setup.ui.h:92 ../setup/python3/setup.ui.h:92
 msgid "Key Code:"
-msgstr "Touche :"
+msgstr "Touche :"
 
 #: ../setup/python2/setup.ui.h:93 ../setup/python3/setup.ui.h:93
 msgid "Modifier:"
-msgstr "Modificateur :"
+msgstr "Modificateur :"
 
 #: ../setup/python2/setup.ui.h:94 ../setup/python3/setup.ui.h:94
 msgid "A_lternate"
@@ -875,16 +851,15 @@ msgstr "_Fermer"
 
 #: ../setup/python2/setup.ui.h:104 ../setup/python3/setup.ui.h:104
 msgid "_Short Label:"
-msgstr "_Label court :"
+msgstr "_Label court :"
 
 #: ../setup/python2/setup.ui.h:105 ../setup/python3/setup.ui.h:105
 msgid "_Description:"
-msgstr "_Description :"
+msgstr "_Description :"
 
 #: ../setup/python2/setup.ui.h:106 ../setup/python3/setup.ui.h:106
 msgid "_Use your dictionary alone with switching dictionaries"
-msgstr ""
-"_Utiliser votre dictionnaire tout seul lors du basculement des dictionnaires"
+msgstr "_Utiliser votre dictionnaire tout seul lors du basculement des dictionnaires"
 
 #: ../setup/python2/setup.ui.h:107 ../setup/python3/setup.ui.h:107
 msgid "_Embed your dictionary in the system dictionary"
