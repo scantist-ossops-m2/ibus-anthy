@@ -14,8 +14,8 @@
       out on a traditional keyboard.
     </p>
   </_description>
-  <url type="homepage">http://code.google.com/p/ibus/</url>
-  <url type="bugtracker">https://code.google.com/p/ibus/issues/list</url>
-  <url type="help">https://code.google.com/p/ibus/wiki/FAQ</url>
+  <url type="homepage">https://github.com/ibus/ibus/wiki</url>
+  <url type="bugtracker">https://github.com/ibus/ibus-anthy/issues</url>
+  <url type="help">https://github.com/ibus/ibus/wiki/FAQ</url>
   <update_contact><!-- upstream-contact_at_email.com --></update_contact>
 </component>
