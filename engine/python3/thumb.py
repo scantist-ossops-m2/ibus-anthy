@@ -450,7 +450,7 @@ class ThumbShiftKeyboard:
                     layout = 2
                 elif data.find('japan:') >= 0:
                     layout = 0
-        return 0
+        return layout
 
     def __reset_layout_and_handakuten(self):
         mode = self.__prefs.get_value('thumb', 'keyboard_layout_mode')
