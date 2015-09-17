@@ -435,9 +435,9 @@ class ThumbShiftKeyboard:
                                 GLib.SpawnFlags.SEARCH_PATH_FROM_ENVP,
                                 None, None)
         if not ret:
-            print(std_error, file=sys.stderr)
+            print(std_error.decode('utf-8'), file=sys.stderr)
             return layout
-        for line in std_out.split('\n'):
+        for line in std_out.decode('utf-8').split('\n'):
             if line.startswith('layout:'):
                 data = line.split()[1]
                 if data == 'jp':
