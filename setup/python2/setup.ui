@@ -153,6 +153,9 @@
       <row>
         <col id="0" translatable="yes">Automatically convert</col>
       </row>
+      <row>
+        <col id="0" translatable="yes">Automatically commit</col>
+      </row>
     </data>
   </object>
   <object class="GtkListStore" id="model8">

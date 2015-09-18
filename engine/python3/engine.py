@@ -1747,9 +1747,14 @@ class Engine(IBus.EngineSimple):
             try:
                 self._MM = self._SS = 0
                 ret = self.__on_key_common(ord(keyval))
-                if (keyval in ',.、。' and
-                    self.__prefs.get_value('common', 'behavior_on_period')):
-                    return self.__cmd_convert(keyval, state)
+                if (keyval in
+                    self.__prefs.get_value('common', 'trigger_periods')):
+                    behavior = self.__prefs.get_value('common',
+                                                      'behavior_on_period')
+                    if behavior == 1:
+                        return self.__cmd_convert(keyval, state)
+                    elif behavior == 2:
+                        return self.__cmd_commit(keyval, state)
                 return ret
             except:
                 pass
@@ -1913,9 +1918,14 @@ class Engine(IBus.EngineSimple):
                     keyval = IBus.KEY_yen
             ret = self.__on_key_common(keyval, state)
             if (Engine.__input_mode != INPUT_MODE_LATIN and
-                chr(keyval) in ',.' and
-                self.__prefs.get_value('common', 'behavior_on_period')):
-                return self.__cmd_convert(keyval, state)
+                chr(keyval) in
+                self.__prefs.get_value('common', 'trigger_periods')):
+                behavior = self.__prefs.get_value('common',
+                                                  'behavior_on_period')
+                if behavior == 1:
+                    return self.__cmd_convert(keyval, state)
+                elif behavior == 2:
+                    return self.__cmd_commit(keyval, state)
             return ret
         else:
             if not self.__preedit_ja_string.is_empty():
