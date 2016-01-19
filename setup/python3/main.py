@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,6 +30,14 @@ import os, sys
 import xml.dom.minidom
 import gettext
 from gettext import dgettext
+
+from gi import require_version as gi_require_version
+gi_require_version('GLib', '2.0')
+gi_require_version('Gtk', '3.0')
+gi_require_version('Gdk', '3.0')
+gi_require_version('GdkX11', '3.0')
+gi_require_version('Pango', '1.0')
+gi_require_version('IBus', '1.0')
 
 from gi.repository import GLib
 

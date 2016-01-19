@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,9 @@
 
 import os
 import sys
+
+from gi import require_version as gi_require_version
+gi_require_version('IBus', '1.0')
 
 from gi.repository import IBus
 
