@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,6 +49,14 @@ DISTCLEANFILES = \
 dist-hook:
 	if test -d .git ; then \
 		git log --name-status --date=iso > $(distdir)/ChangeLog ; \
+		PREV_MICRO_VERSION=`expr $(PACKAGE_VERSION_MICRO) - 1`; \
+		PREV_VERSION=\
+"$(PACKAGE_VERSION_MAJOR).$(PACKAGE_VERSION_MINOR).$$PREV_MICRO_VERSION"; \
+		echo "Changes in $(PACKAGE_NAME) $(PACKAGE_VERSION)" \
+		        > $(distdir)/NEWS; \
+		echo "" >> $(distdir)/NEWS; \
+		git log $$PREV_VERSION...$(PACKAGE_VERSION) --reverse \
+		        --pretty=format:'%s (%an) %h' >> $(distdir)/NEWS; \
 	fi
 
 rpm: dist @PACKAGE_NAME@.spec
