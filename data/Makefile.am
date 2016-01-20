@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2010-2015 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,20 +35,35 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 appdatadir=$(datadir)/appdata
 @INTLTOOL_XML_RULE@
 
-CLEANFILES = $(appdata_DATA)
+CLEANFILES = \
+        $(appdata_DATA) \
+        emoji.t \
+        $(NULL)
+
+emoji.t: emoji-each.t emoji-emoji.t
+	@echo "Generate $@"; \
+	$(SED) -e '/^#/d' $(srcdir)/emoji-emoji.t > emoji-emoji.t.$$$$; \
+	$(SED) -e "/^#@EMOJI_EMOJI@/r emoji-emoji.t.$$$$" \
+	        $(srcdir)/emoji-each.t > emoji-each.t.$$$$; \
+	$(SED) -e '/^#@EMOJI_EMOJI@/d' emoji-each.t.$$$$ > emoji.t; \
+	rm emoji-emoji.t.$$$$ emoji-each.t.$$$$; \
+	$(NULL)
 
 if ENABLE_ZIPCODE
 dicts_DATA += zipcode.t
 
 zipcode.t: $(ANTHY_ZIPCODE_FILE)
-	$(PYTHON) zipcode-textdic.py $<
+	@echo "Generate $@"; \
+	$(PYTHON) zipcode-textdic.py $<; \
+	$(NULL)
 
 CLEANFILES += zipcode.t
 endif
 
 EXTRA_DIST = \
         $(appdata_in_files) \
-        emoji.t \
+        emoji-each.t \
+        emoji-emoji.t \
         era.t \
         oldchar.t \
         symbol.t \
