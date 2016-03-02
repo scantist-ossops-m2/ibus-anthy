@@ -30,7 +30,7 @@ dictsdir = $(pkgdatadir)/dicts
 
 # rf. i18n appdata.xml
 # http://www.freedesktop.org/software/appstream/docs/sect-Quickstart-Translation.html
-appdata_in_files = anthy.appdata.xml.in
+appdata_in_files = ibus-anthy.appdata.xml.in
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 appdatadir=$(datadir)/appdata
 @INTLTOOL_XML_RULE@
