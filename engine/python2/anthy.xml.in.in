@@ -3,7 +3,7 @@
 <component>
 	<name>org.freedesktop.IBus.Anthy</name>
 	<description>Anthy Component</description>
-	<exec>@libexecdir@/ibus-engine-anthy --ibus</exec>
+	<exec>@LIBEXECDIR@/ibus-engine-anthy --ibus</exec>
 	<version>@PACKAGE_VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>
@@ -13,7 +13,7 @@
 	<!-- for engines -->
 	<observed-paths>
 		<path>~/.config/ibus-anthy/engines.xml</path>
-		<path>@pkgdatadir@/engine/default.xml</path>
+		<path>@PKGDATADIR@/engine/default.xml</path>
 	</observed-paths>
-	<engines exec="@libexecdir@/ibus-engine-anthy --xml" />
+	<engines exec="@LIBEXECDIR@/ibus-engine-anthy --xml" />
 </component>

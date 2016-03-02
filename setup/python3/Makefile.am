@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,13 +61,13 @@ setup_anthydir = $(datadir)/ibus-anthy/setup
 
 CONFIG_CLEAN_FILES = \
 	$(BUILT_SOURCES) \
-	$(libexec_SCRIPTS) \
 	$(NULL)
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(desktop_DATA) \
 	$(desktop_in_files) \
+	$(libexec_SCRIPTS) \
 	*.pyc \
 	$(NULL)
 
@@ -75,6 +75,12 @@ EXTRA_DIST = \
 	$(desktop_in_in_files) \
 	$(setup_anthy_built_in_files) \
 	$(NULL)
+
+ibus-setup-anthy: ibus-setup-anthy.in
+	sed -e "s|\@prefix\@|$(prefix)|g" \
+	    -e "s|\@localedir\@|$(localedir)|g" \
+	    -e "s|\@PYTHON\@|$(PYTHON)|g" \
+	$< > $@
 
 anthyprefs.py: anthyprefs.py.in
 	sed -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
@@ -86,16 +92,13 @@ anthyprefs.py: anthyprefs.py.in
 	$< > $@
 
 _config.py: _config.py.in
-	( \
-		PKGDATADIR=$(pkgdatadir); \
-		LIBEXECDIR=$(libexecdir); \
-		DATADIR=$(datadir); \
-		LAYOUT=$(LAYOUT); \
-		SYMBOL_CHAR_INT=$(SYMBOL_CHAR_INT); \
-		ICON_PREFERENCE=$(ICON_PREFERENCE); \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	sed -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
+	    -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	    -e "s|\@datadir\@|$(datadir)|g" \
+	    -e "s|\@LAYOUT\@|$(LAYOUT)|g" \
+	    -e "s|\@SYMBOL_CHAR_INT\@|$(SYMBOL_CHAR_INT)|g" \
+	    -e "s|\@ICON_PREFERENCE\@|$(ICON_PREFERENCE)|g" \
+	$< > $@
 
 # Need a time lag between .py and .py.in files to build .py files
 # because *_PYTHON valuables are installed in the tarball.

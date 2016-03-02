@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -77,23 +77,32 @@ componentdir = $(datadir)/ibus/component
 engine_DATA = default.xml
 enginedir = $(pkgdatadir)/engine
 
+# $(SYMBOL_XML) cannot be extracted in Makefile but $(libexecdir) can be
+# extracted to ${exec_prefix}/libexec so use capital @LIBEXECDIR@ here.
 %.xml: %.xml.in
-	sed -e "s|\@libexecdir\@|$(libexecdir)|g" \
-	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|g" \
+	    -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" \
 	    -e "s|_description|description|g" \
 	$< > $@
 
+ibus-engine-anthy: ibus-engine-anthy.in
+	sed -e "s|\@prefix\@|$(prefix)|g" \
+	    -e "s|\@exec_prefix\@|$(exec_prefix)|g" \
+	    -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	    -e "s|\@datarootdir\@|$(datarootdir)|g" \
+	    -e "s|\@PACKAGE\@|$(PACKAGE)|g" \
+	    -e "s|\@PYTHON\@|$(PYTHON)|g" \
+	    -e "s|\@ENV_IBUS_ENGINE\@|$(ENV_IBUS_ENGINE)|g" \
+	$< > $@
+
 _config.py: _config.py.in
-	( \
-		PKGDATADIR=$(pkgdatadir); \
-		LIBEXECDIR=$(libexecdir); \
-		DATADIR=$(datadir); \
-		LAYOUT=$(LAYOUT); \
-		SYMBOL_CHAR_INT=$(SYMBOL_CHAR_INT); \
-		ICON_PREFERENCE=$(ICON_PREFERENCE); \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	sed -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
+	    -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	    -e "s|\@datadir\@|$(datadir)|g" \
+	    -e "s|\@LAYOUT\@|$(LAYOUT)|g" \
+	    -e "s|\@SYMBOL_CHAR_INT\@|$(SYMBOL_CHAR_INT)|g" \
+	    -e "s|\@ICON_PREFERENCE\@|$(ICON_PREFERENCE)|g" \
+	$< > $@
 
 test:
 	$(ENV_IBUS_TEST) \
@@ -116,6 +125,7 @@ CLEANFILES = \
 	$(PYGTK2_ANTHY_GEN) \
 	anthy.xml \
 	default.xml \
+	ibus-engine-anthy \
 	*.pyc \
 	$(NULL)
 
