@@ -1,6 +1,6 @@
 # Files with translatable strings.
 # Please keep this file in alphabetical order.
-data/anthy.appdata.xml.in
+data/ibus-anthy.appdata.xml.in
 engine/python2/default.xml.in.in
 engine/python2/engine.py
 engine/python2/factory.py
