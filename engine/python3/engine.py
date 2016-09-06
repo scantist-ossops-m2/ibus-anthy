@@ -1115,7 +1115,7 @@ class Engine(IBus.EngineSimple):
 
             # fill lookup_table
             self.__lookup_table.clear()
-            for i in range(0, seg_stat.nr_predictions):
+            for i in range(0, nr_predictions):
                 buf = self.__context.get_prediction(i)
                 candidate = buf
                 self.__lookup_table.append_candidate(IBus.Text.new_from_string(candidate))
@@ -1772,8 +1772,8 @@ class Engine(IBus.EngineSimple):
                 try:
                     if getattr(self, cmd)(keyval, state):
                         return True
-                except:
-                    printerr('Unknown command = %s' % cmd)
+                except Exception as err:
+                    printerr('Error command: %s: %s' % (cmd, str(err)))
             return False
 
         def RS():
@@ -1900,8 +1900,8 @@ class Engine(IBus.EngineSimple):
             try:
                 if getattr(self, cmd)(keyval, state):
                     return True
-            except:
-                printerr('Unknown command = %s' % cmd)
+            except Exception as err:
+                printerr('Error command: %s: %s' % (cmd, str(err)))
 
         # If input mode is not LATIN, eat Ctrl+Shift+u
         hex_mod_mask = IBus.ModifierType.SHIFT_MASK | \
