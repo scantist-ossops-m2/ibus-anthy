@@ -171,6 +171,9 @@ class Engine(IBus.EngineSimple):
         # self.process_key_event is not accessible too.
         self.connect('process-key-event', self.__process_key_event)
         self.connect('destroy', self.__destroy)
+        self.connect('page-down', self.__page_down)
+        self.connect('page-up', self.__page_up)
+        self.connect('candidate-clicked', self.__candidate_clicked)
 
         self.__init_signal()
         # use reset to init values
@@ -712,7 +715,7 @@ class Engine(IBus.EngineSimple):
             i += 1
         self.update_auxiliary_text(text, visible)
 
-    def do_page_up(self):
+    def __page_up(self):
         # only process cursor down in convert mode
         if self.__convert_mode != CONV_MODE_ANTHY:
             return False
@@ -726,7 +729,7 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
         return True
 
-    def do_page_down(self):
+    def __page_down(self):
         # only process cursor down in convert mode
         if self.__convert_mode != CONV_MODE_ANTHY:
             return False
@@ -770,7 +773,7 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
         return True
 
-    def do_candidate_clicked(self, index, button, state):
+    def __candidate_clicked(self, index, button, state):
         if index == 9:
             keyval = IBus.KEY_0
         else:
