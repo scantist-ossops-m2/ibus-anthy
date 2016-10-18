@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2010-2014 Red Hat, Inc.
+# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -459,6 +459,7 @@
 たんい #T35*0 ㌦
 たんい #T35*0 ㌻
 たんい #T35*0 ㌫
+だくてん #T35*0 ゙
 ちぇっくぼたん #T35*0 ☐
 ちぇっくぼたん #T35*0 ☑
 ちぇっくぼたん #T35*0 ☒
@@ -530,9 +531,14 @@
 ねんごう #T35*0 ㍼
 ねんごう #T35*0 ㍻
 ののじ #T35*0 〃
+はんだくてん #T35*0 ゚
 ぱーせんと #T35*0 ㌫
 ぱーせんと #T35*0 ％
 ぱーみる #T35*0 ‰
+びだくおん #T35*0 ゚
+びだくおん #T35*0 ゜
+びだくおん #T35*0 ŋ
+びだくおん #T35*0 g̃
 ふたござ #T35*0 ♊
 ふらっと #T35*0 ♭
 へいせい #T35*0 ㍻
