@@ -9,38 +9,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy master\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus-anthy/issues\n"
-"POT-Creation-Date: 2016-08-30 11:57+0900\n"
+"POT-Creation-Date: 2017-03-17 13:10+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-08-29 11:37-0400\n"
+"PO-Revision-Date: 2017-03-17 12:32-0400\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.9.3\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../data/ibus-anthy.appdata.xml.in.h:1
 msgid "Japanese input method"
 msgstr "日本語入力方式"
 
 #: ../data/ibus-anthy.appdata.xml.in.h:2
+msgid "The Anthy input method is designed for entering Japanese text."
+msgstr "Anthy 入力方式は日本語のテキストを入力するために設計されています。"
+
+#: ../data/ibus-anthy.appdata.xml.in.h:3
 msgid ""
-"<p> The Anthy input method is designed for entering Japanese text. </p> <p> "
 "Input methods are typing systems allowing users to input complex languages. "
 "They are necessary because these contain too many characters to simply be "
-"laid out on a traditional keyboard. </p>"
+"laid out on a traditional keyboard."
 msgstr ""
-"<p> Anthy 入力方式は日本語のテキストを入力するために設計されています。 </p> <p> "
 "入力方式はユーザーに複雑な言語入力を可能にさせる文字入力システムです。 "
-"入力方式は従来のキーボード上で簡単に割り当てられた多くの文字を含んでいるために必要とされています。 </p>"
+"入力方式は従来のキーボード上で簡単に割り当てられた多くの文字を含んでいるために必要とされています。"
 
 #: ../engine/python2/default.xml.in.in.h:1
 #: ../engine/python3/default.xml.in.in.h:1
 msgid "Anthy Input Method"
 msgstr "Anthy 入力方式"
 
-#: ../engine/python2/engine.py:204 ../engine/python3/engine.py:205
+#: ../engine/python2/engine.py:207 ../engine/python3/engine.py:208
 msgid ""
 "Could not enable Anthy.\n"
 "The end of the content of the file .anthy/last-record2_default.utf8 in your "
@@ -52,158 +54,158 @@ msgstr ""
 "でありません。つまり正しくないテキストフォーマットです。\n"
 "手動でファイルを修正するか削除して IBus をリスタートしてください。"
 
-#: ../engine/python2/engine.py:252 ../engine/python3/engine.py:253
+#: ../engine/python2/engine.py:255 ../engine/python3/engine.py:256
 #: ../setup/python2/main.py:416 ../setup/python3/main.py:421
 msgid "Preferences - Anthy"
 msgstr "設定 - Anthy"
 
-#: ../engine/python2/engine.py:254 ../engine/python3/engine.py:255
+#: ../engine/python2/engine.py:257 ../engine/python3/engine.py:258
 msgid "Configure Anthy"
 msgstr "Anthy を構成します"
 
 #. Translators: Specify the order of %s with your translation.
 #. It will be "Input Mode (A)" for example.
-#: ../engine/python2/engine.py:291 ../engine/python2/engine.py:379
-#: ../engine/python2/engine.py:446 ../engine/python2/engine.py:522
-#: ../engine/python2/engine.py:853 ../engine/python2/engine.py:881
-#: ../engine/python2/engine.py:905 ../engine/python2/engine.py:931
-#: ../engine/python2/engine.py:993 ../engine/python3/engine.py:292
-#: ../engine/python3/engine.py:380 ../engine/python3/engine.py:447
-#: ../engine/python3/engine.py:523 ../engine/python3/engine.py:848
-#: ../engine/python3/engine.py:876 ../engine/python3/engine.py:900
-#: ../engine/python3/engine.py:926 ../engine/python3/engine.py:988
+#: ../engine/python2/engine.py:294 ../engine/python2/engine.py:382
+#: ../engine/python2/engine.py:449 ../engine/python2/engine.py:525
+#: ../engine/python2/engine.py:856 ../engine/python2/engine.py:884
+#: ../engine/python2/engine.py:908 ../engine/python2/engine.py:934
+#: ../engine/python2/engine.py:996 ../engine/python3/engine.py:295
+#: ../engine/python3/engine.py:383 ../engine/python3/engine.py:450
+#: ../engine/python3/engine.py:526 ../engine/python3/engine.py:851
+#: ../engine/python3/engine.py:879 ../engine/python3/engine.py:903
+#: ../engine/python3/engine.py:929 ../engine/python3/engine.py:991
 #, python-format
 msgid "%(description)s (%(symbol)s)"
 msgstr "%(description)s (%(symbol)s)"
 
-#: ../engine/python2/engine.py:292 ../engine/python2/engine.py:854
-#: ../engine/python3/engine.py:293 ../engine/python3/engine.py:849
+#: ../engine/python2/engine.py:295 ../engine/python2/engine.py:857
+#: ../engine/python3/engine.py:296 ../engine/python3/engine.py:852
 #: ../setup/python2/main.py:401 ../setup/python3/main.py:406
 msgid "Input mode"
 msgstr "入力モード"
 
-#: ../engine/python2/engine.py:298 ../engine/python3/engine.py:299
+#: ../engine/python2/engine.py:301 ../engine/python3/engine.py:302
 msgid "Switch input mode"
 msgstr "入力モードを切り替えます"
 
-#: ../engine/python2/engine.py:308 ../engine/python3/engine.py:309
+#: ../engine/python2/engine.py:311 ../engine/python3/engine.py:312
 #: ../setup/python2/setup.ui.h:1 ../setup/python3/setup.ui.h:1
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: ../engine/python2/engine.py:317 ../engine/python3/engine.py:318
+#: ../engine/python2/engine.py:320 ../engine/python3/engine.py:321
 #: ../setup/python2/setup.ui.h:2 ../setup/python3/setup.ui.h:2
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: ../engine/python2/engine.py:326 ../engine/python3/engine.py:327
+#: ../engine/python2/engine.py:329 ../engine/python3/engine.py:330
 #: ../setup/python2/setup.ui.h:3 ../setup/python3/setup.ui.h:3
 msgid "Halfwidth Katakana"
 msgstr "半角カタカナ"
 
-#: ../engine/python2/engine.py:335 ../engine/python3/engine.py:336
+#: ../engine/python2/engine.py:338 ../engine/python3/engine.py:339
 #: ../setup/python2/setup.ui.h:4 ../setup/python3/setup.ui.h:4
 msgid "Latin"
 msgstr "英数"
 
-#: ../engine/python2/engine.py:344 ../engine/python3/engine.py:345
+#: ../engine/python2/engine.py:347 ../engine/python3/engine.py:348
 #: ../setup/python2/setup.ui.h:5 ../setup/python3/setup.ui.h:5
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../engine/python2/engine.py:380 ../engine/python2/engine.py:882
-#: ../engine/python2/engine.py:906 ../engine/python3/engine.py:381
-#: ../engine/python3/engine.py:877 ../engine/python3/engine.py:901
+#: ../engine/python2/engine.py:383 ../engine/python2/engine.py:885
+#: ../engine/python2/engine.py:909 ../engine/python3/engine.py:384
+#: ../engine/python3/engine.py:880 ../engine/python3/engine.py:904
 #: ../setup/python2/main.py:404 ../setup/python3/main.py:409
 msgid "Typing method"
 msgstr "入力タイプ"
 
-#: ../engine/python2/engine.py:386 ../engine/python3/engine.py:387
+#: ../engine/python2/engine.py:389 ../engine/python3/engine.py:390
 msgid "Switch typing method"
 msgstr "入力タイプを切り替えます"
 
-#: ../engine/python2/engine.py:396 ../engine/python3/engine.py:397
+#: ../engine/python2/engine.py:399 ../engine/python3/engine.py:400
 #: ../setup/python2/setup.ui.h:12 ../setup/python3/setup.ui.h:12
 msgid "Romaji"
 msgstr "ローマ字"
 
-#: ../engine/python2/engine.py:405 ../engine/python3/engine.py:406
+#: ../engine/python2/engine.py:408 ../engine/python3/engine.py:409
 #: ../setup/python2/setup.ui.h:13 ../setup/python3/setup.ui.h:13
 msgid "Kana"
 msgstr "かな"
 
-#: ../engine/python2/engine.py:414 ../engine/python3/engine.py:415
+#: ../engine/python2/engine.py:417 ../engine/python3/engine.py:418
 #: ../setup/python2/setup.ui.h:14 ../setup/python3/setup.ui.h:14
 msgid "Thumb shift"
 msgstr "親指シフト"
 
-#: ../engine/python2/engine.py:447 ../engine/python2/engine.py:932
-#: ../engine/python3/engine.py:448 ../engine/python3/engine.py:927
+#: ../engine/python2/engine.py:450 ../engine/python2/engine.py:935
+#: ../engine/python3/engine.py:451 ../engine/python3/engine.py:930
 #: ../setup/python2/main.py:407 ../setup/python3/main.py:412
 msgid "Segment mode"
 msgstr "文節モード"
 
-#: ../engine/python2/engine.py:453 ../engine/python3/engine.py:454
+#: ../engine/python2/engine.py:456 ../engine/python3/engine.py:457
 msgid "Switch conversion mode"
 msgstr "変換モードを切り替えます"
 
-#: ../engine/python2/engine.py:463 ../engine/python3/engine.py:464
+#: ../engine/python2/engine.py:466 ../engine/python3/engine.py:467
 #: ../setup/python2/setup.ui.h:15 ../setup/python3/setup.ui.h:15
 msgid "Multiple segment"
 msgstr "連文節"
 
-#: ../engine/python2/engine.py:472 ../engine/python3/engine.py:473
+#: ../engine/python2/engine.py:475 ../engine/python3/engine.py:476
 #: ../setup/python2/setup.ui.h:16 ../setup/python3/setup.ui.h:16
 msgid "Single segment"
 msgstr "単文節"
 
-#: ../engine/python2/engine.py:481 ../engine/python3/engine.py:482
+#: ../engine/python2/engine.py:484 ../engine/python3/engine.py:485
 #: ../setup/python2/setup.ui.h:17 ../setup/python3/setup.ui.h:17
 msgid "Immediate conversion (multiple segment)"
 msgstr "逐次変換 (連文節)"
 
-#: ../engine/python2/engine.py:490 ../engine/python3/engine.py:491
+#: ../engine/python2/engine.py:493 ../engine/python3/engine.py:494
 #: ../setup/python2/setup.ui.h:18 ../setup/python3/setup.ui.h:18
 msgid "Immediate conversion (single segment)"
 msgstr "逐次変換 (単文節)"
 
-#: ../engine/python2/engine.py:523 ../engine/python2/engine.py:994
-#: ../engine/python3/engine.py:524 ../engine/python3/engine.py:989
+#: ../engine/python2/engine.py:526 ../engine/python2/engine.py:997
+#: ../engine/python3/engine.py:527 ../engine/python3/engine.py:992
 #: ../setup/python2/main.py:410 ../setup/python3/main.py:415
 msgid "Dictionary mode"
 msgstr "辞書モード"
 
-#: ../engine/python2/engine.py:529 ../engine/python3/engine.py:530
+#: ../engine/python2/engine.py:532 ../engine/python3/engine.py:533
 msgid "Switch dictionary"
 msgstr "辞書を切り替えます"
 
-#: ../engine/python2/engine.py:612 ../engine/python3/engine.py:612
+#: ../engine/python2/engine.py:615 ../engine/python3/engine.py:615
 #: ../setup/python2/main.py:413 ../setup/python3/main.py:418
 msgid "Dictionary - Anthy"
 msgstr "辞書 - Anthy"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/python2/engine.py:618 ../engine/python3/engine.py:617
+#: ../engine/python2/engine.py:621 ../engine/python3/engine.py:620
 msgid "Dic"
 msgstr "辞"
 
-#: ../engine/python2/engine.py:625 ../engine/python3/engine.py:624
+#: ../engine/python2/engine.py:628 ../engine/python3/engine.py:627
 msgid "Configure dictionaries"
 msgstr "辞書を構成します"
 
-#: ../engine/python2/engine.py:635 ../engine/python3/engine.py:634
+#: ../engine/python2/engine.py:638 ../engine/python3/engine.py:637
 msgid "Edit dictionaries"
 msgstr "辞書を編集する"
 
-#: ../engine/python2/engine.py:637 ../engine/python3/engine.py:636
+#: ../engine/python2/engine.py:640 ../engine/python3/engine.py:639
 msgid "Launch the dictionary tool"
 msgstr "辞書ツールを起動する"
 
-#: ../engine/python2/engine.py:644 ../engine/python3/engine.py:643
+#: ../engine/python2/engine.py:647 ../engine/python3/engine.py:646
 msgid "Add words"
 msgstr "単語を追加する"
 
-#: ../engine/python2/engine.py:646 ../engine/python3/engine.py:645
+#: ../engine/python2/engine.py:649 ../engine/python3/engine.py:648
 msgid "Add words to the dictionary"
 msgstr "辞書に単語を追加する"
 
