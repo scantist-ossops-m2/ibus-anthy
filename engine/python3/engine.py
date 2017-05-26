@@ -823,6 +823,8 @@ class Engine(IBus.EngineSimple):
             elif prop_name == 'setup-dict-kasumi-word':
                 self.__start_add_word()
             else:
+                if prop_name not in self.__prop_dict.keys():
+                    return
                 self.__prop_dict[prop_name].set_state(state)
                 if prop_name == 'DictMode':
                     sub_name = self.__dict_mode_get_prop_name(self.__dict_mode)
@@ -832,6 +834,9 @@ class Engine(IBus.EngineSimple):
                                               IBus.PropState.CHECKED)
 
     def __input_mode_activate(self, prop_name, state):
+        if 'InputMode' not in self.__prop_dict.keys():
+            # Disable to show input mode with ibus-set-anthy
+            return
         input_modes = {
             'InputMode.Hiragana' : (INPUT_MODE_HIRAGANA, 'あ'),
             'InputMode.Katakana' : (INPUT_MODE_KATAKANA, 'ア'),
@@ -860,6 +865,9 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
 
     def __typing_mode_activate(self, prop_name, state):
+        if 'TypingMode' not in self.__prop_dict.keys():
+            # Disable to show typing mode with ibus-set-anthy
+            return
         typing_modes = {
             'TypingMode.Romaji' : (jastring.TYPING_MODE_ROMAJI, 'R'),
             'TypingMode.Kana' : (jastring.TYPING_MODE_KANA, 'か'),
@@ -889,8 +897,8 @@ class Engine(IBus.EngineSimple):
 
     def __refresh_typing_mode_property(self):
         if 'TypingMode' not in self.__prop_dict:
+            # Disable to show typing mode with ibus-set-anthy
             return
-
         prop = self.__prop_dict['TypingMode']
         modes = {
             jastring.TYPING_MODE_ROMAJI : ('TypingMode.Romaji', 'R'),
@@ -910,6 +918,9 @@ class Engine(IBus.EngineSimple):
         self.update_property(prop)
 
     def __segment_mode_activate(self, prop_name, state):
+        if 'SegmentMode' not in self.__prop_dict.keys():
+            # Disable to show segment mode with ibus-set-anthy
+            return
         segment_modes = {
             'SegmentMode.Multi' : (SEGMENT_DEFAULT, '連'),
             'SegmentMode.Single' : (SEGMENT_SINGLE, '単'),
