@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -715,7 +715,7 @@ class Engine(IBus.EngineSimple):
             i += 1
         self.update_auxiliary_text(text, visible)
 
-    def __page_up(self):
+    def __page_up(self, obj):
         # only process cursor down in convert mode
         if self.__convert_mode != CONV_MODE_ANTHY:
             return False
@@ -729,7 +729,7 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
         return True
 
-    def __page_down(self):
+    def __page_down(self, obj):
         # only process cursor down in convert mode
         if self.__convert_mode != CONV_MODE_ANTHY:
             return False
@@ -773,7 +773,7 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
         return True
 
-    def __candidate_clicked(self, index, button, state):
+    def __candidate_clicked(self, obj, index, button, state):
         if index == 9:
             keyval = IBus.KEY_0
         else:
