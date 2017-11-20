@@ -28,6 +28,7 @@ SUBDIRS = \
 	engine \
 	icons \
 	setup \
+	tests \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
