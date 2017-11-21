@@ -68,7 +68,6 @@ class AnthyTest:
     def __name_owner_changed_cb(self, connection, sender_name, object_path,
                                 interface_name, signal_name, parameters,
                                 user_data):
-        print('test ' + signal_name)
         if signal_name == 'NameOwnerChanged':
             engine.Engine.CONFIG_RELOADED(self.__bus)
 
@@ -119,6 +118,8 @@ class AnthyTest:
         self.__main_test()
 
     def __entry_preedit_changed_cb(self, entry, preedit_str):
+        if len(preedit_str) == 0:
+            return
         if self.__test_index == len(TestCases['tests']):
             return
         if self.__preedit_test_index == self.__test_index:
@@ -138,7 +139,6 @@ class AnthyTest:
         self.__run_cases('conversion', 0, 1)
 
     def __run_cases(self, tag, start=-1, end=-1):
-        print('test', self.__test_index, tag)
         tests = TestCases['tests'][self.__test_index]
         if tests == None:
             return
@@ -146,23 +146,23 @@ class AnthyTest:
         type = list(cases.keys())[0]
         i = 0
         if type == 'string':
+            print('test step:', tag, 'sequences: "' + cases['string'] + '"')
             for a in cases['string']:
                 if start >= 0 and i < start:
                     i += 1
                     continue
                 if end >= 0 and i >= end:
                     break;
-                print(a)
                 self.__typing(ord(a), 0, 0)
                 i += 1
         if type == 'keys':
+            print('test step:', tag, 'sequences:', cases['keys'])
             for key in cases['keys']:
                 if start >= 0 and i < start:
                     i += 1
                     continue
                 if end >= 0 and i >= end:
                     break;
-                print(self.__test_index, tag, key, cases['keys'])
                 self.__typing(key[0], key[1], key[2])
                 i += 1
 

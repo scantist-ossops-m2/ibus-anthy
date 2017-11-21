@@ -23,20 +23,14 @@ TestCases = {
                   'result': { 'string': '私の名前は、ペンです。' }
                 },
 
-                #{ 'preedit': { 'keys': [[ord('t'), 0, 0],
-                #                        [ord('o'), 0, 0],
-                #                        [ord('k'), 0, 0],
-                #                        [ord('y'), 0, 0],
-                #                        [ord('o'), 0, 0],
-                #                       ]
-                #             },
-                #  'conversion': { 'keys': [[IBus.KEY_Tab, 0, 0],
-                #                           [IBus.KEY_Tab, 0, 0],
-                #                          ]
-                #                },
-                #  'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
-                #  'result': { 'string': '東京' }
-                #},
+                { 'preedit': { 'string': 'toukyo' },
+                  'conversion': { 'keys': [[IBus.KEY_Tab, 0, 0],
+                                           [IBus.KEY_Tab, 0, 0],
+                                          ]
+                                },
+                  'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
+                  'result': { 'string': '東京' }
+                },
              ]
 
 }
