@@ -798,6 +798,20 @@ class Engine(IBus.EngineSimple):
         self.__invalidate()
         return True
 
+    def __shrink_segment_end(self):
+        while self.__context.get_nr_segments() > 1:
+            self.__context.resize_segment(self.__cursor_pos, 1)
+            nr_segments = self.__context.get_nr_segments()
+            del self.__segments[self.__cursor_pos:]
+            for i in range(self.__cursor_pos, nr_segments):
+                buf = self.__context.get_segment(i, 0)
+                text = buf
+                self.__segments.append((0, text))
+        self.__lookup_table_visible = False
+        self.__fill_lookup_table()
+        self.__invalidate()
+        return True
+
     def do_property_activate(self, prop_name, state):
 
         if state == IBus.PropState.CHECKED:
@@ -2716,25 +2730,31 @@ class Engine(IBus.EngineSimple):
 
         return False
 
-    def __cmd_convert_to_hiragana(self, keyval, state):
+    def __convert_to_hiragana_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
             return self.__convert_segment_to_kana(NTH_HIRAGANA_CANDIDATE)
 
         return self.__on_key_conv(0)
 
-    def __cmd_convert_to_katakana(self, keyval, state):
+    def __convert_to_katakana_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
             return self.__convert_segment_to_kana(NTH_KATAKANA_CANDIDATE)
 
         return self.__on_key_conv(1)
 
-    def __cmd_convert_to_half(self, keyval, state):
+    def __convert_to_half_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
@@ -2744,6 +2764,9 @@ class Engine(IBus.EngineSimple):
                 return self.__convert_segment_to_latin(-100)
             elif i == -100:
                 return self.__convert_segment_to_latin(-100)
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
             return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
 
         elif CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
@@ -2752,11 +2775,14 @@ class Engine(IBus.EngineSimple):
             return self.__on_key_conv(4)
         return self.__on_key_conv(2)
 
-    def __cmd_convert_to_half_katakana(self, keyval, state):
+    def __convert_to_half_katakana_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
             return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
 
         return self.__on_key_conv(2)
@@ -2785,23 +2811,65 @@ class Engine(IBus.EngineSimple):
 
         return False
 
-    def __cmd_convert_to_wide_latin(self, keyval, state):
+    def __convert_to_wide_latin_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-           return self.__convert_segment_to_latin(-101)
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
+            return self.__convert_segment_to_latin(-101)
 
         return self.__on_key_conv(3)
 
-    def __cmd_convert_to_latin(self, keyval, state):
+    def __convert_to_latin_internal(self, keyval, state, mode):
         if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-           return self.__convert_segment_to_latin(-100)
+            if mode == 1:
+                self.__cmd_move_caret_first(keyval, state)
+                self.__shrink_segment_end()
+            return self.__convert_segment_to_latin(-100)
 
         return self.__on_key_conv(4)
+
+    def __cmd_convert_to_hiragana(self, keyval, state):
+        return self.__convert_to_hiragana_internal(keyval, state, 0)
+
+    def __cmd_convert_to_hiragana_all(self, keyval, state):
+        return self.__convert_to_hiragana_internal(keyval, state, 1)
+
+    def __cmd_convert_to_katakana(self, keyval, state):
+        return self.__convert_to_katakana_internal(keyval, state, 0)
+
+    def __cmd_convert_to_katakana_all(self, keyval, state):
+        return self.__convert_to_katakana_internal(keyval, state, 1)
+
+    def __cmd_convert_to_half(self, keyval, state):
+        return self.__convert_to_half_internal(keyval, state, 0)
+
+    def __cmd_convert_to_half_all(self, keyval, state):
+        return self.__convert_to_half_internal(keyval, state, 1)
+
+    def __cmd_convert_to_half_katakana(self, keyval, state):
+        return self.__convert_to_half_katakana_internal(keyval, state, 0)
+
+    def __cmd_convert_to_half_katakana_all(self, keyval, state):
+        return self.__convert_to_half_katakana_internal(keyval, state, 1)
+
+    def __cmd_convert_to_wide_latin(self, keyval, state):
+        return self.__convert_to_wide_latin_internal(keyval, state, 0)
+
+    def __cmd_convert_to_wide_latin_all(self, keyval, state):
+        return self.__convert_to_wide_latin_internal(keyval, state, 1)
+
+    def __cmd_convert_to_latin(self, keyval, state):
+        return self.__convert_to_latin_internal(keyval, state, 0)
+
+    def __cmd_convert_to_latin_all(self, keyval, state):
+        return self.__convert_to_latin_internal(keyval, state, 1)
 
     #dictonary_keys
     def __cmd_dict_admin(self, keyval, state):
