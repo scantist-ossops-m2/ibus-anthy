@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
 
 from gi import require_version as gi_require_version
 gi_require_version('GLib', '2.0')
@@ -8,14 +11,28 @@ from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import IBus
 
+import getopt
+import os
 import sys
 
+PY3K = sys.version_info >= (3, 0)
+DONE_EXIT = False
+
+if 'IBUS_ANTHY_ENGINE_PATH' in os.environ:
+    engine_path = os.environ['IBUS_ANTHY_ENGINE_PATH']
+    if engine_path != None and engine_path != '':
+        sys.path.append(engine_path)
+if 'IBUS_ANTHY_SETUP_PATH' in os.environ:
+    setup_path = os.environ['IBUS_ANTHY_SETUP_PATH']
+    if setup_path != None and setup_path != '':
+        sys.path.append(setup_path)
 sys.path.append('/usr/share/ibus-anthy/engine')
 import engine
 
 from anthycases import TestCases
 
 class AnthyTest:
+    global DONE_EXIT
     ENGINE_PATH = '/com/redhat/IBus/engines/Anthy/Test/Engine'
     def __init__(self):
         IBus.init()
@@ -51,6 +68,10 @@ class AnthyTest:
                                           homepage='https://github.com/ibus/ibus/wiki',
                                           command_line='',
                                           textdomain='ibus-anthy')
+        if PY3K:
+            symbol = chr(0x3042)
+        else:
+            symbol = unichr(0x3042)
         desc = IBus.EngineDesc(name='testanthy',
                                  longname='TestAnthy',
                                  description='Test Anthy Input Method',
@@ -58,7 +79,7 @@ class AnthyTest:
                                  license='GPL',
                                  author='Takao Fujiwara <takao.fujiwara1@gmail.com>',
                                  icon='ibus-anthy',
-                                 symbol=chr(0x3042),
+                                 symbol=symbol,
                                  )
         self.__component.add_engine(desc)
         self.__bus.register_component(self.__component)
@@ -81,6 +102,8 @@ class AnthyTest:
 
     def __engine_focus_in(self, engine):
         if self.__test_index == len(TestCases['tests']):
+            if DONE_EXIT:
+                Gtk.main_quit()
             return
         # Workaround because focus-out resets the preedit text
         # ibus_bus_set_global_engine() calls bus_input_context_set_engine()
@@ -105,6 +128,8 @@ class AnthyTest:
 
     def __entry_focus_in_event_cb(self, entry, event):
         if self.__test_index == len(TestCases['tests']):
+            if DONE_EXIT:
+                Gtk.main_quit()
             return False
         self.__bus.set_global_engine_async('testanthy', -1, None, self.__set_engine_cb)
         return False
@@ -121,6 +146,8 @@ class AnthyTest:
         if len(preedit_str) == 0:
             return
         if self.__test_index == len(TestCases['tests']):
+            if DONE_EXIT:
+                Gtk.main_quit()
             return
         if self.__preedit_test_index == self.__test_index:
             return
@@ -180,6 +207,8 @@ class AnthyTest:
             print("NG: ", cases['string'], chars)
         self.__test_index += 1
         if self.__test_index == len(TestCases['tests']):
+            if DONE_EXIT:
+                Gtk.main_quit()
             return
         self.__entry.set_text('')
         self.__main_test()
@@ -187,7 +216,28 @@ class AnthyTest:
     def run(self):
         Gtk.main()
 
+def print_help(out, v = 0):
+    print('-e, --exit             Exit this program after test is done.',
+          file=out)
+    print('-h, --help             show this message.', file=out)
+    sys.exit(v)
+
 def main():
+    shortopt = 'e'
+    longopt = ['exit']
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
+    except getopt.GetoptError as err:
+        print_help(sys.stderr, 1)
+
+    for o, a in opts:
+        if o in ('-e', '--exit'):
+            global DONE_EXIT
+            DONE_EXIT = True
+        else:
+            print('Unknown argument: %s' % o, file=sys.stderr)
+            print_help(sys.stderr, 1)
+
     EngineTest = AnthyTest()
     if not EngineTest.register_ibus_engine():
         return -1;
