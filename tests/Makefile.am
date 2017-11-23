@@ -19,7 +19,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-tests:
+check:
 	ARGS="--exit";                                                  \
 	if test x$(FORCE_TEST) != x ; then                              \
 	    ARGS="$$ARGS --force";                                      \
@@ -28,9 +28,9 @@ tests:
 	sleep 1;                                                        \
 	ps -ef | grep $$USER | grep ibus | grep -v grep;                \
 	echo "#### Starting Python3 API test $$ARGS";                   \
-	env IBUS_ANTHY_ENGINE_PATH=../engine/python3                    \
-	    IBUS_ANTHY_SETUP_PATH=../setup/python3                      \
-	python3 anthytest.py $$ARGS;                                    \
+	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python3          \
+	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python3            \
+	python3 $(srcdir)/anthytest.py $$ARGS;                          \
 	if test $$? -ne 0 ; then                                        \
 	    exit -1;                                                    \
 	fi;                                                             \
@@ -38,9 +38,9 @@ tests:
 	    rm -r $$HOME/.anthy;                                        \
 	fi;                                                             \
 	echo "#### Starting Python2 API test";                          \
-	env IBUS_ANTHY_ENGINE_PATH=../engine/python2                    \
-	    IBUS_ANTHY_SETUP_PATH=../setup/python2                      \
-	python2 anthytest.py $$ARGS;
+	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python2          \
+	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python2            \
+	python2 $(srcdir)/anthytest.py $$ARGS;
 	ibus exit
 
 EXTRA_DIST = \
