@@ -25,6 +25,11 @@ TestCases = {
                   'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
                   'result': { 'string': '私の名前は、ペンです。' }
                 },
+                { 'preedit': { 'string': 'toukyou' },
+                  'conversion': { 'string': ' '  },
+                  'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
+                  'result': { 'string': '東京' }
+                },
                 { 'preedit': { 'string': 'toukyo' },
                   'conversion': { 'keys': [[IBus.KEY_Tab, 0, 0],
                                            [IBus.KEY_Tab, 0, 0],

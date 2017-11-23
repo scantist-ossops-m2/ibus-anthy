@@ -434,6 +434,7 @@ engine/python3/default.xml.in
 setup/Makefile
 setup/python2/Makefile
 setup/python3/Makefile
+tests/Makefile
 icons/Makefile
 m4/Makefile
 ])

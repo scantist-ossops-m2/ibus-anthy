@@ -263,12 +263,24 @@ class AnthyTest:
 def print_help(out, v = 0):
     print('-e, --exit             Exit this program after test is done.',
           file=out)
+    print('-f, --force            Run this program forcibly with .anthy.',
+          file=out)
     print('-h, --help             show this message.', file=out)
     sys.exit(v)
 
+def get_userhome():
+    if 'HOME' not in os.environ:
+        import pwd
+        userhome = pwd.getpwuid(os.getuid()).pw_dir
+    else:
+        userhome = os.environ['HOME']
+    userhome = userhome.rstrip('/')
+    return userhome
+
 def main():
-    shortopt = 'e'
-    longopt = ['exit']
+    shortopt = 'ef'
+    longopt = ['exit', 'force']
+    force_run = False
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
     except getopt.GetoptError as err:
@@ -278,13 +290,20 @@ def main():
         if o in ('-e', '--exit'):
             global DONE_EXIT
             DONE_EXIT = True
+        elif o in ('-f', '--force'):
+            force_run = True
         else:
             print('Unknown argument: %s' % o, file=sys.stderr)
             print_help(sys.stderr, 1)
 
+    anthy_user_dir = get_userhome() + '/.anthy'
+    if os.path.exists(anthy_user_dir) and not force_run:
+        print('Please remove %s before the test' % anthy_user_dir,
+              file=sys.stderr)
+        sys.exit(-1)
     EngineTest = AnthyTest()
     if not EngineTest.register_ibus_engine():
-        return -1;
+        sys.exit(-1)
     EngineTest.create_window()
     EngineTest.run()
 
