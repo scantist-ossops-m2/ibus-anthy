@@ -14,6 +14,7 @@ from gi.repository import IBus
 import getopt
 import os
 import sys
+import subprocess
 
 PY3K = sys.version_info >= (3, 0)
 DONE_EXIT = False
@@ -39,7 +40,8 @@ class AnthyTest:
         self.__id = 0
         self.__rerun = False
         self.__test_index = 0
-        self.__preedit_test_index = -1
+        self.__conversion_index = 0
+        self.__commit_done = False
 
     def register_ibus_engine(self):
         self.__bus = IBus.Bus()
@@ -142,6 +144,12 @@ class AnthyTest:
         self.__enable_hiragana()
         self.__main_test()
 
+    def __get_test_condition_length(self, tag):
+        tests = TestCases['tests'][self.__test_index]
+        cases = tests[tag]
+        type = list(cases.keys())[0]
+        return len(cases[type])
+
     def __entry_preedit_changed_cb(self, entry, preedit_str):
         if len(preedit_str) == 0:
             return
@@ -149,21 +157,51 @@ class AnthyTest:
             if DONE_EXIT:
                 Gtk.main_quit()
             return
-        if self.__preedit_test_index == self.__test_index:
+        conversion_length = self.__get_test_condition_length('conversion')
+        # Need to return again even if all the conversion is finished
+        # until the final Engine.update_preedit() is called.
+        if self.__conversion_index > conversion_length:
             return
-        self.__preedit_test_index = self.__test_index
-        self.__run_cases('conversion', 1)
+        self.__run_cases('conversion',
+                         self.__conversion_index,
+                         self.__conversion_index + 1)
+        if self.__conversion_index < conversion_length:
+            self.__conversion_index += 1
+            return
+        self.__conversion_index += 1
         self.__run_cases('commit')
 
     def __enable_hiragana(self):
-        key = TestCases['init']
-        self.__typing(key[0], key[1], key[2])
-        #self.__typing(ord(' '), 0, IBus.ModifierType.CONTROL_MASK)
-        #self.__typing(IBus.KEY_Escape, 0, IBus.ModifierType.MOD1_MASK)
+        commands = ['dconf', 'read',
+                    '/desktop/ibus/engine/anthy/common/input-mode'
+                   ]
+        if PY3K:
+            py3result = subprocess.run(commands, stdout=subprocess.PIPE)
+            try:
+                result = int(py3result.stdout)
+            except ValueError:
+                # No user data
+                result = 0
+        else:
+            py2result = subprocess.check_output(commands)
+            result = py2result
+            if result == '':
+                result = 0
+        if result != 0:
+            print('Enable hiragana', result)
+            key = TestCases['init']
+            self.__typing(key[0], key[1], key[2])
+        else:
+            print('Already hiragana')
 
     def __main_test(self):
+        self.__conversion_index = 0
+        self.__commit_done = False
         self.__run_cases('preedit')
-        self.__run_cases('conversion', 0, 1)
+        self.__run_cases('conversion',
+                         self.__conversion_index,
+                         self.__conversion_index + 1)
+        self.__conversion_index += 1
 
     def __run_cases(self, tag, start=-1, end=-1):
         tests = TestCases['tests'][self.__test_index]
@@ -173,23 +211,29 @@ class AnthyTest:
         type = list(cases.keys())[0]
         i = 0
         if type == 'string':
-            print('test step:', tag, 'sequences: "' + cases['string'] + '"')
+            if start == -1 and end == -1:
+                print('test step:', tag, 'sequences: "' + cases['string'] + '"')
             for a in cases['string']:
                 if start >= 0 and i < start:
                     i += 1
                     continue
                 if end >= 0 and i >= end:
                     break;
+                if start != -1 or end != -1:
+                    print('test step:', tag, 'sequences: "' + cases['string'][i] + '"')
                 self.__typing(ord(a), 0, 0)
                 i += 1
         if type == 'keys':
-            print('test step:', tag, 'sequences:', cases['keys'])
+            if start == -1 and end == -1:
+                print('test step:', tag, 'sequences:', cases['keys'])
             for key in cases['keys']:
                 if start >= 0 and i < start:
                     i += 1
                     continue
                 if end >= 0 and i >= end:
                     break;
+                if start != -1 or end != -1:
+                    print('test step: %s sequences: [0x%X, 0x%X, 0x%X]' % (tag, key[0], key[1],  key[2]))
                 self.__typing(key[0], key[1], key[2])
                 i += 1
 

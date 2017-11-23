@@ -25,7 +25,6 @@ TestCases = {
                   'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
                   'result': { 'string': '私の名前は、ペンです。' }
                 },
-
                 { 'preedit': { 'string': 'toukyo' },
                   'conversion': { 'keys': [[IBus.KEY_Tab, 0, 0],
                                            [IBus.KEY_Tab, 0, 0],
@@ -33,6 +32,22 @@ TestCases = {
                                 },
                   'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
                   'result': { 'string': '東京' }
+                },
+                { 'preedit': { 'string': 'myuutu-' },
+                  'conversion': { 'keys': [[IBus.KEY_F7, 0, IBus.ModifierType.SHIFT_MASK]] },
+                  'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
+                  'result': { 'string': 'ミュウツー' }
+                },
+                { 'preedit': { 'string': 'myuutu-' },
+                  'conversion': { 'keys': [[IBus.KEY_space, 0, 0],
+                                           [IBus.KEY_Right, 0, IBus.ModifierType.SHIFT_MASK],
+                                           [IBus.KEY_Right, 0, IBus.ModifierType.SHIFT_MASK],
+                                           [IBus.KEY_Right, 0, IBus.ModifierType.SHIFT_MASK],
+                                           [IBus.KEY_F7, 0, 0]
+                                          ]
+                                },
+                  'commit': { 'keys': [[IBus.KEY_Return, 0, 0]] },
+                  'result': { 'string': 'ミュウツー' }
                 },
              ]
 
