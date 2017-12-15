@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,39 +24,101 @@
 import sys
 
 from gi import require_version as gi_require_version
+gi_require_version('Gio', '2.0')
 gi_require_version('GLib', '2.0')
 gi_require_version('IBus', '1.0')
 
+from gi.repository import Gio
 from gi.repository import GLib
+from gi.repository import GObject
 from gi.repository import IBus
 
-class Prefs(object):
-    _prefix = 'engine/dummy'
+class DictItem():
+    def __init__(self,
+                 id='',
+                 short_label='',
+                 long_label='',
+                 icon='',
+                 is_system=False,
+                 preview_lines=-1,
+                 embed=False,
+                 single=True,
+                 reverse=False,
+                 encoding='utf-8'):
+        self.id = id
+        self.short_label = short_label
+        self.long_label = long_label
+        self.icon = icon
+        self.is_system = is_system
+        self.preview_lines = preview_lines
+        self.embed = embed
+        self.single = single
+        self.reverse = reverse
+        self.encoding = encoding
 
-    def __init__(self, bus=None, config=None):
-        self.default = {}
-        self.modified = {}
-        self.new = {}
-        self.__no_key_warning = False
+    def __str__(self):
+        retval = ('id:', self.id,
+              'short-label:', self.short_label,
+              'long-label:', self.long_label,
+              'icon:', self.icon,
+              'is-system:', self.is_system,
+              'preview-lines:', self.preview_lines,
+              'embed:', self.embed,
+              'single:', self.single,
+              'reverse:', self.reverse,
+              'encoding:', self.encoding)
+        return str(retval)
 
-        # self._config is used by AnthyPrefs .
-        self._config = config if config else \
-                       bus.get_config() if bus else  \
-                       IBus.Bus().get_config()
+    @classmethod
+    def serialize(cls, dict_item):
+        builder = GLib.VariantBuilder(GLib.VariantType('r'))
+        builder.add_value(GLib.Variant.new_string(dict_item.id))
+        builder.add_value(GLib.Variant.new_string(dict_item.short_label))
+        builder.add_value(GLib.Variant.new_string(dict_item.long_label))
+        builder.add_value(GLib.Variant.new_string(dict_item.icon))
+        builder.add_value(GLib.Variant.new_boolean(dict_item.is_system))
+        builder.add_value(GLib.Variant.new_int32(dict_item.preview_lines))
+        builder.add_value(GLib.Variant.new_boolean(dict_item.embed))
+        builder.add_value(GLib.Variant.new_boolean(dict_item.single))
+        builder.add_value(GLib.Variant.new_boolean(dict_item.reverse))
+        builder.add_value(GLib.Variant.new_string(dict_item.encoding))
+        return builder.end()
 
-        # ibus_config_get_values enhances the performance.
-        self.__has_config_get_values = False
+class Prefs(GObject.GObject):
+    __gsignals__ = {
+        'changed' : (
+            GObject.SignalFlags.RUN_FIRST,
+            None,
+            (str, str, GLib.Variant)),
+        }
 
-        if self._config != None:
-            self.__has_config_get_values = hasattr(self._config, 'get_values')
-        else:
-            self.printerr(
-                'ibus-config is not running or bus address is not correct.')
+    def __init__(self):
+        super(Prefs, self).__init__()
+        self.__cache = {}
+        self.__settings = {}
+        self.__schema_prefix = 'org.freedesktop.ibus.engine.anthy.'
+        self.__schema_sections = ['common',
+                                  'shortcut',
+                                  'romaji-typing-rule',
+                                  'kana-typing-rule',
+                                  'thumb-typing-rule',
+                                  'thumb',
+                                  'dict']
+        for section in self.__schema_sections:
+            self.__settings[section] = Gio.Settings(
+                    schema=self.__schema_prefix + section)
+            self.__settings[section].connect('changed',
+                                             self.__settings_on_changed)
 
-    def __log_handler(self, domain, level, message, data):
-        if not data:
-            return
-        GLib.log_default_handler(domain, level, message, '')
+    def __settings_on_changed(self, settings, key):
+        section = settings.props.schema[len(self.__schema_prefix):]
+        variant_value = self.__settings[section].get_value(key)
+        variant_key = self.__cache.get(section)
+        if variant_key == None:
+            variant_key = {}
+        variant_key[key] = variant_value
+        self.__cache[section] = variant_key
+        self.emit('changed', section, key, variant_value)
 
     def variant_to_value(self, variant):
         if type(variant) != GLib.Variant:
@@ -68,7 +130,9 @@ class Prefs(object):
             return variant.get_int32()
         elif type_string == 'b':
             return variant.get_boolean()
-        elif type_string == 'as':
+        elif type_string == 'v':
+            return variant.unpack()
+        elif len(type_string) > 0 and type_string[0] == 'a':
             # Use unpack() instead of dup_strv() in python.
             # In the latest pygobject3 3.3.4 or later, g_variant_dup_strv
             # returns the allocated strv but in the previous release,
@@ -79,193 +143,165 @@ class Prefs(object):
             sys.abrt()
         return variant
 
-    def set_no_key_warning(self, no_key_warning):
-        if no_key_warning and hasattr(IBus, 'unset_log_handler'):
-            self.__no_key_warning = True
-        else:
-            self.__no_key_warning = False
+    def variant_from_value(self, value):
+        variant = None
+        if type(value) == str:
+            variant = GLib.Variant.new_string(value)
+        elif type(value) == int:
+            variant = GLib.Variant.new_int32(value)
+        elif type(value) == bool:
+            variant = GLib.Variant.new_boolean(value)
+        elif type(value) == list:
+            variant = GLib.Variant.new_strv(value)
+        if variant == None:
+            self.printerr('Unknown value type: %s' % type(value))
+        return variant
 
-    def keys(self, section):
-        return list(self.default[section].keys())
+    def get_variant(self, section, key):
+        variant_key = self.__cache.get(section)
+        if variant_key != None:
+            variant_value = variant_key.get(key)
+            if variant_value != None:
+                return variant_value
+        variant_value = self.__settings[section].get_value(key)
+        if variant_key == None:
+            variant_key = {}
+        variant_key[key] = variant_value
+        self.__cache[section] = variant_key
+        return variant_value
 
-    def sections(self):
-        return list(self.default.keys())
+    def get_default_variant(self, section, key):
+        return  self.__settings[section].get_default_value(key)
 
-    def set_new_section(self, section):
-        self.default.setdefault(section, {})
-
-    def set_new_key(self, section, key):
-        self.default[section].setdefault(key)
+    def get_readable_value(self, section, key, variant):
+        value = self.variant_to_value(variant)
+        if section == 'dict' and key == 'list':
+            dicts = {}
+            for item in value:
+                dict_item = DictItem(*item)
+                dicts[dict_item.id] = dict_item
+            value = dicts
+        if section == 'dict' and key == 'template':
+            value = DictItem(*value)
+        return value
 
     def get_value(self, section, key):
-        try:
-            return self.new[section][key]
-        except:
-            try:
-                return self.modified[section][key]
-            except:
-                return self.default[section][key]
+        variant = self.get_variant(section, key)
+        return self.get_readable_value(section, key, variant)
 
-    def get_value_direct(self, section, key, default=None):
-        if self._config == None:
-            return default
+    def get_default_value(self, section, key):
+        variant = self.get_default_variant(section, key)
+        return self.get_readable_value(section, key, variant)
 
-        s = section
-        section = '/'.join(
-            [s for s in '/'.join([self._prefix, section]).split('/') if s])
-        try:
-            if self.__no_key_warning:
-                IBus.set_log_handler(False)
-            variant = self._config.get_value(section, key)
-            if self.__no_key_warning:
-                IBus.unset_log_handler()
-            return self.variant_to_value(variant)
-        except:
-            return default
+    def set_variant(self, section, key, variant):
+        self.__settings[section].set_value(key, variant)
+        self.__settings[section].apply()
 
     def set_value(self, section, key, value):
-        if section not in self.sections():
-            self.set_new_section(section)
-        if key not in self.keys(section):
-            self.set_new_key(section, key)
-        self.default[section][key]
-        self.new.setdefault(section, {})[key] = value
+        variant = self.variant_from_value(value)
+        if variant == None:
+            return
+        self.set_variant(section, key, variant)
 
-    def fetch_all(self):
-        for s in self.sections():
-            self.fetch_section(s)
-
-    def fetch_section(self, section):
-        if self._config == None:
+    def set_list_item(self, section, key, item, values):
+        variant = self.get_variant(section, key)
+        if variant == None:
+            printerrr('%s:%s does not exist' % (section, key))
+            return
+        if section == 'shortcut':
+            variant_dict = GLib.VariantDict(variant)
+            array = []
+            for value in values:
+                array.append(GLib.Variant.new_string(value))
+            varray = GLib.Variant.new_array(GLib.VariantType('s'), array)
+            variant_dict.insert_value(item, varray)
+            # GVariantDict uses GHashTable internally and
+            # GVariantDict.end() does not support the order.
+            self.set_variant(section, key, variant_dict.end())
+            return
+        if section == 'romaji-typing-rule' or \
+           section == 'kana-typing-rule' or \
+           section == 'thumb-typing-rule':
+            (method, keymap_key) = item
+            variant_dict = GLib.VariantDict(variant)
+            keymap = variant_dict.lookup_value(method, None)
+            keymap_dict = GLib.VariantDict(keymap)
+            if section == 'thumb-typing-rule':
+                array = []
+                for value in values:
+                    array.append(GLib.Variant.new_string(value))
+                vvalue = GLib.Variant.new_array(GLib.VariantType('s'), array)
+            else:
+                vvalue = GLib.Variant.new_string(values)
+            keymap_dict.insert_value(keymap_key, vvalue)
+            keymap = keymap_dict.end()
+            variant_dict.insert_value(method, keymap)
+            self.set_variant(section, key, variant_dict.end())
+            return
+        if section == 'dict' and key == 'files':
+            variant_dict = GLib.VariantDict(variant)
+            array = []
+            for value in values:
+                array.append(GLib.Variant.new_string(value))
+            varray = GLib.Variant.new_array(GLib.VariantType('s'), array)
+            variant_dict.insert_value(item, varray)
+            self.set_variant(section, key, variant_dict.end())
+            return
+        if section == 'dict' and key == 'list':
+            array = []
+            has_item = False
+            for v in variant:
+                dict_item = DictItem(*v)
+                if dict_item.id == values.id:
+                    array.append(GLib.Variant.new_variant(
+                            DictItem.serialize(values)))
+                    has_item = True
+                else:
+                    array.append(GLib.Variant.new_variant(
+                            DictItem.serialize(dict_item)))
+            if not has_item:
+                array.append(GLib.Variant.new_variant(DictItem.serialize(values)))
+            varray = GLib.Variant.new_array(GLib.VariantType('v'), array)
+            self.set_variant(section, key, varray)
             return
 
-        if not self.__has_config_get_values:
-            for k in self.keys(section):
-                self.fetch_item(section, k)
+    def delete_list_item(self, section, key, item):
+        variant = self.get_variant(section, key)
+        if variant == None:
+            printerrr('%s:%s does not exist' % (section, key))
+            return
+        if section == 'romaji-typing-rule' or \
+           section == 'kana-typing-rule' or \
+           section == 'thumb-typing-rule':
+            (method, keymap_key) = item
+            variant_dict = GLib.VariantDict(variant)
+            keymap = variant_dict.lookup_value(method, None)
+            keymap_dict = GLib.VariantDict(keymap)
+            keymap_dict.remove(keymap_key)
+            keymap = keymap_dict.end()
+            variant_dict.insert_value(method, keymap)
+            self.set_variant(section, key, variant_dict.end())
+            return
+        if section == 'dict' and key == 'files':
+            variant_dict = GLib.VariantDict(variant)
+            variant_dict.remove(item)
+            self.set_variant(section, key, variant_dict.end())
+            return
+        if section == 'dict' and key == 'list':
+            array = []
+            for v in variant:
+                dict_item = DictItem(*v)
+                if dict_item.id == item:
+                    continue
+                else:
+                    array.append(GLib.Variant.new_variant(
+                            DictItem.serialize(dict_item)))
+            varray = GLib.Variant.new_array(GLib.VariantType('v'), array)
+            self.set_variant(section, key, varray)
             return
 
-        s = '/'.join(
-            [s for s in '/'.join([self._prefix, section]).split('/') if s])
-        variant = self._config.get_values(s)
-        for key in list(variant.keys()):
-            v = variant[key]
-            self.modified.setdefault(section, {})[key] = v if v != [''] else []
-        # FIXME: ibus-dconf converts the keys.
-        if section == 'common':
-            self.fetch_item(section, 'show-input-mode')
-            self.fetch_item(section, 'show-typing-method')
-            self.fetch_item(section, 'show-segment-mode')
-            self.fetch_item(section, 'show-dict-mode')
-            self.fetch_item(section, 'show-dict-config')
-            self.fetch_item(section, 'show-preferences')
-
-    def fetch_item(self, section, key, readonly=False):
-        if self._config == None:
-            return
-
-        s = '/'.join(
-            [s for s in '/'.join([self._prefix, section]).split('/') if s])
-        try:
-            v = None
-            # gobject-introspection has a bug.
-            # https://bugzilla.gnome.org/show_bug.cgi?id=670509
-            # GLib.log_set_handler("IBUS", GLib.LogLevelFlags.LEVEL_MASK,
-            #                      self.__log_handler, False)
-            if self.__no_key_warning:
-                IBus.set_log_handler(False)
-            variant = self._config.get_value(s, key)
-            if self.__no_key_warning:
-                IBus.unset_log_handler()
-            v = self.variant_to_value(variant)
-        except:
-            v = None
-        if readonly:
-            return v != None
-        if v != None:
-            self.modified.setdefault(section, {})[key] = v if v != [''] else []
-        return True
-
-    def commit_all(self):
-        for s in list(self.new.keys()):
-            self.commit_section(s)
-
-    def commit_section(self, section):
-        if section in self.new:
-            for k in list(self.new[section].keys()):
-                self.commit_item(section, k)
-
-    def commit_item(self, section, key):
-        if section in self.new and key in self.new[section]:
-            s = '/'.join(
-                [s for s in '/'.join([self._prefix, section]).split('/') if s])
-            v = self.new[section][key]
-            if v == []:
-                v = ['']
-            variant = None
-            if type(v) == str:
-                variant = GLib.Variant.new_string(v)
-            elif type(v) == int:
-                variant = GLib.Variant.new_int32(v)
-            elif type(v) == bool:
-                variant = GLib.Variant.new_boolean(v)
-            elif type(v) == list:
-                variant = GLib.Variant.new_strv(v)
-            if variant == None:
-                self.printerr('Unknown value type: %s' % type(v))
-                sys.abrt()
-            if self._config != None:
-                self._config.set_value(s, key, variant)
-            self.modified.setdefault(section, {})[key] = v
-            del(self.new[section][key])
-
-    def undo_all(self):
-        self.new.clear()
-
-    def undo_section(self, section):
-        try:
-            del(self.new[section])
-        except:
-            pass
-
-    def undo_item(self, section, key):
-        try:
-            del(self.new[section][key])
-        except:
-            pass
-
-    def set_default_all(self):
-        for s in self.sections():
-            self.set_default_section(s)
-
-    def set_default_section(self, section):
-        for k in self.keys(section):
-            self.set_default_item(section, k)
-
-    def set_default_item(self, section, key):
-        try:
-            if key in self.modified[section] or key in self.new[section]:
-                self.new[section][key] = self.default[section][key]
-        except:
-            pass
-
-    # Convert DBus.String to str
-    # sys.getdefaultencoding() == 'utf-8' with pygtk2 but
-    # sys.getdefaultencoding() == 'ascii' with gi gtk3
-    # so the simple str(unicode_string) causes an error and need to use
-    # unicode_string.encode('utf-8') instead.
-    def str(self, uni):
-        if uni == None:
-            return None
-        if type(uni) == str:
-            return uni
-        return str(uni)
-
-    # The simple unicode(string) causes an error and need to use
-    # unicode(string, 'utf-8') instead.
-    def unicode(self, string):
-        if string == None:
-            return None
-        return string
+    def bind(self, section, key, object, property, flags):
+            self.__settings[section].bind(key, object, property, flags)
 
     # If the parent process exited, the std io/out/error will be lost.
     @staticmethod

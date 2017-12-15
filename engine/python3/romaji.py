@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ def romaji_correction_rule_get(k, d):
 
 class RomajiSegment(segment.Segment):
     _prefs = None
-    _romaji_typing_rule_section = None
+    _romaji_typing_rule_method = None
     _latin_with_shift = True
     _shift_mode = False
 
@@ -59,14 +59,15 @@ class RomajiSegment(segment.Segment):
     def INIT_ROMAJI_TYPING_RULE(cls, prefs):
         cls._prefs = prefs
         if prefs == None:
-            cls._romaji_typing_rule_section = None
+            cls._romaji_typing_rule_method = None
             return
-        method = prefs.get_value('romaji_typing_rule', 'method')
+        method = prefs.get_value('romaji-typing-rule', 'method')
         if method == None:
             method = 'default'
-        cls._romaji_typing_rule_section = 'romaji_typing_rule/' + method
-        if cls._romaji_typing_rule_section not in prefs.sections():
-            cls._romaji_typing_rule_section = None
+        cls._romaji_typing_rule_method = method
+        keymap = prefs.get_value('romaji-typing-rule', 'list')
+        if cls._romaji_typing_rule_method not in keymap.keys():
+            cls._romaji_typing_rule_method = None
 
     @classmethod
     def SET_LATIN_WITH_SHIFT(cls, latin_with_shift):
@@ -76,19 +77,15 @@ class RomajiSegment(segment.Segment):
     def __get_romaji_typing_rule(self, enchars, retval=None):
         prefs = self._prefs
         value = None
-        section = self._romaji_typing_rule_section
-        if section != None:
+        method = self._romaji_typing_rule_method
+        if method != None:
             # Need to send Unicode to typing_to_config_key instead of UTF-8
             # not to separate U+A5
             gkey = prefs.typing_to_config_key(enchars)
             if gkey == '':
                 return None
-            if gkey in prefs.keys(section):
-                value = prefs.get_value(section, gkey)
-            else:
-                prefs.set_no_key_warning(True)
-                value = prefs.get_value_direct(section, gkey)
-                prefs.set_no_key_warning(False)
+            keymap = prefs.get_value('romaji-typing-rule', 'list')[method]
+            value = keymap.get(gkey)
             if value == '':
                 value = None
             if value == None:

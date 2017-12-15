@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 BUILT_SOURCES = \
 	_config.py \
-	anthyprefs.py \
 	$(NULL)
 
 libexec_SCRIPTS = ibus-setup-anthy
@@ -82,15 +81,6 @@ ibus-setup-anthy: ibus-setup-anthy.in
 	    -e "s|\@PYTHON\@|$(PYTHON)|g" \
 	$< > $@
 
-anthyprefs.py: anthyprefs.py.in
-	sed -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
-	    -e "s|\@KASUMI_EXEC_FILE\@|$(KASUMI_EXEC_FILE)|g" \
-	    -e "s|\@KASUMI_ICON_FILE\@|$(KASUMI_ICON_FILE)|g" \
-	    -e "s|\@ON_OFF_KEYS\@|$(ON_OFF_KEYS)|g" \
-	    -e "s|\@VERSION\@|$(VERSION)|g" \
-	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
-	$< > $@
-
 _config.py: _config.py.in
 	sed -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
 	    -e "s|\@libexecdir\@|$(libexecdir)|g" \
@@ -98,6 +88,7 @@ _config.py: _config.py.in
 	    -e "s|\@LAYOUT\@|$(LAYOUT)|g" \
 	    -e "s|\@SYMBOL_CHAR_INT\@|$(SYMBOL_CHAR_INT)|g" \
 	    -e "s|\@ICON_PREFERENCE\@|$(ICON_PREFERENCE)|g" \
+	    -e "s|\@VERSION\@|$(VERSION)|g" \
 	$< > $@
 
 # Need a time lag between .py and .py.in files to build .py files

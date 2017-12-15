@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,8 +30,9 @@ _UNFINISHED_HIRAGANA = set('かきくけこさしすせそたちつてとはひ�
 
 class KanaSegment(segment.Segment):
     _prefs = None
-    _kana_typing_rule_section = None
+    _kana_typing_rule_method = None
     _kana_voiced_consonant_rule = None
+    _kana_voiced_consonant_dict = None
 
     def __init__(self, enchars='', jachars=''):
         if not jachars:
@@ -42,24 +43,25 @@ class KanaSegment(segment.Segment):
     def INIT_KANA_TYPING_RULE(cls, prefs):
         cls._prefs = prefs
         if prefs == None:
-            cls._kana_typing_rule_section = None
+            cls._kana_typing_rule_method = None
             return
-        if cls._kana_typing_rule_section == None:
+        if cls._kana_typing_rule_method == None:
             cls._init_kana_typing_method()
         if cls._kana_voiced_consonant_rule == None and \
-           cls._kana_typing_rule_section != None:
+           cls._kana_typing_rule_method != None:
             cls._init_kana_voiced_consonant_rule()
 
     @classmethod
     def _init_kana_typing_method(cls, method=None):
         prefs = cls._prefs
         if method == None:
-            method = prefs.get_value('kana_typing_rule', 'method')
+            method = prefs.get_value('kana-typing-rule', 'method')
         if method == None:
             method = 'jp'
-        cls._kana_typing_rule_section = 'kana_typing_rule/' + method
-        if cls._kana_typing_rule_section not in prefs.sections():
-            cls._kana_typing_rule_section = None
+        cls._kana_typing_rule_method = method
+        keymap = prefs.get_value('kana-typing-rule', 'list')
+        if cls._kana_typing_rule_method not in keymap.keys():
+            cls._kana_typing_rule_method = None
 
     @classmethod
     def _init_kana_voiced_consonant_rule(cls):
@@ -70,9 +72,10 @@ class KanaSegment(segment.Segment):
         # If the customized table provides U+309b with other chars,
         # it needs to be detected dynamically.
         cls._kana_voiced_consonant_rule = {}
-        section = cls._kana_typing_rule_section
-        for gkey in prefs.keys(section):
-            value = prefs.get_value(section, gkey)
+        method = cls._kana_typing_rule_method
+        keymap = prefs.get_value('kana-typing-rule', 'list')[method]
+        for gkey in keymap.keys():
+            value = keymap[gkey]
             key = prefs.typing_from_config_key(gkey)
             if key == '':
                 continue
@@ -88,37 +91,26 @@ class KanaSegment(segment.Segment):
                     cls._kana_voiced_consonant_rule[rule] = voiced
 
     @classmethod
-    def RESET(cls, prefs, section, name, value):
+    def RESET(cls, prefs, section, key, value):
         cls._prefs = prefs
-        if section == 'kana_typing_rule' and name == 'method' and \
-           value != None:
-            cls._kana_typing_rule_section = None
+        if section == 'kana-typing-rule' and value != None:
+            cls._kana_typing_rule_method = None
             cls._kana_voiced_consonant_rule = None
-            cls._init_kana_typing_method(value)
-        elif section.startswith('kana_typing_rule/'):
-            # Probably it's better to restart ibus by manual
-            # instead of saving the emitted values from config.
-            cls._kana_voiced_consonant_rule = None
+            cls.INIT_KANA_TYPING_RULE(prefs)
 
     def __get_kana_typing_rule(self, enchars, retval=None):
         prefs = self._prefs
         value = None
-        section = self._kana_typing_rule_section
-        if section != None:
+        method = self._kana_typing_rule_method
+        if method != None:
             # Need to send Unicode to typing_to_config_key instead of UTF-8
             # not to separate U+A5
             gkey = prefs.typing_to_config_key(enchars)
             if gkey == '':
                 return None
             enchars = gkey
-            if enchars in prefs.keys(section):
-                value = prefs.str(prefs.str(prefs.get_value(section, enchars)))
-            else:
-                prefs.set_no_key_warning(True)
-                value = prefs.get_value_direct(section, enchars)
-                prefs.set_no_key_warning(False)
-                if value != None:
-                    value = prefs.str(prefs.str(value))
+            keymap = prefs.get_value('kana-typing-rule', 'list')[method]
+            value = keymap.get(enchars)
             if value == '':
                 value = None
             if value == None:

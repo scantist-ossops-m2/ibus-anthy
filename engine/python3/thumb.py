@@ -5,8 +5,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -231,8 +231,7 @@ class ThumbShiftKeyboard:
         self.__layout = 0
         self.__fmv_extension = 2
         self.__handakuten = False
-        self.__thumb_typing_rule_section_base = None
-        self.__thumb_typing_rule_section = None
+        self.__thumb_typing_rule_method = None
         self.__init_thumb_typing_rule()
         self.__init_layout_table()
         if self.__prefs != None:
@@ -242,34 +241,27 @@ class ThumbShiftKeyboard:
     def __init_thumb_typing_rule(self):
         prefs = self.__prefs
         if prefs == None:
-            self.__thumb_typing_rule_section = None
+            self.__thumb_typing_rule_method = None
             return
-        method = prefs.get_value('thumb_typing_rule', 'method')
+        method = prefs.get_value('thumb-typing-rule', 'method')
         if method == None:
             method = _THUMB_BASIC_METHOD
-        self.__thumb_typing_rule_section_base = 'thumb_typing_rule'
-        self.__thumb_typing_rule_section = \
-            self.__thumb_typing_rule_section_base + '/' + method
-        if self.__thumb_typing_rule_section not in prefs.sections():
-            self.__thumb_typing_rule_section = None
+        self.__thumb_typing_rule_method = method
+        keymap = prefs.get_value('thumb-typing-rule', 'list')
+        if self.__thumb_typing_rule_method not in keymap.keys():
+            self.__thumb_typing_rule_method = None
 
     def __init_layout_table(self):
         if self.__table != {}:
             self.__table.clear()
         if self.__r_table != {}:
             self.__r_table.clear()
-        section_base = self.__thumb_typing_rule_section_base
-        section = self.__thumb_typing_rule_section
-        if section != None:
+        method = self.__thumb_typing_rule_method
+        if method != None:
             prefs = self.__prefs
-            for k in prefs.keys(section):
-                value = prefs.get_value(section, k)
-                ch = prefs.typing_from_config_key(k)
-                if ch == '':
-                    continue
-                self.__set_bus_table(ch, value)
-            for k in prefs.get_value(section_base, 'newkeys'):
-                value = prefs.get_value_direct(section, k)
+            keymap = prefs.get_value('thumb-typing-rule', 'list')[method]
+            for k in keymap.keys():
+                value = keymap.get(k)
                 ch = prefs.typing_from_config_key(k)
                 if ch == '':
                     continue
@@ -310,19 +302,12 @@ class ThumbShiftKeyboard:
             sub_table = f_table
         if method == None or sub_table == None:
             return
-        section_base = self.__thumb_typing_rule_section_base
-        section = self.__thumb_typing_rule_section
-        sub_section = section_base + '/' + method
-        if section != None:
+        method = self.__thumb_typing_rule_method
+        if method != None:
             prefs = self.__prefs
-            for k in prefs.keys(sub_section):
-                value = prefs.get_value(sub_section, k)
-                ch = prefs.typing_from_config_key(k)
-                if ch == '':
-                    continue
-                self.__set_bus_table(ch, value)
-            for k in prefs.get_value(section_base, method + '_newkeys'):
-                value = prefs.get_value_direct(sub_section, k)
+            keymap = prefs.get_value('thumb-typing-rule', 'list')[method]
+            for k in keymap.keys():
+                value = keymap.get(k)
                 ch = prefs.typing_from_config_key(k)
                 if ch == '':
                     continue
@@ -457,15 +442,15 @@ class ThumbShiftKeyboard:
         return layout
 
     def __reset_layout_and_handakuten(self):
-        mode = self.__prefs.get_value('thumb', 'keyboard_layout_mode')
+        mode = self.__prefs.get_value('thumb', 'keyboard-layout-mode')
         layout = 0
         if mode == 1:
             layout = self.__get_xkb_layout()
         else:
-            layout = self.__prefs.get_value('thumb', 'keyboard_layout')
+            layout = self.__prefs.get_value('thumb', 'keyboard-layout')
         self.set_layout(layout)
 
-        fmv_extension = self.__prefs.get_value('thumb', 'fmv_extension')
+        fmv_extension = self.__prefs.get_value('thumb', 'fmv-extension')
         self.set_fmv_extension(fmv_extension)
         handakuten = self.__prefs.get_value('thumb', 'handakuten')
         self.set_handakuten(handakuten)
@@ -582,32 +567,25 @@ class ThumbShiftSegment(segment.Segment):
         if prefs == None:
             cls._thumb_typing_rule_section = None
             return
-        method = prefs.get_value('thumb_typing_rule', 'method')
+        method = prefs.get_value('thumb-typing-rule', 'method')
         if method == None:
             method = _THUMB_BASIC_METHOD
-        cls._thumb_typing_rule_section_base = 'thumb_typing_rule'
-        cls._thumb_typing_rule_section = \
-            cls._thumb_typing_rule_section_base + '/' + method
-        if cls._thumb_typing_rule_section not in prefs.sections():
-            cls._thumb_typing_rule_section = None
+        cls._thumb_typing_rule_method = method
+        keymap = prefs.get_value('thumb-typing-rule', 'list')
+        if cls._thumb_typing_rule_method not in keymap.keys():
+            cls._thumb_typing_rule_method = None
         cls._init_layout_table()
 
     @classmethod
     def _init_layout_table(cls):
         if cls._r_table != {}:
             cls._r_table.clear()
-        section_base = cls._thumb_typing_rule_section_base
-        section = cls._thumb_typing_rule_section
-        if section != None:
+        method = cls._thumb_typing_rule_method
+        if method != None:
             prefs = cls._prefs
-            for k in prefs.keys(section):
-                value = prefs.get_value(section, k)
-                ch = prefs.typing_from_config_key(k)
-                if ch == '':
-                    continue
-                cls._set_bus_table(ch, value)
-            for k in prefs.get_value(section_base, 'newkeys'):
-                value = prefs.get_value_direct(section, k)
+            keymap = prefs.get_value('thumb-typing-rule', 'list')[method]
+            for k in keymap.keys():
+                value = keymap.get(k)
                 ch = prefs.typing_from_config_key(k)
                 if ch == '':
                     continue
