@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ _config.py: _config.py.in
 	    -e "s|\@LAYOUT\@|$(LAYOUT)|g" \
 	    -e "s|\@SYMBOL_CHAR_INT\@|$(SYMBOL_CHAR_INT)|g" \
 	    -e "s|\@ICON_PREFERENCE\@|$(ICON_PREFERENCE)|g" \
+	    -e "s|\@VERSION\@|$(VERSION)|g" \
 	$< > $@
 
 test:

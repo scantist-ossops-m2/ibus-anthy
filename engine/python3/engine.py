@@ -1681,7 +1681,6 @@ class Engine(IBus.EngineSimple):
             value = prefs.get_value(section, key)
             jastring.JaString.RESET(cls.__prefs, section, key, value)
 
-
     @classmethod
     def _init_prefs(cls):
         prefs = cls.__prefs

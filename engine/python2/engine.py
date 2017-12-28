@@ -156,7 +156,7 @@ class Engine(IBus.EngineSimple):
 #                                                   cursor_pos=0,
 #                                                   cursor_visible=True,
 #                                                   round=True)
-        size = self.__prefs.get_value('common', 'page_size')
+        size = self.__prefs.get_value('common', 'page-size')
         self.__lookup_table = IBus.LookupTable.new(page_size=size,
                                                    cursor_pos=0,
                                                    cursor_visible=True,
@@ -178,10 +178,6 @@ class Engine(IBus.EngineSimple):
         # use reset to init values
         self.__reset()
 
-        ibus_config = bus.get_config()
-        if ibus_config != None:
-            ibus_config.connect('value-changed',
-                                self.__config_value_changed_cb)
 
     def __ibus_check_version(self, v):
         major = IBus.MAJOR_VERSION
@@ -279,7 +275,7 @@ class Engine(IBus.EngineSimple):
             # the engine keeps the class method in the memory.
             Engine.__input_mode = INPUT_MODE_HIRAGANA
             Engine.__input_mode = self.__prefs.get_value('common',
-                                                         'input_mode')
+                                                         'input-mode')
 
         if not self.__prefs.get_value('common', 'show-input-mode'):
             return
@@ -372,7 +368,7 @@ class Engine(IBus.EngineSimple):
         if Engine.__typing_mode == None:
             Engine.__typing_mode = jastring.TYPING_MODE_ROMAJI
             Engine.__typing_mode = self.__prefs.get_value('common',
-                                                          'typing_method')
+                                                          'typing-method')
 
         if not self.__prefs.get_value('common', 'show-typing-method'):
             return
@@ -440,7 +436,7 @@ class Engine(IBus.EngineSimple):
         if Engine.__segment_mode == None:
             Engine.__segment_mode = SEGMENT_DEFAULT
             Engine.__segment_mode = self.__prefs.get_value('common',
-                                                           'conversion_segment_mode')
+                                                           'conversion-segment-mode')
 
         if not self.__prefs.get_value('common', 'show-segment-mode'):
             return
@@ -520,8 +516,8 @@ class Engine(IBus.EngineSimple):
         if not self.__prefs.get_value('common', 'show-dict-mode'):
             return
 
-        short_label = self.__prefs.get_value('dict/file/embedded',
-                                             'short_label')
+        dicts = self.__prefs.get_value('dict', 'list')
+        short_label = dicts['embedded'].short_label
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : short_label }
         dict_mode_prop = IBus.Property(key=u'DictMode',
@@ -537,8 +533,7 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict[u'DictMode'] = dict_mode_prop
         props = IBus.PropList()
 
-        long_label = self.__prefs.get_value('dict/file/embedded',
-                                            'long_label')
+        long_label = dicts['embedded'].long_label
         props.append(IBus.Property(key=u'DictMode.embedded',
                                    prop_type=IBus.PropType.RADIO,
                                    # if long_label is UTF-8
@@ -549,15 +544,24 @@ class Engine(IBus.EngineSimple):
                                    visible=True,
                                    state=IBus.PropState.UNCHECKED,
                                    sub_props=None))
-        for file in self.__prefs.get_value('dict', 'files'):
-            if not self.__link_dict_file(file):
-                continue
-            id = self.__get_dict_id_from_file(file)
-            section = 'dict/file/' + id
-            if not self.__prefs.get_value(section, 'single'):
-                continue
+        order = self.__prefs.get_value('dict', 'order')
+        if len(order) == 0:
+            order = list(self.__prefs.get_value('dict', 'files').keys())
+        files = self.__prefs.get_value('dict', 'files')
+        dicts = self.__prefs.get_value('dict', 'list')
+        for id in order:
+            dict_item = dicts[id]
+            is_cont = False
+            for file in files[id]:
+                if not self.__link_dict_file(dict_item, file):
+                    is_cont = True
+                    break
+            if is_cont:
+                  continue
+            if not dict_item.single:
+                  continue
             key = 'DictMode.' + id
-            long_label = self.__prefs.get_value(section, 'long_label')
+            long_label = dict_item.long_label
 
             # ibus-config 'value-changed' signal updated dict/files but
             # not dict/file/new yet.
@@ -565,8 +569,7 @@ class Engine(IBus.EngineSimple):
                 continue
 
             # if long_label is UTF-8
-            if 'is_system' in self.__prefs.keys(section) and \
-               self.__prefs.get_value(section, 'is_system'):
+            if dict_item.is_system:
                 uni_long_label = UN(_(long_label))
             else:
                 uni_long_label = UN(long_label)
@@ -607,8 +610,8 @@ class Engine(IBus.EngineSimple):
         if not self.__prefs.get_value('common', 'show-dict-config'):
             return
 
-        admin_command = self.__prefs.get_value('common', 'dict_admin_command')
-        icon_path = self.__prefs.get_value('common', 'dict_config_icon')
+        admin_command = self.__prefs.get_value('common', 'dict-admin-command')
+        icon_path = self.__prefs.get_value('common', 'dict-config-icon')
 
         if not path.exists(admin_command[0]):
             return
@@ -670,20 +673,28 @@ class Engine(IBus.EngineSimple):
         return clipboard_text
 
     def __get_single_dict_files(self):
+        order = self.__prefs.get_value('dict', 'order')
+        if len(order) == 0:
+            order = list(self.__prefs.get_value('dict', 'files').keys())
         files = self.__prefs.get_value('dict', 'files')
+        dicts = self.__prefs.get_value('dict', 'list')
         single_files = []
-        for file in files:
-            if not path.exists(file):
-                continue
-            id = self.__get_dict_id_from_file(file)
-            section = 'dict/file/' + id
-            if self.__prefs.get_value(section, 'single'):
-                single_files.append(file)
+        for id in order:
+            for file in files[id]:
+                if not path.exists(file):
+                    continue
+                dict_item = dicts[id]
+                if dict_item.single:
+                    single_files.append(file)
         return single_files
 
     def __remove_dict_files(self):
-        for file in self.__prefs.get_value('dict', 'files'):
-            self.__remove_dict_file(file)
+        dicts = self.__prefs.get_value('dict', 'list')
+        files = self.__prefs.get_value('dict', 'files')
+        for id in files.keys():
+            dict_item = dicts[id]
+            for file in files[id]:
+                self.__remove_dict_file(dict_item, file)
 
     def update_preedit(self, string, attrs, cursor_pos, visible):
         text = IBus.Text.new_from_string(string)
@@ -695,7 +706,7 @@ class Engine(IBus.EngineSimple):
                                   attr.get_start_index(),
                                   attr.get_end_index())
             i += 1
-        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
+        mode = self.__prefs.get_value('common', 'behavior-on-focus-out')
         if self.__has_update_preedit_text_with_mode and mode == 1:
             self.update_preedit_text_with_mode(text,
                                                cursor_pos, visible,
@@ -1016,8 +1027,8 @@ class Engine(IBus.EngineSimple):
         self.__context.do_set_personality(str(dict_name))
 
         prop = self.__prop_dict[u'DictMode']
-        section = 'dict/file/' + id
-        symbol = self.__prefs.get_value(section, 'short_label')
+        dicts = self.__prefs.get_value('dict', 'list')
+        symbol = dicts[id].short_label
         label = _("%(description)s (%(symbol)s)") % \
             { 'description' : _("Dictionary mode"), 'symbol' : symbol }
         prop.set_symbol(IBus.Text.new_from_string(symbol))
@@ -1033,19 +1044,19 @@ class Engine(IBus.EngineSimple):
     def do_focus_in(self):
         self.register_properties(self.__prop_list)
         self.__refresh_typing_mode_property()
-        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
+        mode = self.__prefs.get_value('common', 'behavior-on-focus-out')
         if mode == 2:
             self.__update_input_chars()
 #        self.__reset()
 #        self.__invalidate()
-        size = self.__prefs.get_value('common', 'page_size')
+        size = self.__prefs.get_value('common', 'page-size')
         if size != self.__lookup_table.get_page_size():
             self.__lookup_table.set_page_size(size)
 
     def do_focus_out(self):
         if self.__has_input_purpose:
             self.__input_purpose = 0
-        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
+        mode = self.__prefs.get_value('common', 'behavior-on-focus-out')
         if mode == 0 or mode == 1:
             self.__reset()
             self.__invalidate()
@@ -1646,11 +1657,12 @@ class Engine(IBus.EngineSimple):
 
 #=======================================================================
     @classmethod
-    def CONFIG_RELOADED(cls, bus):
+    def CONFIG_RELOADED(cls):
         if config.DEBUG:
             print 'RELOADED'
         if not cls.__prefs:
-            cls.__prefs = AnthyPrefs(bus)
+            cls.__prefs = AnthyPrefs()
+            cls.__prefs.connect('changed', cls.CONFIG_VALUE_CHANGED)
             cls._init_prefs()
 
         cls.__keybind = cls._mk_keybind()
@@ -1658,70 +1670,45 @@ class Engine(IBus.EngineSimple):
         jastring.JaString.SET_PREFS(cls.__prefs)
 
     @classmethod
-    def CONFIG_VALUE_CHANGED(cls, bus, section, name, variant):
+    def CONFIG_VALUE_CHANGED(cls, prefs, section, key, variant):
         if config.DEBUG:
-            print 'VALUE_CHAMGED =', section, name, variant
-
-        if not section.startswith('engine/anthy'):
-            # This value is used for IBus.config.set_value only.
-            return
-
-        # The key was deleted by dconf.
-        # test case: update /desktop/ibus/engine/anthy/thumb/ls
-        # and reset the key with dconf direclty.
-        if variant.get_type_string() == '()':
-            cls.__prefs.undo_item(section, name)
-            return
-
-        value = cls.__prefs.variant_to_value(variant)
-        base_sec = section[len(cls.__prefs._prefix) + 1:]
-        sec = cls._get_shortcut_type()
-        if base_sec == sec:
-            cmd = '_Engine__cmd_' + name
-            old = cls.__prefs.get_value(sec, name)
-            value = value if value != [''] else []
-            for s in set(old).difference(value):
-                cls.__keybind.get(cls._s_to_key(s), []).remove(cmd)
-
-            keys = cls.__prefs.keys(sec)
-            for s in set(value).difference(old):
-                cls.__keybind.setdefault(cls._s_to_key(s), []).append(cmd)
-                cls.__keybind.get(cls._s_to_key(s)).sort(
-                    lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
-
-            cls.__prefs.set_value(sec, name, value)
-        elif base_sec == 'common':
-            cls.__prefs.set_value(base_sec, name, value)
-            if name == 'shortcut_type':
+            print('VALUE_CHAMGED =', section, key, variant)
+        if section == 'shortcut':
+            cls.__keybind = cls._mk_keybind()
+        elif section == 'common':
+            if key == 'shortcut-type':
                 cls.__keybind = cls._mk_keybind()
-            if name == 'latin_with_shift':
+            elif key == 'latin-with-shift':
+                value = prefs.get_value(section, key)
                 cls.__latin_with_shift = value
-                jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
-        elif base_sec.startswith('kana_typing_rule'):
-            jastring.JaString.RESET(cls.__prefs, base_sec, name, value)
+                jastring.JaString.RESET(cls.__prefs, section, key, value)
+        elif section == 'kana-typing-rule':
+            value = prefs.get_value(section, key)
+            jastring.JaString.RESET(cls.__prefs, section, key, value)
 
     @classmethod
     def _init_prefs(cls):
         prefs = cls.__prefs
-        value = prefs.get_value('common', 'latin_with_shift')
+        value = prefs.get_value('common', 'latin-with-shift')
         cls.__latin_with_shift = value
 
     @classmethod
     def _mk_keybind(cls):
         keybind = {}
         sec = cls._get_shortcut_type()
-        for k in cls.__prefs.keys(sec):
+        shortcuts = cls.__prefs.get_value('shortcut', sec)
+        for k in shortcuts.keys():
             cmd = '_Engine__cmd_' + k
-            for s in cls.__prefs.get_value(sec, k):
+            for s in shortcuts[k]:
                 keybind.setdefault(cls._s_to_key(s), []).append(cmd)
         return keybind
 
     @classmethod
     def _get_shortcut_type(cls):
         try:
-            t = 'shortcut/' + cls.__prefs.get_value('common', 'shortcut_type')
+            t = cls.__prefs.get_value('common', 'shortcut-type')
         except:
-            t = 'shortcut/default'
+            t = 'default'
         return t
 
     @classmethod
@@ -1787,9 +1774,9 @@ class Engine(IBus.EngineSimple):
                 self._MM = self._SS = 0
                 ret = self.__on_key_common(ord(keyval))
                 if (keyval in
-                    UN(self.__prefs.get_value('common', 'trigger_periods'))):
+                    UN(self.__prefs.get_value('common', 'trigger-periods'))):
                     behavior = self.__prefs.get_value('common',
-                                                      'behavior_on_period')
+                                                      'behavior-on-period')
                     if behavior == 1:
                         return self.__cmd_convert(keyval, state)
                     elif behavior == 2:
@@ -1828,7 +1815,7 @@ class Engine(IBus.EngineSimple):
                          IBus.ModifierType.RELEASE_MASK)
 
         if keyval in KP_Table and self.__prefs.get_value('common',
-                                                         'ten_key_mode'):
+                                                         'ten-key-mode'):
             keyval = KP_Table[keyval]
 
         if state & IBus.ModifierType.RELEASE_MASK:
@@ -1924,7 +1911,7 @@ class Engine(IBus.EngineSimple):
             return False
 
         if keyval in KP_Table and self.__prefs.get_value('common',
-                                                         'ten_key_mode'):
+                                                         'ten-key-mode'):
             keyval = KP_Table[keyval]
 
         key = self._mk_key(keyval, state)
@@ -1958,9 +1945,9 @@ class Engine(IBus.EngineSimple):
             ret = self.__on_key_common(keyval, state)
             if (Engine.__input_mode != INPUT_MODE_LATIN and
                 unichr(keyval) in
-                UN(self.__prefs.get_value('common', 'trigger_periods'))):
+                UN(self.__prefs.get_value('common', 'trigger-periods'))):
                 behavior = self.__prefs.get_value('common',
-                                                  'behavior_on_period')
+                                                  'behavior-on-period')
                 if behavior == 1:
                     return self.__cmd_convert(keyval, state)
                 elif behavior == 2:
@@ -2020,7 +2007,7 @@ class Engine(IBus.EngineSimple):
     def __get_dict_id_from_file(self, file):
         return self.__get_quoted_id(file)
 
-    def __link_dict_file_with_id(self, file, id, link_mode):
+    def __link_dict_file_with_mode(self, id, file, link_mode):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
@@ -2051,7 +2038,7 @@ class Engine(IBus.EngineSimple):
         if backup_dir != None:
             os.chdir(backup_dir)
 
-    def __remove_dict_file_with_id(self, file, id, link_mode):
+    def __remove_dict_file_with_mode(self, id, file, link_mode):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
@@ -2073,97 +2060,23 @@ class Engine(IBus.EngineSimple):
         if backup_dir != None:
             os.chdir(backup_dir)
 
-    def __link_dict_file(self, file):
+    def __link_dict_file(self, dict_item, file):
         if not path.exists(file):
             printerr(file + ' does not exist')
             return False
-        id = self.__get_dict_id_from_file(file)
-        section = 'dict/file/' + id
-        if section not in self.__prefs.sections():
-            self.__fetch_dict_values(section)
-        if self.__prefs.get_value(section, 'embed'):
-            self.__link_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
-        if self.__prefs.get_value(section, 'single'):
-            self.__link_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+        id = dict_item.id
+        if dict_item.embed:
+            self.__link_dict_file_with_mode(id, file, LINK_DICT_EMBEDDED)
+        if dict_item.single:
+            self.__link_dict_file_with_mode(id, file, LINK_DICT_SINGLE)
         return True
 
-    def __remove_dict_file(self, file):
-        id = self.__get_dict_id_from_file(file)
-        section = 'dict/file/' + id
-        if section not in self.__prefs.sections():
-            self.__fetch_dict_values(section)
-        if self.__prefs.get_value(section, 'embed'):
-            self.__remove_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
-        if self.__prefs.get_value(section, 'single'):
-            self.__remove_dict_file_with_id(file, id, LINK_DICT_SINGLE)
-
-    def __set_dict_files_value(self, base_sec, name, value):
-        if name == 'files':
-            str_list = []
-            for file in value:
-                str_list.append(self.__prefs.str(file))
-            old_files = self.__prefs.get_value(base_sec, name)
-            for file in old_files:
-                if file in str_list:
-                    continue
-                self.__remove_dict_file(file)
-            for file in str_list:
-                if file in old_files:
-                    continue
-                self.__link_dict_file(file)
-            self.__prefs.set_value(base_sec, name, str_list)
-        else:
-            self.__prefs.set_value(base_sec, name, value)
-
-    def __fetch_dict_values(self, section):
-        self.__prefs.set_new_section(section)
-        self.__prefs.set_new_key(section, 'short_label')
-        self.__prefs.set_no_key_warning(True)
-        self.__prefs.fetch_item(section, 'short_label')
-        self.__prefs.set_new_key(section, 'long_label')
-        self.__prefs.fetch_item(section, 'long_label')
-        self.__prefs.set_new_key(section, 'embed')
-        self.__prefs.fetch_item(section, 'embed')
-        self.__prefs.set_new_key(section, 'single')
-        self.__prefs.fetch_item(section, 'single')
-        self.__prefs.set_new_key(section, 'reverse')
-        self.__prefs.fetch_item(section, 'reverse')
-        self.__prefs.set_no_key_warning(False)
-
-    def __config_value_changed_cb(self, ibus_config, section, name, variant):
-        if config.DEBUG:
-            print 'VALUE_CHAMGED =', section, name, variant
-
-        if not section.startswith('engine/anthy'):
-            # This value is used for IBus.config.set_value only.
-            return
-
-        # The key was deleted by dconf.
-        # test case: update /desktop/ibus/engine/anthy/thumb/ls
-        # and reset the key with dconf direclty.
-        if variant.get_type_string() == '()':
-            self.__prefs.undo_item(section, name)
-            return
-
-        value = self.__prefs.variant_to_value(variant)
-        base_sec = section[len(self.__prefs._prefix) + 1:]
-        sec = self._get_shortcut_type()
-
-        if base_sec == 'thumb':
-            self.__prefs.set_value(base_sec, name, value)
-            self._reset_thumb()
-        elif base_sec == 'dict':
-            self.__set_dict_files_value(base_sec, name, value)
-            self.__set_dict_mode_props(self.__prop_list, True)
-        elif base_sec.startswith('dict/file/'):
-            if base_sec not in self.__prefs.sections():
-                self.__fetch_dict_values(base_sec)
-            self.__prefs.set_value(base_sec, name, value)
-            self.__set_dict_mode_props(self.__prop_list, True)
-        elif base_sec:
-            self.__prefs.set_value(base_sec, name, value)
-        else:
-            self.__prefs.set_value(section, name, value)
+    def __remove_dict_file(self, dict_item, file):
+        id = dict_item.id
+        if dict_item.embed:
+            self.__remove_dict_file_with_mode(id, file, LINK_DICT_EMBEDDED)
+        if dict_item.single:
+            self.__remove_dict_file_with_mode(id, file, LINK_DICT_SINGLE)
 
     #mod_keys
     def __set_input_mode(self, mode):
@@ -2294,7 +2207,7 @@ class Engine(IBus.EngineSimple):
     def __cmd_insert_space(self, keyval, state):
         if Engine.__input_mode == INPUT_MODE_LATIN:
             return False
-        if (self.__prefs.get_value('common', 'half_width_space') or
+        if (self.__prefs.get_value('common', 'half-width-space') or
             Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA):
             return self.__cmd_insert_half_space(keyval, state)
         else:
@@ -2303,7 +2216,7 @@ class Engine(IBus.EngineSimple):
     def __cmd_insert_alternate_space(self, keyval, state):
         if Engine.__input_mode == INPUT_MODE_LATIN:
             return False
-        if (self.__prefs.get_value('common', 'half_width_space') or
+        if (self.__prefs.get_value('common', 'half-width-space') or
             Engine.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA):
             return self.__cmd_insert_wide_space(keyval, state)
         else:
@@ -2901,11 +2814,11 @@ class Engine(IBus.EngineSimple):
         return True
 
     def __start_dict_admin(self):
-        command = self.__prefs.get_value('common', 'dict_admin_command')
+        command = self.__prefs.get_value('common', 'dict-admin-command')
         os.spawnl(os.P_NOWAIT, *command)
 
     def __start_add_word(self):
-        command = self.__prefs.get_value('common', 'add_word_command')
+        command = self.__prefs.get_value('common', 'add-word-command')
         os.spawnl(os.P_NOWAIT, *command)
 
     def __start_setup(self):

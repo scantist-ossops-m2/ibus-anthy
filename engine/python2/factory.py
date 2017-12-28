@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,19 +44,11 @@ class EngineFactory(IBus.Factory):
 
     def __init__(self, bus):
         self.__bus = bus
-        engine.Engine.CONFIG_RELOADED(bus)
+        engine.Engine.CONFIG_RELOADED()
         super(EngineFactory, self).__init__(object_path=IBus.PATH_FACTORY,
                                             connection=bus.get_connection())
 
         self.__id = 0
-        self.__config = self.__bus.get_config()
-
-        if self.__config != None:
-            self.__config.connect('value-changed',
-                                  self.__config_value_changed_cb)
-        else:
-            print >> sys.stderr, \
-                'ibus-config is not running or bus address is not correct.'
 
         bus.get_connection().signal_subscribe('org.freedesktop.DBus',
                                               'org.freedesktop.DBus',
@@ -74,11 +66,8 @@ class EngineFactory(IBus.Factory):
 
         return super(EngineFactory, self).do_create_engine(engine_name)
 
-    def __config_value_changed_cb(self, config, section, name, value):
-        engine.Engine.CONFIG_VALUE_CHANGED(self.__bus, section, name, value)
-
     def __name_owner_changed_cb(self, connection, sender_name, object_path,
                                 interface_name, signal_name, parameters,
                                 user_data):
         if signal_name == 'NameOwnerChanged':
-            engine.Engine.CONFIG_RELOADED(self.__bus)
+            engine.Engine.CONFIG_RELOADED()

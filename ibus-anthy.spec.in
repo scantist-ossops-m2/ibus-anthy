@@ -70,22 +70,32 @@ rm -rf $RPM_BUILD_ROOT
 touch --no-create %{_datadir}/icons/hicolor || :
 [ -x %{_bindir}/gtk-update-icon-cache ] && \
   %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/glib-compile-schemas ] && \
+[ -d %{_datadir}/glib-2.0/schemas ] && \
+  %{_bindir}/glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 %postun
 # recreate icon cache
 touch --no-create %{_datadir}/icons/hicolor || :
 [ -x %{_bindir}/gtk-update-icon-cache ] && \
   %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/glib-compile-schemas ] && \
+[ -d %{_datadir}/glib-2.0/schemas ] && \
+  %{_bindir}/glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
 # %dir %{python_sitearch}/ibus
-%{_libdir}/libanthygobject-%{sub_version}.so.*
 %{_libdir}/girepository-1.0/Anthy*.typelib
+%{_libdir}/libanthygobject-%{sub_version}.so.*
 %{_libexecdir}/ibus-*-anthy
+%{_datadir}/appdata/*.appdata.xml
+%{_datadir}/applications/ibus-setup-anthy.desktop
+%{_datadir}/glib-2.0/schemas/org.freedesktop.ibus.engine.anthy.gschema.xml
 %{_datadir}/ibus-anthy
 %{_datadir}/ibus/component/*
+%{_datadir}/icons/hicolor/scalable/apps/ibus-anthy.svg
 
 %files devel
 %{_datadir}/gir-1.0/Anthy*.gir

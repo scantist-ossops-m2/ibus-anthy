@@ -301,7 +301,26 @@ class Prefs(GObject.GObject):
             return
 
     def bind(self, section, key, object, property, flags):
-            self.__settings[section].bind(key, object, property, flags)
+        self.__settings[section].bind(key, object, property, flags)
+
+    # Convert DBus.String to str
+    # sys.getdefaultencoding() == 'utf-8' with pygtk2 but
+    # sys.getdefaultencoding() == 'ascii' with gi gtk3
+    # so the simple str(unicode_string) causes an error and need to use
+    # unicode_string.encode('utf-8') instead.
+    def str(self, uni):
+        if uni == None:
+            return None
+        if type(uni) == str:
+            return uni
+        return str(uni)
+
+    # The simple unicode(string) causes an error and need to use
+    # unicode(string, 'utf-8') instead.
+    def unicode(self, string):
+        if string == None:
+            return None
+        return string
 
     # If the parent process exited, the std io/out/error will be lost.
     @staticmethod

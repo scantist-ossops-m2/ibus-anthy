@@ -75,6 +75,18 @@ zipcode.t: $(ANTHY_ZIPCODE_FILE)
 CLEANFILES += zipcode.t
 endif
 
+install-data-hook:
+	if test -z "$(DESTDIR)"; then \
+	    glib-compile-schemas $(schemasdir); \
+	fi
+
+uninstall-hook:
+	SCHEMAS_FILES=`ls $(schemasdir)/*.gschema.xml` || true;         \
+	if test -z "$$SCHEMAS_FILES" &&                                 \
+	   test -f $(schemasdir)/gschemas.compiled; then                \
+	    rm $(schemasdir)/gschemas.compiled;                         \
+	fi
+
 EXTRA_DIST = \
         $(appdata_in_files) \
         $(schemas_in_files) \

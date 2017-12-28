@@ -196,7 +196,7 @@
     <property name="visible">False</property>
     <property name="title" translatable="yes">Setup - IBus-Anthy</property>
     <property name="type_hint">dialog</property>
-    <signal handler="on_main_delete" name="delete_event"/>
+    <signal handler="on_main_quit" name="delete_event"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -232,7 +232,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_Input Mode:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">input_mode</property>
+                            <property name="mnemonic_widget">input-mode</property>
                           </object>
                           <packing>
                             <property name="x_options">GTK_FILL</property>
@@ -240,9 +240,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="input_mode">
+                          <object class="GtkComboBox" id="input-mode">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model1</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer1"/>
@@ -263,7 +262,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_Typing Method:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">typing_method</property>
+                            <property name="mnemonic_widget">typing-method</property>
                           </object>
                           <packing>
                             <property name="top_attach">1</property>
@@ -273,9 +272,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="typing_method">
+                          <object class="GtkComboBox" id="typing-method">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model2</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer2"/>
@@ -298,7 +296,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Conversion _Mode:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">conversion_segment_mode</property>
+                            <property name="mnemonic_widget">conversion-segment-mode</property>
                           </object>
                           <packing>
                             <property name="top_attach">2</property>
@@ -308,9 +306,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="conversion_segment_mode">
+                          <object class="GtkComboBox" id="conversion-segment-mode">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model3</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer3"/>
@@ -366,7 +363,7 @@
                             <property name="vscrollbar_policy">automatic</property>
                             <property name="shadow_type">in</property>
                             <child>
-                              <object class="GtkTreeView" id="menu_visible:treeview">
+                              <object class="GtkTreeView" id="menu-visible:treeview">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                               </object>
@@ -430,7 +427,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_Period Style:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">period_style</property>
+                            <property name="mnemonic_widget">period-style</property>
                           </object>
                           <packing>
                             <property name="x_options">GTK_FILL</property>
@@ -443,7 +440,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Symbo_l Style:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">symbol_style</property>
+                            <property name="mnemonic_widget">symbol-style</property>
                           </object>
                           <packing>
                             <property name="top_attach">1</property>
@@ -458,7 +455,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Numpad _Key Type:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">ten_key_mode</property>
+                            <property name="mnemonic_widget">ten-key-mode</property>
                           </object>
                           <packing>
                             <property name="top_attach">2</property>
@@ -468,9 +465,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="ten_key_mode">
+                          <object class="GtkComboBox" id="ten-key-mode">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model4</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer4"/>
@@ -488,9 +484,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="symbol_style">
+                          <object class="GtkComboBox" id="symbol-style">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model5</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer5"/>
@@ -508,9 +503,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="period_style">
+                          <object class="GtkComboBox" id="period-style">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model6</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer6"/>
@@ -531,7 +525,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_Behavior on Period:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">behavior_on_period</property>
+                            <property name="mnemonic_widget">behavior-on-period</property>
                           </object>
                           <packing>
                             <property name="top_attach">3</property>
@@ -546,7 +540,7 @@
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Behavior on _Focus Out:</property>
                             <property name="use_underline">True</property>
-                            <property name="mnemonic_widget">behavior_on_focus_out</property>
+                            <property name="mnemonic_widget">behavior-on-focus-out</property>
                           </object>
                           <packing>
                             <property name="top_attach">4</property>
@@ -556,9 +550,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="behavior_on_period">
+                          <object class="GtkComboBox" id="behavior-on-period">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model7</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer7"/>
@@ -576,9 +569,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="behavior_on_focus_out">
+                          <object class="GtkComboBox" id="behavior-on-focus-out">
                             <property name="visible">True</property>
-                            <signal handler="on_cb_changed" name="changed"/>
                             <property name="model">model8</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer8"/>
@@ -636,7 +628,7 @@
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Candidate _Window Page Size:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">page_size</property>
+                                <property name="mnemonic_widget">page-size</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -645,12 +637,11 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSpinButton" id="page_size">
+                              <object class="GtkSpinButton" id="page-size">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="adjustment">adjustment1</property>
                                 <property name="climb_rate">0.97999999999999998</property>
-                                <signal handler="on_sb_changed" name="value_changed"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -664,14 +655,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="half_width_symbol">
+                          <object class="GtkCheckButton" id="half-width-symbol">
                             <property name="label" translatable="yes">Convert _symbols with the one column width</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="S" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                           </object>
                           <packing>
@@ -681,14 +671,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="half_width_number">
+                          <object class="GtkCheckButton" id="half-width-number">
                             <property name="label" translatable="yes">Convert _numbers with the one column width</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                           </object>
                           <packing>
@@ -698,14 +687,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="half_width_space">
+                          <object class="GtkCheckButton" id="half-width-space">
                             <property name="label" translatable="yes">Con_vert spaces with the one column width</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="v" modifiers="GDK_MOD1_MASK" signal="activate"/>
                           </object>
                           <packing>
@@ -715,14 +703,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="latin_with_shift">
+                          <object class="GtkCheckButton" id="latin-with-shift">
                             <property name="label" translatable="yes">Swi_tch “Hiragana” and “Latin” with Shift key and Hiragana–Katakana key in preedit</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="t" modifiers="GDK_MOD1_MASK" signal="activate"/>
                           </object>
                           <packing>
@@ -777,7 +764,7 @@
                         <property name="label" translatable="yes">_Shortcut Type:</property>
                         <property name="use_underline">True</property>
                         <property name="wrap_mode">word-char</property>
-                        <property name="mnemonic_widget">shortcut_type</property>
+                        <property name="mnemonic_widget">shortcut-type</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -787,7 +774,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="shortcut_type">
+                      <object class="GtkComboBox" id="shortcut-type">
                         <property name="visible">True</property>
                         <signal handler="on_shortcut_type_changed" name="changed"/>
                         <property name="model">model9</property>
@@ -1271,7 +1258,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="thumb:keyboard_layout_mode">
+                          <object class="GtkCheckButton" id="thumb:keyboard-layout-mode">
                             <property name="label" translatable="yes">Adjust _input method layout to system keyboard layout</property>
                             <property name="tooltip_text" translatable="yes">Adjust IM layout to XKB layout</property>
                             <property name="visible">True</property>
@@ -1279,7 +1266,6 @@
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="I" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                           </object>
                           <packing>
@@ -1299,7 +1285,7 @@
                                 <property name="xalign">0</property>
                                 <property name="use_underline">True</property>
                                 <property name="label" translatable="yes">Input _Method Layout:</property>
-                                <property name="mnemonic_widget">thumb:keyboard_layout</property>
+                                <property name="mnemonic_widget">thumb:keyboard-layout</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -1308,9 +1294,8 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="thumb:keyboard_layout">
+                              <object class="GtkComboBox" id="thumb:keyboard-layout">
                                 <property name="visible">True</property>
-                                <signal handler="on_cb_changed" name="changed"/>
                                 <property name="model">model51</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="renderer10"/>
@@ -1378,7 +1363,7 @@
                                 <property name="xalign">0</property>
                                 <property name="use_underline">True</property>
                                 <property name="label" translatable="yes">_Additional Key Arrangement:</property>
-                                <property name="mnemonic_widget">thumb:fmv_extension</property>
+                                <property name="mnemonic_widget">thumb:fmv-extension</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -1387,10 +1372,9 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="thumb:fmv_extension">
+                              <object class="GtkComboBox" id="thumb:fmv-extension">
                                 <property name="visible">True</property>
                                 <property name="tooltip_text" translatable="yes">'&#xFF5E;', '&#x300E;', '&#xA2;', '&#xA3;' and so on can be output with Thumb Shift key</property>
-                                <signal handler="on_cb_changed" name="changed"/>
                                 <property name="model">model11</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="renderer11"/>
@@ -1457,7 +1441,6 @@
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_ck_toggled" name="toggled"/>
                             <accelerator key="E" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                           </object>
                           <packing>
@@ -1576,7 +1559,7 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">_Edit Dictionary Command:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">dict:entry_edit_dict_command</property>
+                                <property name="mnemonic_widget">dict:entry-edit-dict-command</property>
                               </object>
                               <packing>
                                 <property name="x_options">GTK_FILL</property>
@@ -1587,7 +1570,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="dict:entry_edit_dict_command">
+                              <object class="GtkEntry" id="dict:entry-edit-dict-command">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="editable">True</property>
@@ -1627,7 +1610,7 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">_Add Word Command:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">dict:entry_add_word_command</property>
+                                <property name="mnemonic_widget">dict:entry-add-word-command</property>
                               </object>
                               <packing>
                                 <property name="x_options">GTK_FILL</property>
@@ -1640,7 +1623,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="dict:entry_add_word_command">
+                              <object class="GtkEntry" id="dict:entry-add-word-command">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="editable">True</property>
@@ -1921,52 +1904,19 @@
             <property name="orientation">horizontal</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="btn_apply">
-                <property name="label" translatable="yes">_Apply</property>
+              <object class="GtkButton" id="btn_close">
+                <property name="label" translatable="yes">_Close</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <signal handler="on_btn_apply_clicked" name="clicked"/>
+                <signal handler="on_btn_close_clicked" name="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btn_cancel">
-                <property name="label" translatable="yes">_Cancel</property>
-                <property name="use_underline">True</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="receives_default">False</property>
-                <signal handler="on_btn_cancel_clicked" name="clicked"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btn_ok">
-                <property name="label" translatable="yes">_OK</property>
-                <property name="use_underline">True</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="receives_default">False</property>
-                <signal handler="on_btn_ok_clicked" name="clicked"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -1979,9 +1929,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-10">btn_apply</action-widget>
-      <action-widget response="-6">btn_cancel</action-widget>
-      <action-widget response="-5">btn_ok</action-widget>
+      <action-widget response="-5">btn_close</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="edit_shortcut">
@@ -2762,8 +2710,8 @@
     <property name="program-name">IBus-Anthy</property>
     <property name="copyright">Copyright © 2007–2008 Peng Huang
 Copyright © 2009 Hideaki ABE
-Copyright © 2009–2016 Takao Fujiwara
-Copyright © 2007–2016 Red Hat, Inc.</property>
+Copyright © 2009–2017 Takao Fujiwara
+Copyright © 2007–2017 Red Hat, Inc.</property>
     <property name="comments" translatable="yes">The Anthy engine for the IBus input platform</property>
     <property name="license">GPL</property>
     <property name="website">https://github.com/ibus/ibus/wiki</property>

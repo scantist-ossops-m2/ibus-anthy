@@ -28,7 +28,6 @@ if 'IBUS_ANTHY_SETUP_PATH' in os.environ:
     if setup_path != None and setup_path != '':
         sys.path.append(setup_path)
 sys.path.append('/usr/share/ibus-anthy/engine')
-import engine
 
 from anthycases import TestCases
 
@@ -92,10 +91,12 @@ class AnthyTest:
                                 interface_name, signal_name, parameters,
                                 user_data):
         if signal_name == 'NameOwnerChanged':
-            engine.Engine.CONFIG_RELOADED(self.__bus)
+            import engine
+            engine.Engine.CONFIG_RELOADED()
 
     def __create_engine_cb(self, factory, engine_name):
         if engine_name == 'testanthy':
+            import engine
             self.__id += 1
             self.__engine = engine.Engine(self.__bus, '%s/%d' % (self.ENGINE_PATH, self.__id))
             self.__engine.connect('focus-in', self.__engine_focus_in)
@@ -266,6 +267,11 @@ def print_help(out, v = 0):
     print('-f, --force            Run this program forcibly with .anthy.',
           file=out)
     print('-h, --help             show this message.', file=out)
+    print('\nenvironment variables:', file=out)
+    print('IBUS_ANTHY_ENGINE_PATH Indicates the path which includes ' \
+          'engine.py. the default is /usr/share/ibus-anthy/engine', file=out)
+    print('IBUS_ANTHY_SETUP_PATH  Indicates the path which includes ' \
+          'prefs.py. the default is /usr/share/ibus-anthy/setup', file=out)
     sys.exit(v)
 
 def get_userhome():
@@ -278,8 +284,8 @@ def get_userhome():
     return userhome
 
 def main():
-    shortopt = 'ef'
-    longopt = ['exit', 'force']
+    shortopt = 'efh'
+    longopt = ['exit', 'force', 'help']
     force_run = False
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
@@ -292,6 +298,8 @@ def main():
             DONE_EXIT = True
         elif o in ('-f', '--force'):
             force_run = True
+        elif o in ('-h', '--help'):
+            print_help(sys.stderr)
         else:
             print('Unknown argument: %s' % o, file=sys.stderr)
             print_help(sys.stderr, 1)

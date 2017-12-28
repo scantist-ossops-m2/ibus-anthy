@@ -80,17 +80,6 @@ class AnthySetup(object):
 
         self.__prefs =  AnthyPrefs()
 
-        # IBus.Bus() calls ibus_bus_new().
-        # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
-        # via ibus_im_context_new().
-        # Then if IBus.Bus() is called after Gtk.Builder().add_from_file(),
-        # the connection delay would be happened without an async
-        # finish function.
-        ibus_address = IBus.get_address()
-        bus = None
-        if ibus_address != None:
-            bus = IBus.Bus(connect_async='True')
-
         builder_file = path.join(path.dirname(__file__), 'setup.ui')
         self.__builder = builder = Gtk.Builder()
         builder.set_translation_domain(DOMAINNAME)
@@ -133,20 +122,9 @@ class AnthySetup(object):
             toplevel.connect('notify::window', set_transient)
 
         toplevel.show()
+        self.__init_bus_connected()
 
-        if ibus_address == None:
-            builder.connect_signals(self)
-            # self.__run_message_dialog needs self.__builder.
-            self.__run_message_dialog(_("ibus is not running."),
-                                      Gtk.MessageType.ERROR)
-            return
-
-        if bus.is_connected():
-            self.__init_bus_connected(bus)
-        else:
-            bus.connect('connected', self.__init_bus_connected)
-
-    def __init_bus_connected(self, bus):
+    def __init_bus_connected(self):
         builder = self.__builder
         prefs = self.__prefs
 
@@ -670,10 +648,15 @@ class AnthySetup(object):
         id = 0
         # thumb uses all tables so the default is always 0.
         if mode != 'thumb':
+            id = -1
             for index, labels in enumerate(list_labels):
                 if labels[0] == method:
                     id = index
                     break
+            if id == -1:
+                ls.append([method, method])
+                combobox.set_model(ls)
+                id = len(list_labels)
         combobox.set_active(id)
         combobox.connect('changed', self.on_cb_custom_key_table_changed, mode)
 
@@ -1465,7 +1448,6 @@ class AnthySetup(object):
         if selected_id == None:
             return
 
-        print('test', selected_id)
         dict_file = self.__get_dict_file_from_id(selected_id)
         if dict_file == None:
             self.__run_message_dialog(_("Your file is not good."),
@@ -1640,7 +1622,6 @@ class AnthySetup(object):
             key = 'add-word-command'
         else:
             return
-        print('test', key, list)
         self.__prefs.set_value('common', key, list)
 
     def on_es_entry_changed(self, widget):

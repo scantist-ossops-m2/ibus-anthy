@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import gettext
 from gettext import dgettext
 
 from gi import require_version as gi_require_version
+gi_require_version('Gio', '2.0')
 gi_require_version('GLib', '2.0')
 gi_require_version('Gtk', '3.0')
 gi_require_version('Gdk', '3.0')
@@ -36,6 +37,7 @@ gi_require_version('GdkX11', '3.0')
 gi_require_version('Pango', '1.0')
 gi_require_version('IBus', '1.0')
 
+from gi.repository import Gio
 from gi.repository import GLib
 
 # set_prgname before importing other modules to show the name in warning
@@ -73,16 +75,7 @@ class AnthySetup(object):
         gettext.bindtextdomain(DOMAINNAME, config.LOCALEDIR)
         gettext.bind_textdomain_codeset(DOMAINNAME, 'UTF-8')
 
-        # IBus.Bus() calls ibus_bus_new().
-        # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
-        # via ibus_im_context_new().
-        # Then if IBus.Bus() is called after Gtk.Builder().add_from_file(),
-        # the connection delay would be happened without an async
-        # finish function.
-        ibus_address = IBus.get_address()
-        bus = None
-        if ibus_address != None:
-            bus = IBus.Bus(connect_async='True')
+        self.__prefs =  AnthyPrefs()
 
         builder_file = path.join(path.dirname(__file__), 'setup.ui')
         self.__builder = builder = Gtk.Builder()
@@ -126,27 +119,15 @@ class AnthySetup(object):
             toplevel.connect('notify::window', set_transient)
 
         toplevel.show()
+        self.__init_bus_connected()
 
-        if ibus_address == None:
-            builder.connect_signals(self)
-            # self.__run_message_dialog needs self.__builder.
-            self.__run_message_dialog(_("ibus is not running."),
-                                      Gtk.MessageType.ERROR)
-            return
-
-        if bus.is_connected():
-            self.__init_bus_connected(bus)
-        else:
-            bus.connect('connected', self.__init_bus_connected)
-
-    def __init_bus_connected(self, bus):
-        self.__config = bus.get_config()
+    def __init_bus_connected(self):
         builder = self.__builder
+        prefs = self.__prefs
 
         self.__thumb_kb_layout_mode = None
         self.__thumb_kb_layout = None
         self.__japanese_ordered_dict = {}
-        self.prefs = prefs = AnthyPrefs(None, self.__config)
 
         # glade 'icon_name' property has a custom scaling and it seems
         # to be difficult to show the complicated small icon in metacity.
@@ -161,17 +142,25 @@ class AnthySetup(object):
             icon_path = 'ibus-anthy'
             builder.get_object('main').set_icon_name(icon_path)
 
-        for name in ['input_mode', 'typing_method', 'conversion_segment_mode',
-                     'period_style', 'symbol_style', 'ten_key_mode',
-                     'behavior_on_focus_out', 'behavior_on_period',
-                     'half_width_symbol', 'half_width_number', 'half_width_space',
-                     'latin_with_shift',
-                     'thumb:keyboard_layout_mode', 'thumb:keyboard_layout',
-                     'thumb:fmv_extension', 'thumb:handakuten']:
+        for name in ['input-mode', 'typing-method', 'conversion-segment-mode',
+                     'period-style', 'symbol-style', 'ten-key-mode',
+                     'behavior-on-focus-out', 'behavior-on-period',
+                     'half-width-symbol', 'half-width-number', 'half-width-space',
+                     'latin-with-shift',
+                     'thumb:keyboard-layout-mode', 'thumb:keyboard-layout',
+                     'thumb:fmv-extension', 'thumb:handakuten']:
             section, key = self.__get_section_key(name)
-            builder.get_object(name).set_active(prefs.get_value(section, key))
+            prefs.bind(section, key,
+                       builder.get_object(name),
+                       'active',
+                       Gio.SettingsBindFlags.DEFAULT)
 
-        tv = builder.get_object('menu_visible:treeview')
+        prefs.bind('thumb', 'keyboard-layout-mode',
+                   builder.get_object('thumb:keyboard-layout'),
+                   'sensitive',
+                   Gio.SettingsBindFlags.INVERT_BOOLEAN)
+
+        tv = builder.get_object('menu-visible:treeview')
         ls = Gtk.ListStore(str, bool, str)
         tv.set_model(ls)
 
@@ -196,12 +185,14 @@ class AnthySetup(object):
         self.__append_menus_in_model()
 
         l = ['default', 'atok', 'wnn']
-        s_type = prefs.get_value('common', 'shortcut_type')
+        s_type = prefs.get_value('common', 'shortcut-type')
         s_type = s_type if s_type in l else 'default'
-        builder.get_object('shortcut_type').set_active(l.index(s_type))
+        builder.get_object('shortcut-type').set_active(l.index(s_type))
 
-        builder.get_object('page_size').set_value(prefs.get_value('common',
-                                                                  'page_size'))
+        prefs.bind('common', 'page-size',
+                   builder.get_object('page-size').get_adjustment(),
+                   'value',
+                   Gio.SettingsBindFlags.DEFAULT)
 
         tv = builder.get_object('shortcut')
         tv.append_column(Gtk.TreeViewColumn(_("Command"),
@@ -213,17 +204,17 @@ class AnthySetup(object):
         tv.get_selection().connect_after('changed',
                                           self.on_selection_changed, 0)
         ls = Gtk.ListStore(str, str)
-        sec = 'shortcut/' + s_type
-        for k in self.prefs.keys(sec):
-            ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
+        shortcuts = self.__prefs.get_value('shortcut', s_type)
+        for k in shortcuts.keys():
+            ls.append([k, l_to_s(shortcuts[k])])
         tv.set_model(ls)
 
         self.__keymap = None
         GLib.idle_add(self.__update_keymap_label,
                       priority = GLib.PRIORITY_LOW)
 
-        self.__thumb_kb_layout_mode = builder.get_object('thumb:keyboard_layout_mode')
-        self.__thumb_kb_layout = builder.get_object('thumb:keyboard_layout')
+        self.__thumb_kb_layout_mode = builder.get_object('thumb:keyboard-layout-mode')
+        self.__thumb_kb_layout = builder.get_object('thumb:keyboard-layout')
         self.__set_thumb_kb_label()
 
         for name in ['thumb:ls', 'thumb:rs']:
@@ -236,13 +227,13 @@ class AnthySetup(object):
                                           self.on_selection_changed, 1)
         tv.set_model(Gtk.ListStore(str))
 
-        key = 'dict_admin_command'
+        key = 'dict-admin-command'
         cli = self.__get_dict_cli_from_list(prefs.get_value('common', key))
-        name = 'dict:entry_edit_dict_command'
+        name = 'dict:entry-edit-dict-command'
         builder.get_object(name).set_text(cli)
-        key = 'add_word_command'
+        key = 'add-word-command'
         cli = self.__get_dict_cli_from_list(prefs.get_value('common', key))
-        name = 'dict:entry_add_word_command'
+        name = 'dict:entry-add-word-command'
         builder.get_object(name).set_text(cli)
 
         tv = builder.get_object('dict:view')
@@ -298,7 +289,7 @@ class AnthySetup(object):
 
     def __init_japanese_sort(self):
         japanese_ordered_dict = {}
-        japanese_ordered_list = self.prefs.get_japanese_ordered_list()
+        japanese_ordered_list = self.__prefs.get_japanese_ordered_list()
         for index, c in enumerate(japanese_ordered_list):
             japanese_ordered_dict[c] = index
         self.__japanese_ordered_dict = japanese_ordered_dict;
@@ -306,7 +297,7 @@ class AnthySetup(object):
     def __init_about_vbox(self, icon_path):
         about_dialog = self.__builder.get_object('about_dialog')
         about_vbox = self.__builder.get_object('about_vbox')
-        about_dialog.set_version(self.prefs.get_version())
+        about_dialog.set_version(self.__prefs.get_version())
         if icon_path != None:
             if icon_path[0] == '/':
                 image = Gtk.Image.new_from_file(icon_path)
@@ -356,6 +347,20 @@ class AnthySetup(object):
         dlg.run()
         dlg.destroy()
 
+    def _get_shortcut_sec(self):
+        l = ['default', 'atok', 'wnn']
+        iter = self.__builder.get_object('shortcut-type').get_active_iter()
+        model = self.__builder.get_object('shortcut-type').get_model()
+        s_type = model[iter][0].lower()
+        return 'shortcut/' + (s_type if s_type in l else 'default')
+
+    def __get_shortcut_group(self):
+        l = ['default', 'atok', 'wnn']
+        iter = self.__builder.get_object('shortcut-type').get_active_iter()
+        model = self.__builder.get_object('shortcut-type').get_model()
+        s_type = model[iter][0].lower()
+        return s_type if s_type in l else 'default'
+
     def __japanese_tuple_sort(self, a, b):
         if a[1] == b[1]:
             return cmp(a[0], b[0])
@@ -376,26 +381,25 @@ class AnthySetup(object):
         return cmp(a[0], b[0])
 
     def __renderer_toggled_cb(self, renderer, path, model):
-        prefs = self.prefs
+        prefs = self.__prefs
         enabled = not model[path][1]
         model[path][1] = enabled
         key = model[path][0]
         prefs.set_value('common', key, enabled)
-        self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def __toggle_menu_visible_cell_cb(self, column, renderer, model, iter, id):
-        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        l = self.__builder.get_object('menu-visible:treeview').get_model()
         active = l.get_value(iter, id)
         renderer.set_property('active', active)
 
     def __text_menu_visible_cell_cb(self, column, renderer, model, iter, id):
-        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        l = self.__builder.get_object('menu-visible:treeview').get_model()
         text = l.get_value(iter, id)
         renderer.set_property('text', text)
 
     def __append_menus_in_model(self):
-        prefs = self.prefs
-        l = self.__builder.get_object('menu_visible:treeview').get_model()
+        prefs = self.__prefs
+        l = self.__builder.get_object('menu-visible:treeview').get_model()
         l.append(['show-input-mode',
                   prefs.get_value('common', 'show-input-mode'),
                   _("Input mode")])
@@ -416,30 +420,20 @@ class AnthySetup(object):
                   _("Preferences - Anthy")])
 
     def __get_romaji_treeview_custom_key_table(self, method):
-        prefs = self.prefs
+        prefs = self.__prefs
         rule = {}
         ls = Gtk.ListStore(str, str, str)
         tv = self.__builder.get_object('treeview_custom_key_table')
-        section_base = 'romaji_typing_rule'
-        section = section_base + '/' + prefs.str(method)
-        for key in prefs.keys(section):
-            key = prefs.str(key)
-            value = prefs.get_value(section, key)
+        section = 'romaji-typing-rule'
+        keymap = prefs.get_value(section, 'list')[method]
+        for key in keymap.keys():
+            value = keymap[key]
             ch = prefs.typing_from_config_key(key)
             if ch == '':
                 continue
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
-                rule[ch] = prefs.str(value)
-        for key in prefs.get_value(section_base, 'newkeys'):
-            key = prefs.str(key)
-            value = self.prefs.get_value_direct(section, key)
-            ch = prefs.typing_from_config_key(key)
-            if ch == '':
-                continue
-            # config.set_value(key, None) is not supported.
-            if value != None and value != '':
-                rule[ch] = prefs.str(value)
+                rule[ch] = value
         for key, value in sorted(rule.items(), \
             cmp = self.__japanese_tuple_sort):
             ls.append(['romaji', key, value])
@@ -452,30 +446,20 @@ class AnthySetup(object):
         return tv
 
     def __get_kana_treeview_custom_key_table(self, method):
-        prefs = self.prefs
+        prefs = self.__prefs
         rule = {}
         ls = Gtk.ListStore(str, str, str)
         tv = self.__builder.get_object('treeview_custom_key_table')
-        section_base = 'kana_typing_rule'
-        section = section_base + '/' + prefs.str(method)
-        for key in prefs.keys(section):
-            key = prefs.str(key)
-            value = prefs.get_value(section, key)
+        section = 'kana-typing-rule'
+        keymap = prefs.get_value(section, 'list')[method]
+        for key in keymap.keys():
+            value = keymap[key]
             ch = prefs.typing_from_config_key(key)
             if ch == '':
                 continue
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
-                rule[ch] = prefs.str(value)
-        for key in prefs.get_value(section_base, 'newkeys'):
-            key = prefs.str(key)
-            value = self.prefs.get_value_direct(section, key)
-            ch = prefs.typing_from_config_key(key)
-            if ch == '':
-                continue
-            # config.set_value(key, None) is not supported.
-            if value != None and value != '':
-                rule[ch] = prefs.str(value)
+                rule[ch] = value
         for key, value in sorted(rule.items(), \
             cmp = self.__japanese_tuple_sort):
             ls.append(['kana', key, value])
@@ -488,15 +472,14 @@ class AnthySetup(object):
         return tv
 
     def __get_thumb_treeview_custom_key_table(self, method):
-        prefs = self.prefs
+        prefs = self.__prefs
         rule = {}
         ls = Gtk.ListStore(str, str, str, str, str)
         tv = self.__builder.get_object('treeview_custom_key_table')
-        section_base = 'thumb_typing_rule'
-        section = section_base + '/' + prefs.str(method)
-        for key in prefs.keys(section):
-            key = prefs.str(key)
-            value = prefs.get_value(section, key)
+        section = 'thumb-typing-rule'
+        keymap = prefs.get_value(section, 'list')[method]
+        for key in keymap.keys():
+            value = keymap[key]
             ch = prefs.typing_from_config_key(key)
             if ch == '':
                 continue
@@ -506,24 +489,9 @@ class AnthySetup(object):
                  (value[1] != None and value[1] != '') or \
                  (value[2] != None and value[2] != '')):
                 rule[ch] = {}
-                rule[ch][0] = prefs.str(value[0])
-                rule[ch][1] = prefs.str(value[1])
-                rule[ch][2] = prefs.str(value[2])
-        for key in prefs.get_value(section_base, 'newkeys'):
-            key = prefs.str(key)
-            value = self.prefs.get_value_direct(section, key)
-            ch = prefs.typing_from_config_key(key)
-            if ch == '':
-                continue
-            # config.set_value(key, None) is not supported.
-            if value != None and len(value) == 3 and \
-                ((value[0] != None and value[0] != '') or \
-                 (value[1] != None and value[1] != '') or \
-                 (value[2] != None and value[2] != '')):
-                rule[ch] = {}
-                rule[ch][0] = prefs.str(value[0])
-                rule[ch][1] = prefs.str(value[1])
-                rule[ch][2] = prefs.str(value[2])
+                rule[ch][0] = value[0]
+                rule[ch][1] = value[1]
+                rule[ch][2] = value[2]
         for key, value in sorted(rule.items(), \
             cmp = self.__japanese_thumb_sort):
             ls.append(['thumb', key, value[0], value[2], value[1]])
@@ -609,7 +577,7 @@ class AnthySetup(object):
         combobox.disconnect_by_func(self.on_cb_custom_key_table_changed)
 
     def __run_dialog_custom_key_table(self, widget, mode):
-        prefs = self.prefs
+        prefs = self.__prefs
         dlg = self.__builder.get_object('dialog_custom_key_table')
         dlg.set_transient_for(widget.get_toplevel())
         label = self.__builder.get_object('label_custom_key_table')
@@ -633,15 +601,15 @@ class AnthySetup(object):
             label.set_label(_("_Thumb Shift Key Table:"))
             label_output.set_label(_("Single _Output Chars"))
             list_labels = [['base', _("Base")],
-                           ['nicola_j_table', _("NICOLA-J key extension")],
-                           ['nicola_a_table', _("NICOLA-A key extension")],
-                           ['nicola_f_table', _("NICOLA-F key extension")],
-                           ['kb231_j_fmv_table', _("FMV KB231-J key extension")],
-                           ['kb231_a_fmv_table', _("FMV KB231-A key extension")],
-                           ['kb231_f_fmv_table', _("FMV KB231-F key extension")],
-                           ['kb611_j_fmv_table', _("FMV KB611-J key extension")],
-                           ['kb611_a_fmv_table', _("FMV KB611-A key extension")],
-                           ['kb611_f_fmv_table', _("FMV KB611-F key extension")],
+                           ['nicola-j-table', _("NICOLA-J key extension")],
+                           ['nicola-a-table', _("NICOLA-A key extension")],
+                           ['nicola-f-table', _("NICOLA-F key extension")],
+                           ['kb231-j-fmv-table', _("FMV KB231-J key extension")],
+                           ['kb231-a-fmv-table', _("FMV KB231-A key extension")],
+                           ['kb231-f-fmv-table', _("FMV KB231-F key extension")],
+                           ['kb611-j-fmv-table', _("FMV KB611-J key extension")],
+                           ['kb611-a-fmv-table', _("FMV KB611-A key extension")],
+                           ['kb611-f-fmv-table', _("FMV KB611-F key extension")],
                           ]
             self.__show_dialog_custom_key_table_extention(mode)
         ls = Gtk.ListStore(str, str)
@@ -655,17 +623,17 @@ class AnthySetup(object):
 
         tv = None
         if mode == 'romaji':
-            method = prefs.get_value('romaji_typing_rule', 'method')
+            method = prefs.get_value('romaji-typing-rule', 'method')
             if method == None:
                 method = 'default'
             tv = self.__get_romaji_treeview_custom_key_table(method)
         if mode == 'kana':
-            method = prefs.get_value('kana_typing_rule', 'method')
+            method = prefs.get_value('kana-typing-rule', 'method')
             if method == None:
                 method = 'jp'
             tv = self.__get_kana_treeview_custom_key_table(method)
         if mode == 'thumb':
-            method = prefs.get_value('thumb_typing_rule', 'method')
+            method = prefs.get_value('thumb-typing-rule', 'method')
             if method == None:
                 method = 'base'
             tv = self.__get_thumb_treeview_custom_key_table(method)
@@ -675,10 +643,15 @@ class AnthySetup(object):
         id = 0
         # thumb uses all tables so the default is always 0.
         if mode != 'thumb':
+            id = -1
             for index, labels in enumerate(list_labels):
                 if labels[0] == method:
                     id = index
                     break
+            if id == -1:
+                ls.append([method, method])
+                combobox.set_model(ls)
+                id = len(list_labels)
         combobox.set_active(id)
         combobox.connect('changed', self.on_cb_custom_key_table_changed, mode)
 
@@ -693,7 +666,7 @@ class AnthySetup(object):
             return
         section, key = self.__get_section_key(
             Gtk.Buildable.get_name(self.__thumb_kb_layout_mode))
-        layout_mode = self.prefs.get_value(section, key)
+        layout_mode = self.__prefs.get_value(section, key)
         if layout_mode:
             self.__thumb_kb_layout.set_sensitive(False)
         else:
@@ -730,60 +703,52 @@ class AnthySetup(object):
             return id
 
     def __get_dict_file_from_id(self, selected_id):
-        files = self.prefs.get_value('dict', 'files')
-        retval = None
-
-        for file in files:
-            id = self.__get_quoted_id(file)
-            # The selected_id is already quoted.
-            if selected_id == id:
-                retval = file
-                break
-        return retval
+        files = self.__prefs.get_value('dict', 'files')
+        return files.get(selected_id, None)
 
     def __is_system_dict_file_from_id(self, selected_id):
-        prefs = self.prefs
-        section = 'dict/file/' + selected_id
-        key = 'is_system'
+        prefs = self.__prefs
+        dict_item = prefs.get_value('dict', 'list')[selected_id]
+        return dict_item.is_system
 
-        if key not in prefs.keys(section):
-            return False
-        return prefs.get_value(section, key)
-
-    def __append_dict_id_in_model(self, id, is_gettext):
-        prefs = self.prefs
+    def __append_dict_id_in_model(self, id):
+        prefs = self.__prefs
         section = 'dict/file/' + id
-        # user value is dbus.String
-        prefs.set_value(section, 'short_label',
-                        prefs.str(prefs.get_value(section, 'short_label')))
-        prefs.set_value(section, 'long_label',
-                        prefs.str(prefs.get_value(section, 'long_label')))
-        short_label = prefs.get_value(section, 'short_label')
-        long_label = prefs.get_value(section, 'long_label')
-        embed = prefs.get_value(section, 'embed')
-        single = prefs.get_value(section, 'single')
-        reverse = prefs.get_value(section, 'reverse')
-        if is_gettext:
+        dicts = prefs.get_value('dict', 'list')
+        dict_item = dicts[id]
+        short_label = dict_item.short_label
+        long_label = dict_item.long_label
+        embed = dict_item.embed
+        single = dict_item.single
+        reverse = dict_item.reverse
+        if dict_item.is_system:
             long_label = _(long_label)
         l = self.__builder.get_object('dict:view').get_model()
         l.append([id, short_label, long_label, embed, single, reverse])
 
     def __append_dicts_in_model(self):
-        prefs = self.prefs
-        for file in prefs.get_value('dict', 'files'):
-            if not path.exists(file):
+        prefs = self.__prefs
+        order = prefs.get_value('dict', 'order')
+        dict_files = prefs.get_value('dict', 'files')
+        if len(order) == 0:
+            order = list(dict_files.keys())
+        for id in order:
+            if id == 'embedded':
                 continue
-            id = self.__get_quoted_id(file)
-            section = 'dict/file/' + id
-            if section not in prefs.sections():
-                self.__fetch_dict_values(section)
-            is_system_dict = self.__is_system_dict_file_from_id(id)
-            self.__append_dict_id_in_model(id, is_system_dict)
+            files = dict_files[id]
+            for file in files:
+                if not path.exists(file):
+                    continue
+            self.__append_dict_id_in_model(id)
 
     def __append_user_dict_from_dialog(self, file, id, new):
-        files = self.prefs.get_value('dict', 'files')
+        files_dict = self.__prefs.get_value('dict', 'files')
 
         if new:
+            files = []
+            for v in files_dict.values():
+                for f in v:
+                    files.append(f)
             if file in files:
                 self.__run_message_dialog(_("Your choosed file has already been added: ") + file,
                                           Gtk.MessageType.ERROR)
@@ -800,6 +765,8 @@ class AnthySetup(object):
                 self.__run_message_dialog(_("You cannot add dictionaries in the anthy private directory: " + file),
                                           Gtk.MessageType.ERROR)
                 return
+        else:
+            file = files_dict[id][0]
 
         if new:
             id = self.__get_quoted_id(file)
@@ -817,15 +784,23 @@ class AnthySetup(object):
         long_label = self.__builder.get_object('dict:long_entry').get_text()
 
         if new:
-            files.append(file)
-            self.prefs.set_value('dict', 'files', files)
+            order = self.__prefs.get_value('dict', 'order')
+            if len(order) == 0:
+                order = list(self.__prefs.get_value('dict', 'files').keys())
+            order.append(id)
+            self.__prefs.set_value('dict', 'order', order)
+            self.__prefs.set_list_item('dict', 'files', id, [file])
 
+        filename = file
+        if filename.find('/') >=0:
+            filename = filename[filename.rindex('/') + 1:]
+        if filename.find('.') >=0:
+            filname = filename[:filename.rindex('.')]
         if short_label == None or short_label == '':
-                short_label = id[0]
+                short_label = filename[0]
         if long_label == None or long_label == '':
-                long_label = id
+                long_label = filename
         self.__update_dict_values(new, id, short_label, long_label, embed, single, reverse)
-        self.__builder.get_object('btn_apply').set_sensitive(True)
         files = []
 
     def __init_dict_chooser_dialog(self):
@@ -851,18 +826,16 @@ class AnthySetup(object):
         if selected_id == None:
             return None
 
-        is_system_dict = self.__is_system_dict_file_from_id(selected_id)
+        dict_item = self.__prefs.get_value('dict', 'list')[selected_id]
+        short_label = dict_item.short_label
+        long_label = dict_item.long_label
+        embed = dict_item.embed
+        single = dict_item.single
+        reverse = dict_item.reverse
+        is_system_dict = dict_item.is_system
 
-        prefs = self.prefs
-        section = 'dict/file/' + selected_id
-        short_label = prefs.get_value(section, 'short_label')
-        long_label = prefs.get_value(section, 'long_label')
-        embed = prefs.get_value(section, 'embed')
-        single = prefs.get_value(section, 'single')
-        reverse = prefs.get_value(section, 'reverse')
-
-        if len(prefs.unicode(short_label)) > 1:
-            short_label = prefs.unicode(short_label)[0].encode('utf-8')
+        if len(self.__prefs.unicode(short_label)) > 1:
+            short_label = self.__prefs.unicode(short_label)[0].encode('utf-8')
         self.__builder.get_object('dict:single').set_active(single)
         self.__builder.get_object('dict:embed').set_active(embed)
         self.__builder.get_object('dict:reverse').set_active(reverse)
@@ -880,56 +853,32 @@ class AnthySetup(object):
 
         return selected_id
 
-    def __fetch_dict_values(self, section):
-        prefs = self.prefs
-        prefs.set_new_section(section)
-        prefs.set_new_key(section, 'short_label')
-        prefs.fetch_item(section, 'short_label')
-        # user value is dbus.String
-        prefs.set_value(section, 'short_label',
-                        prefs.str(prefs.get_value(section, 'short_label')))
-        prefs.set_new_key(section, 'long_label')
-        prefs.fetch_item(section, 'long_label')
-        prefs.set_value(section, 'long_label',
-                        prefs.str(prefs.get_value(section, 'long_label')))
-        prefs.set_new_key(section, 'embed')
-        prefs.fetch_item(section, 'embed')
-        prefs.set_new_key(section, 'single')
-        prefs.fetch_item(section, 'single')
-        prefs.set_new_key(section, 'reverse')
-        prefs.fetch_item(section, 'reverse')
-
     def __update_dict_values(self, new, id, short_label, long_label, embed, single, reverse):
-        prefs = self.prefs
-        section = 'dict/file/' + id
-        if section not in prefs.sections():
-            prefs.set_new_section(section)
-
-        is_system_dict = self.__is_system_dict_file_from_id(id)
-        if is_system_dict:
-            if 'short_label' in prefs.keys(section):
-                short_label = prefs.get_value(section, 'short_label')
-            if 'long_label' in prefs.keys(section):
-                long_label = prefs.get_value(section, 'long_label')
+        prefs = self.__prefs
 
         if new:
+            dict_item = prefs.get_value('dict', 'template')
+            dict_item.id = id
+            dict_item.short_label = short_label
+            dict_item.long_label = long_label
+            dict_item.embed = embed
+            dict_item.single = single
+            dict_item.reverse = reverse
             l = self.__builder.get_object('dict:view').get_model()
             l.append([id, short_label, long_label, embed, single, reverse])
         else:
+            dict_item = prefs.get_value('dict', 'list')[id]
+            if not dict_item.is_system:
+                dict_item.short_label = short_label
+                dict_item.long_label = long_label
+            dict_item.embed = embed
+            dict_item.single = single
+            dict_item.reverse = reverse
             l, i = self.__builder.get_object('dict:view').get_selection().get_selected()
             if i :
                 l[i] = [id, short_label, long_label, embed, single, reverse]
 
-        key = 'short_label'
-        prefs.set_value(section, key, short_label)
-        key = 'long_label'
-        prefs.set_value(section, key, long_label)
-        key = 'embed'
-        prefs.set_value(section, key, embed)
-        key = 'single'
-        prefs.set_value(section, key, single)
-        key = 'reverse'
-        prefs.set_value(section, key, reverse)
+        prefs.set_list_item('dict', 'list', id, dict_item)
 
     def __text_cell_data_cb(self, column, renderer, model, iter, id):
         l = self.__builder.get_object('dict:view').get_model()
@@ -1104,13 +1053,13 @@ class AnthySetup(object):
 
     def __update_keymap_label(self):
         self.__resync_engine_file()
-        prefs = self.prefs
+        prefs = self.__prefs
         keymap = self.__get_keymap()
         if keymap == None:
             return
         if keymap == '':
             keymap = 'default'
-        keymap_list = prefs.get_value('common', 'keyboard_layouts')
+        keymap_list = prefs.get_value('common', 'keyboard-layouts')
         if keymap != None and not keymap in keymap_list:
             keymap_list.append(keymap)
         index = -1
@@ -1129,11 +1078,6 @@ class AnthySetup(object):
         combobox.connect_after('changed',
                                self.on_cb_keymap_changed,
                                0)
-
-    def __save_preferences(self):
-        self.prefs.commit_all()
-        if self.__keymap != None:
-            self.__save_keymap()
 
     def __search_and_mark(self, buffer, text, start, end, onetime, forward):
         if forward:
@@ -1217,51 +1161,12 @@ class AnthySetup(object):
         button = self.__builder.get_object('button_remove_custom_key')
         button.set_sensitive(True)
 
-    def on_main_delete(self, widget, event):
-        self.on_btn_cancel_clicked(widget)
+    def on_main_quit(self, widget, event):
+        Gtk.main_quit()
         return True
 
-    def on_btn_ok_clicked(self, widget):
-        if self.__builder.get_object('btn_apply').get_state() == \
-                Gtk.StateType.INSENSITIVE:
-            Gtk.main_quit()
-            return True
-        dlg = self.__builder.get_object('quit_check')
-        dlg.set_transient_for(widget.get_toplevel())
-        dlg.set_markup('<big><b>%s</b></big>' % _("Confirmation"))
-        dlg.format_secondary_text(
-                _("You are about to close the setup dialog, is that OK?"))
-        id = dlg.run()
-        dlg.hide()
-        if id == Gtk.ResponseType.YES:
-            self.__save_preferences()
-            Gtk.main_quit()
-            return True
-
-    def on_btn_cancel_clicked(self, widget):
-        if self.__builder.get_object('btn_apply').get_state() == \
-                Gtk.StateType.INSENSITIVE:
-            Gtk.main_quit()
-            return True
-        dlg = self.__builder.get_object('quit_check_without_save')
-        dlg.set_transient_for(widget.get_toplevel())
-        dlg.set_markup('<big><b>%s</b></big>' % _("Notice!"))
-        dlg.format_secondary_text(
-                _("You are about to close the setup dialog without saving your changes, is that OK?"))
-        id = dlg.run()
-        dlg.hide()
-        if id == Gtk.ResponseType.YES:
-            Gtk.main_quit()
-            return True
-
-    def on_btn_apply_clicked(self, widget):
-        self.__save_preferences()
-        widget.set_sensitive(False)
-
-    def on_cb_changed(self, widget):
-        section, key = self.__get_section_key(Gtk.Buildable.get_name(widget))
-        self.prefs.set_value(section, key, widget.get_active())
-        self.__builder.get_object('btn_apply').set_sensitive(True)
+    def on_btn_close_clicked(self, widget):
+        Gtk.main_quit()
 
     def on_cb_keymap_changed(self, widget, id):
         it = widget.get_active()
@@ -1272,10 +1177,11 @@ class AnthySetup(object):
         if self.__keymap == keymap:
             return
         self.__keymap = keymap
-        self.__builder.get_object('btn_apply').set_sensitive(True)
+        self.__save_keymap()
+        self.__keymap = None
 
     def on_cb_custom_key_table_changed(self, widget, user_data):
-        prefs = self.prefs
+        prefs = self.__prefs
         tv = self.__builder.get_object('treeview_custom_key_table')
         mode = user_data
         id = widget.get_active()
@@ -1289,26 +1195,11 @@ class AnthySetup(object):
         if mode == 'romaji':
             tv = self.__get_romaji_treeview_custom_key_table(method)
         elif mode == 'kana':
-            prefs.set_value('kana_typing_rule', 'method', method)
-            self.__builder.get_object('btn_apply').set_sensitive(True)
+            prefs.set_value('kana-typing-rule', 'method', method)
             tv = self.__get_kana_treeview_custom_key_table(method)
         elif mode == 'thumb':
             # thumb uses all tables so do not save the method.
             tv = self.__get_thumb_treeview_custom_key_table(method)
-
-    def on_sb_changed(self, widget):
-        section, key = self.__get_section_key(Gtk.Buildable.get_name(widget))
-        self.prefs.set_value(section, key, widget.get_value_as_int())
-        self.__builder.get_object('btn_apply').set_sensitive(True)
-
-    def on_ck_toggled(self, widget):
-        section, key = self.__get_section_key(Gtk.Buildable.get_name(widget))
-        self.prefs.set_value(section, key, widget.get_active())
-        self.__builder.get_object('btn_apply').set_sensitive(True)
-        if self.__thumb_kb_layout_mode and \
-           Gtk.Buildable.get_name(widget) == \
-               Gtk.Buildable.get_name(self.__thumb_kb_layout_mode):
-            self.__set_thumb_kb_label()
 
     def on_btn_edit_clicked(self, widget):
         ls, it = self.__builder.get_object('shortcut').get_selection().get_selected()
@@ -1326,19 +1217,20 @@ class AnthySetup(object):
         if id == Gtk.ResponseType.OK:
             new = l_to_s([m[i][0] for i in range(len(m))])
             if new != ls.get(it, 1)[0]:
-                sec = self._get_shortcut_sec()
-                self.prefs.set_value(sec, ls.get(it, 0)[0], s_to_l(new))
+                group = self.__get_shortcut_group()
+                self.__prefs.set_list_item('shortcut', group,
+                                           ls.get(it, 0)[0], s_to_l(new))
                 ls.set(it, 1, new)
-                self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_default_clicked(self, widget):
         ls, it = self.__builder.get_object('shortcut').get_selection().get_selected()
-        sec = self._get_shortcut_sec()
-        new = l_to_s(self.prefs.default[sec][ls.get(it, 0)[0]])
+        group = self.__get_shortcut_group()
+        shortcuts = self.__prefs.get_default_value('shortcut', group)
+        new = l_to_s(shortcuts[ls.get(it, 0)[0]])
         if new != ls.get(it, 1)[0]:
-            self.prefs.set_value(sec, ls.get(it, 0)[0], s_to_l(new))
+            self.__prefs.set_list_item('shortcut', group,
+                                       ls.get(it, 0)[0], s_to_l(new))
             ls.set(it, 1, new)
-            self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_romaji_custom_table_clicked(self, widget):
         self.__run_dialog_custom_key_table(widget, 'romaji')
@@ -1350,7 +1242,7 @@ class AnthySetup(object):
         self.__run_dialog_custom_key_table(widget, 'thumb')
 
     def on_btn_add_custom_key(self, widget, user_data):
-        prefs = self.prefs
+        prefs = self.__prefs
         input = self.__builder.get_object('entry_input_custom_key')
         output = self.__builder.get_object('entry_output_custom_key')
         left = self.__builder.get_object('entry_left_thumb_shift_custom_key')
@@ -1381,43 +1273,33 @@ class AnthySetup(object):
             return
 
         if type == 'romaji':
-            section_base = 'romaji_typing_rule'
+            section = 'romaji-typing-rule'
             model.append([type, key, value])
         elif type == 'kana':
-            section_base = 'kana_typing_rule'
+            section = 'kana-typing-rule'
             model.append([type, key, value])
         elif type == 'thumb':
-            section_base = 'thumb_typing_rule'
+            section = 'thumb-typing-rule'
             model.append([type, key, value, left_text, right_text])
-        if section_base == None:
+        if section == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
         gkey = prefs.typing_to_config_key(key)
         if gkey == '':
             return
         key = gkey
-        section = section_base + '/' + method
-        if key not in prefs.keys(section):
-            # ibus does not support gconf_client_all_entries().
-            # prefs.fetch_section() doesn't get the keys if they exist
-            # in gconf only.
-            # Use newkeys for that way.
-            newkeys = prefs.get_value(section_base, 'newkeys')
-            if key not in newkeys:
-                newkeys.append(key)
-                prefs.set_value(section_base, 'newkeys', newkeys)
         if type != 'thumb':
-            prefs.set_value(section, key, value)
+            prefs.set_list_item(section, 'list', (method, key), value)
         else:
-            prefs.set_value(section, key, [value, right_text, left_text])
+            prefs.set_list_item(section, 'list',
+                                (method, key), [value, right_text, left_text])
             left.set_text('')
             right.set_text('')
         input.set_text('')
         output.set_text('')
-        self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_remove_custom_key(self, widget, user_data):
-        prefs = self.prefs
+        prefs = self.__prefs
         combobox = self.__builder.get_object('combobox_custom_key_table')
         id = combobox.get_active()
         model_combobox = combobox.get_model()
@@ -1428,31 +1310,21 @@ class AnthySetup(object):
         key = l[i][1]
         section_base = None
         if type == 'romaji':
-            section_base = 'romaji_typing_rule'
+            section = 'romaji-typing-rule'
         elif type == 'kana':
-            section_base = 'kana_typing_rule'
+            section = 'kana-typing-rule'
         elif type == 'thumb':
-            section_base = 'thumb_typing_rule'
-        if section_base == None:
+            section = 'thumb-typing-rule'
+        if section == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
-        section = section_base + '/' + method
-        newkeys = prefs.get_value(section_base, 'newkeys')
         gkey = prefs.typing_to_config_key(key)
         if gkey == '':
             return
         key = gkey
-        if key in newkeys:
-            newkeys.remove(key)
-            prefs.set_value(section_base, 'newkeys', newkeys)
-        # config.set_value(key, None) is not supported.
-        if type != 'thumb':
-            prefs.set_value(section, key, '')
-        else:
-            prefs.set_value(section, key, ['', '', ''])
+        prefs.delete_list_item(section, 'list', (method, key))
         l.remove(i)
         widget.set_sensitive(False)
-        self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_thumb_key_clicked(self, widget):
         if Gtk.Buildable.get_name(widget) == 'thumb:button_ls':
@@ -1487,18 +1359,17 @@ class AnthySetup(object):
             new = l[i][0]
             if new != text:
                 section, key = self.__get_section_key(entry)
-                self.prefs.set_value(section, key, new)
+                self.__prefs.set_value(section, key, new)
                 self.__builder.get_object(entry).set_text(new)
-                self.__builder.get_object('btn_apply').set_sensitive(True)
 
     def on_btn_dict_command_clicked(self, widget):
         if Gtk.Buildable.get_name(widget) == 'dict:btn_edit_dict_command':
-            key = 'dict_admin_command'
+            key = 'dict-admin-command'
         elif Gtk.Buildable.get_name(widget) == 'dict:btn_add_word_command':
-            key = 'add_word_command'
+            key = 'add-word-command'
         else:
             return
-        command = self.prefs.get_value('common', key)
+        command = self.__prefs.get_value('common', key)
         if not path.exists(command[0]):
             self.__run_message_dialog(_("Your file does not exist: ") + command[0],
                                       Gtk.MessageType.ERROR)
@@ -1559,17 +1430,19 @@ class AnthySetup(object):
 
         if selected_id == None:
             return
-        if self.__is_system_dict_file_from_id(selected_id):
+        dict_item = self.__prefs.get_value('dict', 'list')[selected_id]
+        if dict_item.is_system:
             self.__run_message_dialog(_("You cannot delete the system dictionary."),
                                       Gtk.MessageType.ERROR)
             return
 
         file = self.__get_dict_file_from_id(selected_id)
         if file != None:
-            files = self.prefs.get_value('dict', 'files')
-            files.remove(file)
-            self.prefs.set_value('dict', 'files', files)
-            self.__builder.get_object('btn_apply').set_sensitive(True)
+            order = self.__prefs.get_value('dict', 'order')
+            order.remove(selected_id)
+            order = self.__prefs.set_value('dict', 'order', order)
+            self.__prefs.delete_list_item('dict', 'files', selected_id)
+            self.__prefs.delete_list_item('dict', 'list', selected_id)
             l.remove(i)
             return
 
@@ -1586,27 +1459,19 @@ class AnthySetup(object):
             self.__run_message_dialog(_("Your file is not good."),
                                       Gtk.MessageType.ERROR)
             return
-        if not path.exists(dict_file):
+        if not path.exists(dict_file[0]):
             self.__run_message_dialog(_("Your file does not exist: ") + dict_file,
                                       Gtk.MessageType.ERROR)
             return
 
-        if dict_file == None:
-            return
-
         # The selected id is already quoted.
-        section = 'dict/file/' + selected_id
-        if 'preview_lines' not in self.prefs.keys(section):
-            section = 'dict/file/default'
-        nline = self.prefs.get_value(section, 'preview_lines')
-
-        section = 'dict/file/' + selected_id
-        if 'encoding' not in self.prefs.keys(section):
-            section = 'dict/file/default'
-        encoding = self.prefs.get_value(section, 'encoding')
+        dicts = self.__prefs.get_value('dict', 'list')
+        dict_item = dicts[selected_id]
+        nline = dict_item.preview_lines
+        encoding = dict_item.encoding
 
         lines = '';
-        for i, line in enumerate(file(dict_file)):
+        for i, line in enumerate(file(dict_file[0])):
             if nline >= 0 and i >= nline:
                 break;
             lines = lines + line
@@ -1651,7 +1516,6 @@ class AnthySetup(object):
         dlg.destroy()
 
     def on_btn_dict_order_clicked(self, widget):
-        dict_file = None
         l, it = self.__builder.get_object('dict:view').get_selection().get_selected()
 
         if not it:
@@ -1672,45 +1536,35 @@ class AnthySetup(object):
         if next_it:
             l.swap(it, next_it)
 
-        dict_file = self.__get_dict_file_from_id(selected_id)
-        files = self.prefs.get_value('dict', 'files')
+        order = self.__prefs.get_value('dict', 'order')
+        if len(order) == 0:
+            order = list(self.__prefs.get_value('dict', 'files').keys())
+        i = order.index(selected_id)
 
-        if dict_file == None:
-            return
-
-        i = files.index(dict_file)
         if Gtk.Buildable.get_name(widget) == 'dict:btn_up':
             if i <= 0:
                 return
             next_i = i - 1
         elif Gtk.Buildable.get_name(widget) == 'dict:btn_down':
-            if i + 1 >= len(dict_file):
+            if i + 1 >= len(order):
                 return
             next_i = i + 1
-        f = files[i]
-        files[i] = files[next_i]
-        files[next_i] = f
-        self.prefs.set_value('dict', 'files', files)
-        self.__builder.get_object('btn_apply').set_sensitive(True)
-
-    def _get_shortcut_sec(self):
-        l = ['default', 'atok', 'wnn']
-        iter = self.__builder.get_object('shortcut_type').get_active_iter()
-        model = self.__builder.get_object('shortcut_type').get_model()
-        s_type = model[iter][0].lower()
-        return 'shortcut/' + (s_type if s_type in l else 'default')
+        f = order[i]
+        order[i] = order[next_i]
+        order[next_i] = f
+        self.__prefs.set_value('dict', 'order', order)
 
     def on_shortcut_type_changed(self, widget):
         ls = self.__builder.get_object('shortcut').get_model()
         ls.clear()
 
-        sec = self._get_shortcut_sec()
-        for k in self.prefs.keys(sec):
-            ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
+        group = self.__get_shortcut_group()
+        shortcuts = self.__prefs.get_value('shortcut', group)
+        for k in shortcuts.keys():
+            ls.append([k, l_to_s(shortcuts[k])])
 
         section, key = self.__get_section_key(Gtk.Buildable.get_name(widget))
-        self.prefs.set_value(section, key, sec[len('shortcut/'):])
-        self.__builder.get_object('btn_apply').set_sensitive(True)
+        self.__prefs.set_value(section, key, group)
 
     def on_shortcut_key_release_event(self, widget, event):
         if event.hardware_keycode in [36, 65]:
@@ -1755,7 +1609,9 @@ class AnthySetup(object):
         if not widget.get_text():
             return
         list = widget.get_text().split()
-        if list[0][0] == '/':
+        if len(list) == 0:
+            return
+        elif list[0][0] == '/':
             if len(list) == 1:
                 list.append(list[0][list[0].rfind('/') + 1:])
             else:
@@ -1766,14 +1622,13 @@ class AnthySetup(object):
             else:
                 list.insert(0, '/usr/bin/' + list[0])
                 list[1] = list[1][list[1].rfind('/') + 1:]
-        if Gtk.Buildable.get_name(widget) == 'dict:entry_edit_dict_command':
-            key = 'dict_admin_command'
-        elif Gtk.Buildable.get_name(widget) == 'dict:entry_add_word_command':
-            key = 'add_word_command'
+        if Gtk.Buildable.get_name(widget) == 'dict:entry-edit-dict-command':
+            key = 'dict-admin-command'
+        elif Gtk.Buildable.get_name(widget) == 'dict:entry-add-word-command':
+            key = 'add-word-command'
         else:
             return
-        self.prefs.set_value('common', key, list)
-        self.__builder.get_object('btn_apply').set_sensitive(True)
+        self.__prefs.set_value('common', key, list)
 
     def on_es_entry_changed(self, widget):
         if not widget.get_text():

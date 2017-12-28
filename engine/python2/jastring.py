@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -78,13 +78,13 @@ class JaString:
         cls._prefs = prefs
 
     @classmethod
-    def RESET(cls, prefs, section, name, value):
+    def RESET(cls, prefs, section, key, value):
         cls._prefs = prefs
-        if section.startswith('kana_typing_rule'):
+        if section == 'kana-typing-rule':
             mode = TYPING_MODE_KANA
-            kana.KanaSegment.RESET(prefs, section, name, value)
+            kana.KanaSegment.RESET(prefs, section, key, value)
             cls._init_mode(mode)
-        if section == 'common' and name == 'latin_with_shift':
+        if section == 'common' and key == 'latin-with-shift':
             romaji.RomajiSegment.SET_LATIN_WITH_SHIFT(value)
 
     def set_shift(self, shift):
@@ -241,10 +241,10 @@ class JaString:
                 self.__cursor = self.__cursor + 1
 
     def _chk_text(self, s):
-        period = self._prefs.get_value('common', 'period_style')
-        symbol = self._prefs.get_value('common', 'symbol_style')
-        half_symbol = self._prefs.get_value('common', 'half_width_symbol')
-        half_number = self._prefs.get_value('common', 'half_width_number')
+        period = self._prefs.get_value('common', 'period-style')
+        symbol = self._prefs.get_value('common', 'symbol-style')
+        half_symbol = self._prefs.get_value('common', 'half-width-symbol')
+        half_number = self._prefs.get_value('common', 'half-width-number')
         ret = ''
         for c in s:
             c = c if not period else PeriodTable.get(c, c)
