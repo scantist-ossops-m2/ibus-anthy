@@ -119,7 +119,7 @@ class AnthyTest:
         self.__rerun = True
 
     def create_window(self):
-        window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        window = Gtk.Window(type = Gtk.WindowType.TOPLEVEL)
         self.__entry = entry = Gtk.Entry()
         window.connect('destroy', Gtk.main_quit)
         entry.connect('focus-in-event', self.__entry_focus_in_event_cb)

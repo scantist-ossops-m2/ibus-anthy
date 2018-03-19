@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2017 Red Hat, Inc.
+# Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2017-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,27 @@ check:
 	if test x$(FORCE_TEST) != x ; then                              \
 	    ARGS="$$ARGS --force";                                      \
 	fi;                                                             \
+	ANTHY_SCHEMA_FILE=org.freedesktop.ibus.engine.anthy.gschema.xml; \
+	if test \! -f $(builddir)/../data/$$ANTHY_SCHEMA_FILE ; then    \
+	    echo "Not found $(builddir)/../data/$$ANTHY_SCHEMA_FILE"    \
+	    exit -1;                                                    \
+	fi;                                                             \
+	SCHEMA_TMPDIR=`mktemp -d`;                                      \
+	if test $$? -ne 0 ; then                                        \
+	    echo "FAILED mktemp"                                        \
+	    exit -1;                                                    \
+	fi;                                                             \
+	cp $(builddir)/../data/$$ANTHY_SCHEMA_FILE $$SCHEMA_TMPDIR;     \
+	glib-compile-schemas $$SCHEMA_TMPDIR;                           \
+	if test $$? -ne 0 ; then                                        \
+	    echo "FAILED glib-compile-schemas $$SCHEMA_TMPDIR"          \
+	    exit -1;                                                    \
+	fi;                                                             \
+	if test \! -f $$SCHEMA_TMPDIR/gschemas.compiled ; then          \
+	    echo "Not found $$SCHEMA_TMPDIR/gschemas.compiled"          \
+	    exit -1;                                                    \
+	fi;                                                             \
+	export GSETTINGS_SCHEMA_DIR=$$SCHEMA_TMPDIR ;                   \
 	ibus-daemon --daemonize --verbose;                              \
 	sleep 1;                                                        \
 	ps -ef | grep $$USER | grep ibus | grep -v grep;                \
@@ -40,7 +61,8 @@ check:
 	echo "#### Starting Python2 API test";                          \
 	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python2          \
 	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python2            \
-	python2 $(srcdir)/anthytest.py $$ARGS;
+	python2 $(srcdir)/anthytest.py $$ARGS;                          \
+	rm -rf $$SCHEMA_TMPDIR;                                         \
 	ibus exit
 
 EXTRA_DIST = \
