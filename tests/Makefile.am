@@ -26,32 +26,41 @@ check:
 	fi;                                                             \
 	ANTHY_SCHEMA_FILE=org.freedesktop.ibus.engine.anthy.gschema.xml; \
 	if test \! -f $(builddir)/../data/$$ANTHY_SCHEMA_FILE ; then    \
-	    echo "Not found $(builddir)/../data/$$ANTHY_SCHEMA_FILE"    \
+	    echo "Not found $(builddir)/../data/$$ANTHY_SCHEMA_FILE";   \
 	    exit -1;                                                    \
 	fi;                                                             \
 	SCHEMA_TMPDIR=`mktemp -d`;                                      \
 	if test $$? -ne 0 ; then                                        \
-	    echo "FAILED mktemp"                                        \
+	    echo "FAILED mktemp";                                       \
 	    exit -1;                                                    \
 	fi;                                                             \
 	cp $(builddir)/../data/$$ANTHY_SCHEMA_FILE $$SCHEMA_TMPDIR;     \
 	glib-compile-schemas $$SCHEMA_TMPDIR;                           \
 	if test $$? -ne 0 ; then                                        \
-	    echo "FAILED glib-compile-schemas $$SCHEMA_TMPDIR"          \
+	    echo "FAILED glib-compile-schemas $$SCHEMA_TMPDIR";         \
 	    exit -1;                                                    \
 	fi;                                                             \
 	if test \! -f $$SCHEMA_TMPDIR/gschemas.compiled ; then          \
-	    echo "Not found $$SCHEMA_TMPDIR/gschemas.compiled"          \
+	    echo "Not found $$SCHEMA_TMPDIR/gschemas.compiled";         \
 	    exit -1;                                                    \
 	fi;                                                             \
-	export GSETTINGS_SCHEMA_DIR=$$SCHEMA_TMPDIR ;                   \
+	ls $(builddir)/../gir/Anthy*.typelib > /dev/null;               \
+	if test $$? -ne 0 ; then                                        \
+	    echo "Not found $(builddir)/../gir/Anthy*.typelib";         \
+	    exit -1;                                                    \
+	fi;                                                             \
 	ibus-daemon --daemonize --verbose;                              \
 	sleep 1;                                                        \
-	ps -ef | grep $$USER | grep ibus | grep -v grep;                \
+	SUSER=`echo "$$USER" | cut -c 1-7`;                             \
+	ps -ef | grep "$$SUSER" | grep ibus | grep -v grep;             \
+	export GSETTINGS_SCHEMA_DIR=$$SCHEMA_TMPDIR;                    \
+	export GI_TYPELIB_PATH=$(builddir)/../gir;                      \
+	LD_LIBRARY_PATH=$(builddir)/../gir/.libs;                       \
+	export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$(builddir)/../gir;  \
 	echo "#### Starting Python3 API test $$ARGS";                   \
 	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python3          \
 	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python3            \
-	python3 $(srcdir)/anthytest.py $$ARGS;                          \
+	python3 -u $(srcdir)/anthytest.py $$ARGS;                       \
 	if test $$? -ne 0 ; then                                        \
 	    exit -1;                                                    \
 	fi;                                                             \
@@ -61,7 +70,7 @@ check:
 	echo "#### Starting Python2 API test";                          \
 	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python2          \
 	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python2            \
-	python2 $(srcdir)/anthytest.py $$ARGS;                          \
+	python2 -u $(srcdir)/anthytest.py $$ARGS;                       \
 	rm -rf $$SCHEMA_TMPDIR;                                         \
 	ibus exit
 
