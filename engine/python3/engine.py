@@ -4,8 +4,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2017 Red Hat, Inc.
+# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ class Engine(IBus.EngineSimple):
                                      connection=bus.get_connection(),
                                      object_path=object_path)
 
+        self.add_table_by_locale(None)
         # create anthy context
         if not self.__verify_anthy_journal_file():
             return
