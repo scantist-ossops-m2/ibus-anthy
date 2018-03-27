@@ -57,6 +57,7 @@ check:
 	export GI_TYPELIB_PATH=$(builddir)/../gir;                      \
 	LD_LIBRARY_PATH=$(builddir)/../gir/.libs;                       \
 	export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$(builddir)/../gir;  \
+	export GTK_IM_MODULE=ibus;                                      \
 	echo "#### Starting Python3 API test $$ARGS";                   \
 	env IBUS_ANTHY_ENGINE_PATH=$(srcdir)/../engine/python3          \
 	    IBUS_ANTHY_SETUP_PATH=$(srcdir)/../setup/python3            \
