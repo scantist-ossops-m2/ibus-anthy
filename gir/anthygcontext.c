@@ -41,18 +41,17 @@ static GObject *anthy_gcontext_constructor (GType type,
 static void anthy_gcontext_dispose (GObject *gobject);
 static void anthy_gcontext_finalize (GObject *gobject);
 
-G_DEFINE_TYPE (AnthyGContext, anthy_gcontext, G_TYPE_INITIALLY_UNOWNED)
+G_DEFINE_TYPE_WITH_PRIVATE (AnthyGContext,
+                            anthy_gcontext,
+                            G_TYPE_INITIALLY_UNOWNED)
 
 static void
 anthy_gcontext_class_init (AnthyGContextClass *class)
 {
-
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     gobject_class->constructor = anthy_gcontext_constructor;
     gobject_class->dispose = anthy_gcontext_dispose;
     gobject_class->finalize = anthy_gcontext_finalize;
-
-    g_type_class_add_private (class, sizeof (AnthyGContextPrivate));
 }
 
 static void
