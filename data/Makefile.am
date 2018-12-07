@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2010-2017 Red Hat, Inc.
+# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,12 +28,13 @@ dicts_DATA = \
 
 dictsdir = $(pkgdatadir)/dicts
 
-# rf. i18n appdata.xml
+# rf. i18n metainfo.xml
 # http://www.freedesktop.org/software/appstream/docs/sect-Quickstart-Translation.html
 # https://blogs.gnome.org/hughsie/2016/01/25/appdata-and-the-gettext-domain/
-appdata_in_files = ibus-anthy.appdata.xml.in
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdatadir=$(datadir)/appdata
+metainfo_in_files = ibus-anthy.appdata.xml.in
+metainfo_inter_files = $(metainfo_in_files:.xml.in=.xml)
+metainfo_DATA = org.freedesktop.ibus.engine.anthy.metainfo.xml
+metainfodir=$(datadir)/metainfo
 @INTLTOOL_XML_RULE@
 
 schemas_in_files = org.freedesktop.ibus.engine.anthy.gschema.xml.in
@@ -41,10 +42,16 @@ schemas_DATA = $(schemas_in_files:.xml.in=.xml)
 schemasdir = $(datadir)/glib-2.0/schemas
 
 CLEANFILES = \
-        $(appdata_DATA) \
+        $(metainfo_inter_files) \
+        $(metainfo_DATA) \
         $(schemas_DATA) \
         emoji.t \
         $(NULL)
+
+$(metainfo_DATA): $(metainfo_inter_files)
+	mv $< $@
+	ln -s $@ $<
+	touch -m $@
 
 $(schemas_DATA): $(schemas_in_files)
 	$(SED) -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
@@ -88,7 +95,7 @@ uninstall-hook:
 	fi
 
 EXTRA_DIST = \
-        $(appdata_in_files) \
+        $(metainfo_in_files) \
         $(schemas_in_files) \
         emoji-each.t \
         emoji-emoji.t \

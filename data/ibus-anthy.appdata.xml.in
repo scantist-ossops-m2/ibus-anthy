@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="inputmethod">
-  <id>ibus-anthy</id>
+  <id>org.freedesktop.ibus.engine.anthy</id>
   <metadata_license>GFDL-1.3</metadata_license>
   <project_license>GPL-2.0</project_license>
   <name>Anthy</name>
