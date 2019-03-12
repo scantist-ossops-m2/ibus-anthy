@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2017-2018 Red Hat, Inc.
+# Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2017-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 check:
-	bash -x test-build.sh --builddir=$(builddir) --srcdir=$(srcdir)
+	bash -x $(srcdir)/test-build.sh --builddir=$(builddir) --srcdir=$(srcdir)
 
 EXTRA_DIST = \
         anthycases.py \
