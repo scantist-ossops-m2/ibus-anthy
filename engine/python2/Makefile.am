@@ -3,7 +3,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -99,6 +99,7 @@ _config.py: _config.py.in
 	sed -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
 	    -e "s|\@libexecdir\@|$(libexecdir)|g" \
 	    -e "s|\@datadir\@|$(datadir)|g" \
+	    -e "s|\@ANTHY_PC\@|$(ANTHY_PC)|g" \
 	    -e "s|\@LAYOUT\@|$(LAYOUT)|g" \
 	    -e "s|\@SYMBOL_CHAR_INT\@|$(SYMBOL_CHAR_INT)|g" \
 	    -e "s|\@ICON_PREFERENCE\@|$(ICON_PREFERENCE)|g" \

@@ -4,7 +4,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -62,6 +62,9 @@ N_ = lambda a : a
 UN = lambda a : unicode(a, 'utf-8')
 
 printerr = AnthyPrefs.printerr
+
+ANTHY_CONFIG_PATH = get_userhome() + '/.anthy' if config.ANTHY_PC == 'anthy' \
+    else GLib.get_user_config_dir() + '/anthy';
 
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
@@ -190,7 +193,7 @@ class Engine(IBus.EngineSimple):
 
     # http://en.sourceforge.jp/ticket/browse.php?group_id=14&tid=33075
     def __verify_anthy_journal_file(self):
-        journal = get_userhome() + '/.anthy/last-record2_default.utf8'
+        journal = ANTHY_CONFIG_PATH + '/last-record2_default.utf8'
         try:
             f = io.open(file=journal, mode='rb')
         except IOError:
@@ -203,10 +206,10 @@ class Engine(IBus.EngineSimple):
         from gi.repository import Gtk
         message= N_("Could not enable Anthy.\n" \
                     "The end of the content of the file " \
-                    ".anthy/last-record2_default.utf8 in your home " \
+                    "%s/last-record2_default.utf8 in your home " \
                     "directory is not '\\n'. I.e. not correct text format.\n" \
                     "Please fix the file or remove it by manual and " \
-                    "restart IBus.")
+                    "restart IBus.") % ANTHY_CONFIG_PATH
         printerr(message)
         dlg = Gtk.MessageDialog(parent=None,
                                 flags=Gtk.DialogFlags.MODAL,
@@ -2013,10 +2016,10 @@ class Engine(IBus.EngineSimple):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
-            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            directory = ANTHY_CONFIG_PATH + '/' + IMPORTED_EMBEDDED_DICT_DIR
             name = IMPORTED_EMBEDDED_DICT_PREFIX + id
         elif link_mode == LINK_DICT_SINGLE:
-            directory = get_userhome() + '/.anthy'
+            directory = ANTHY_CONFIG_PATH
             name = IMPORTED_SINGLE_DICT_PREFIX + id
         else:
             return
@@ -2044,10 +2047,10 @@ class Engine(IBus.EngineSimple):
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
-            directory = get_userhome() + '/.anthy/' + IMPORTED_EMBEDDED_DICT_DIR
+            directory = ANTHY_CONFIG_PATH + '/' + IMPORTED_EMBEDDED_DICT_DIR
             name = IMPORTED_EMBEDDED_DICT_PREFIX + id
         elif link_mode == LINK_DICT_SINGLE:
-            directory = get_userhome() + '/.anthy'
+            directory = ANTHY_CONFIG_PATH
             name = IMPORTED_SINGLE_DICT_PREFIX + id
         else:
             return

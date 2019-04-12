@@ -3,8 +3,8 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2018 Red Hat, Inc.
+# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,10 +63,13 @@ DATE_DISPLAY="ibus_datedisplay"
 AC_SUBST(DATE_DISPLAY)
 
 dnl - check anthy
-PKG_CHECK_MODULES(ANTHY, [
-    anthy
+PKG_CHECK_MODULES(ANTHY, [anthy-unicode], [ANTHY_PC=anthy-unicode], [
+    PKG_CHECK_MODULES(ANTHY, [anthy], [ANTHY_PC=anthy])
 ])
+AC_SUBST(ANTHY_PC)
 
+CFLAGS_backup="$CFLAGS"
+CFLAGS="$ANTHY_CFLAGS $CFLAGS"
 AC_CHECK_DECLS([
 NTH_UNCONVERTED_CANDIDATE,
 NTH_KATAKANA_CANDIDATE,
@@ -74,6 +77,7 @@ NTH_HIRAGANA_CANDIDATE,
 NTH_HALFKANA_CANDIDATE],,
     AC_MSG_ERROR([Could not find NTH_*_CANDIDATE values in anthy.h]),
     [[#include <anthy/anthy.h>]])
+CFLAGS="$CFLAGS_backup"
 
 PKG_CHECK_MODULES(GOBJECT2, [
     gobject-2.0 >= glib_required_version
@@ -449,6 +453,9 @@ echo "
 
 GOBJECT2_CFLAGS             $GOBJECT2_CFLAGS
 GOBJECT2_LIBS               $GOBJECT2_LIBS
+ANTHY_PC                    $ANTHY_PC
+ANTHY_CFLAGS                $ANTHY_CFLAGS
+ANTHY_LIBS                  $ANTHY_LIBS
 ANTHY_GOBJECT_LIBDIR        $ANTHY_GOBJECT_LIBDIR
 ANTHY_GOBJECT_GIRDIR        $ANTHY_GOBJECT_GIRDIR
 ANTHY_GOBJECT_TYPELIBSDIR   $ANTHY_GOBJECT_TYPELIBSDIR

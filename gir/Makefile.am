@@ -2,7 +2,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2012-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2012-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2012 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2012-2013 Red Hat, Inc.
 #
@@ -47,7 +47,7 @@ libanthygobject_1_0_la_LDFLAGS = \
 	-version-info @LT_VERSION_INFO@         \
 	$(NULL)
 
-ANTHY_INCLUDEDIR = $(shell pkg-config --variable=includedir anthy)
+ANTHY_INCLUDEDIR = $(shell pkg-config --variable=includedir $(ANTHY_PC))
 
 anthyincludedir = $(includedir)/ibus-anthy-1.0
 anthyinclude_HEADERS = \
@@ -59,7 +59,7 @@ anthyinclude_HEADERS = \
 
 Anthy-9000.gir: $(libanthygobject) Makefile
 Anthy_9000_gir_SCANNERFLAGS = \
-	--pkg=anthy \
+	--pkg=$(ANTHY_PC) \
 	--external-library \
 	--reparse-validate \
 	--identifier-prefix=Anthy \
@@ -68,7 +68,7 @@ Anthy_9000_gir_SCANNERFLAGS = \
 	--warn-all \
 	$(NULL)
 Anthy_9000_gir_INCLUDES = GObject-2.0
-Anthy_9000_gir_LIBS = $(libanthygobject) anthy
+Anthy_9000_gir_LIBS = $(libanthygobject) $(ANTHY_PC)
 Anthy_9000_gir_CFLAGS = @ANTHY_CFLAGS@
 Anthy_9000_gir_FILES = \
 	$(libanthygobject_1_0_la_SOURCES) \
