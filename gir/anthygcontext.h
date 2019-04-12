@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus-anthy - The Anthy engine for IBus
- * Copyright (c) 2012-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2012-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (c) 2012 Peng Huang <shawn.p.huang@gmail.com>
  * Copyright (c) 2012-2013 Red Hat, Inc.
  *
@@ -200,5 +200,13 @@ gchar *         anthy_gcontext_get_prediction    (AnthyGContext *obj,
  */
 int             anthy_gcontext_commit_prediction (AnthyGContext *obj,
                                                   int nth_seg);
+
+/**
+ * anthy_gcontext_set_logger:
+ * @level: Log level
+ *
+ * Set Anthy log level.
+ */
+void            anthy_gcontext_set_logger        (int level);
 G_END_DECLS
 #endif

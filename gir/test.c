@@ -12,6 +12,7 @@ main (int argc, char *argv[])
     g_type_init ();
 #endif
 
+    anthy_gcontext_set_logger (0);
     obj = anthy_gcontext_new ();
 
     anthy_gcontext_set_encoding (obj, ANTHY_UTF8_ENCODING);

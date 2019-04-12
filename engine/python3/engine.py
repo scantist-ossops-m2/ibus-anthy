@@ -136,6 +136,7 @@ class Engine(IBus.EngineSimple):
         # create anthy context
         if not self.__verify_anthy_journal_file():
             return
+        Anthy.GContext.set_logger(0);
         self.__context = Anthy.GContext()
         self.__context.set_encoding(Anthy.UTF8_ENCODING)
 
