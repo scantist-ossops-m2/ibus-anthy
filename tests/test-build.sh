@@ -120,6 +120,7 @@ run_test_suite()
         fi;
         if test x$FORCE_TEST = x ; then
             rm -r $HOME/.anthy;
+            rm -r $HOME/.config/anthy;
         fi;
     done;
 }

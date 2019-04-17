@@ -304,11 +304,13 @@ def main():
             print('Unknown argument: %s' % o, file=sys.stderr)
             print_help(sys.stderr, 1)
 
-    anthy_user_dir = get_userhome() + '/.anthy'
-    if os.path.exists(anthy_user_dir) and not force_run:
-        print('Please remove %s before the test' % anthy_user_dir,
-              file=sys.stderr)
-        sys.exit(-1)
+    for anthy_config in ['/.config/anthy', '/.anthy']:
+        anthy_user_dir = get_userhome() + anthy_config
+        anthy_last_file = anthy_user_dir + '/last-record2_default.utf8'
+        if os.path.exists(anthy_last_file) and not force_run:
+            print('Please remove %s before the test' % anthy_last_file,
+                  file=sys.stderr)
+            sys.exit(-1)
     EngineTest = AnthyTest()
     if not EngineTest.register_ibus_engine():
         sys.exit(-1)

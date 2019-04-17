@@ -94,6 +94,17 @@ _EOF
         mkdir -p $HOME/.config
         touch $HOME/.config/gnome-initial-setup-done
     fi
+
+    # Prevent from launching a XDG dialog
+    XDG_LOCALE_FILE="$HOME/.config/user-dirs.locale"
+    if test -f $XDG_LOCALE_FILE ; then
+        XDG_LANG_ORIG=`cat $XDG_LOCALE_FILE`
+        XDG_LANG_NEW=`echo $LANG | sed -e 's/\(.*\)\..*/\1/'`
+        if [ "$XDG_LANG_ORIG" != "$XDG_LANG_NEW" ] ; then
+            echo "Overriding XDG locale $XDG_LANG_ORIG with $XDG_LANG_NEW"
+            echo "$XDG_LANG_NEW" > $XDG_LOCALE_FILE
+        fi
+    fi
 }
 
 run_dbus_daemon()
@@ -134,16 +145,22 @@ run_desktop()
 
 run_test_suite()
 {
-    rm -rf /root/.anthy;
+    rm -rf $HOME/.anthy;
+    rm -rf $HOME/.config/anthy;
     cd `dirname $0`;
 
     echo "#### Starting $PYTHON API test $RUN_ARGS";
+    export GTK_IM_MODULE=ibus
     $PYTHON -u $SRCDIR/anthytest.py $RUN_ARGS;
     if test $? -ne 0 ; then
         exit -1;
     fi;
     if test x$FORCE_TEST = x ; then
-        rm -r $HOME/.anthy;
+        for ANTHY_CONFIG in ".anthy" ".config/anthy" ; do
+            if test -d $HOME/$ANTHY_CONFIG ; then
+                rm -r $HOME/$ANTHY_CONFIG;
+            fi;
+        done;
     fi;
 }
 
