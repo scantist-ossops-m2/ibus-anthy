@@ -3,7 +3,7 @@
   <schema path="/org/freedesktop/ibus/engine/anthy/common/"
           id="org.freedesktop.ibus.engine.anthy.common">
     <key name="input-mode" type="i">
-      <default>0</default>
+      <default>3</default>
       <summary>Input Mode</summary>
       <description></description>
     </key>
