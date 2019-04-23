@@ -434,11 +434,11 @@ data/Makefile
 gir/Makefile
 engine/Makefile
 engine/python2/Makefile
-engine/python2/anthy.xml.in
-engine/python2/default.xml.in
+engine/python2/anthy.inputMethod.xml.in
+engine/python2/default.inputMethod.xml.in
 engine/python3/Makefile
-engine/python3/anthy.xml.in
-engine/python3/default.xml.in
+engine/python3/anthy.inputMethod.xml.in
+engine/python3/default.inputMethod.xml.in
 setup/Makefile
 setup/python2/Makefile
 setup/python3/Makefile

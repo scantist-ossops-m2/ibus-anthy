@@ -3,7 +3,7 @@
   <id>org.freedesktop.ibus.engine.anthy</id>
   <metadata_license>GFDL-1.3</metadata_license>
   <project_license>GPL-2.0</project_license>
-  <name>Anthy</name>
+  <name translatable="no">Anthy</name>
   <summary>Japanese input method</summary>
   <description>
     <p>

@@ -79,10 +79,9 @@ enginedir = $(pkgdatadir)/engine
 
 # $(SYMBOL_XML) cannot be extracted in Makefile but $(libexecdir) can be
 # extracted to ${exec_prefix}/libexec so use capital @LIBEXECDIR@ here.
-%.xml: %.xml.in
+%.xml: %.inputMethod.xml.in
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|g" \
 	    -e "s|\@PKGDATADIR\@|$(pkgdatadir)|g" \
-	    -e "s|_description|description|g" \
 	$< > $@
 
 ibus-engine-anthy: ibus-engine-anthy.in

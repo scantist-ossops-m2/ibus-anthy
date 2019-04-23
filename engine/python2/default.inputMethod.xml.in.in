@@ -9,8 +9,8 @@
 		@LAYOUT_XML@
 		<layout_variant></layout_variant>
 		<layout_option></layout_option>
-		<longname>Anthy</longname>
-		<_description>Anthy Input Method</_description>
+		<longname translatable="no">Anthy</longname>
+		<description>Anthy Input Method</description>
 		<rank>99</rank>
 		@HOTKEYS_XML@
 		@SYMBOL_XML@
