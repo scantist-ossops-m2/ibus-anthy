@@ -116,8 +116,8 @@ test:
 EXTRA_DIST = \
 	$(engine_anthy_built_in_files) \
 	$(PYGTK2_ANTHY_RAW) \
-	anthy.xml.in.in \
-	default.xml.in.in \
+	anthy.inputMethod.xml.in.in \
+	default.inputMethod.xml.in.in \
 	ibus-engine-anthy.in \
 	$(NULL)
 
@@ -131,6 +131,8 @@ CLEANFILES = \
 	$(NULL)
 
 DISTCLEANFILES = \
+	anthy.inputMethod.xml.in \
+	default.inputMethod.xml.in \
 	$(NULL)
 
 # Need a time lag between .py and .py.in files to build .py files
