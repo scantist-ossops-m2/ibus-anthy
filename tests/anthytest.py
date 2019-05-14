@@ -173,8 +173,9 @@ class AnthyTest:
         self.__run_cases('commit')
 
     def __enable_hiragana(self):
-        commands = ['dconf', 'read',
-                    '/desktop/ibus/engine/anthy/common/input-mode'
+        commands = ['gsettings', 'get',
+                    'org.freedesktop.ibus.engine.anthy.common',
+                    'input-mode'
                    ]
         if PY3K:
             py3result = subprocess.run(commands, stdout=subprocess.PIPE)

@@ -18,7 +18,7 @@ from gi.repository import IBus
 
 TestCases = {
     #'init': [ord(' '), 0, IBus.ModifierType.CONTROL_MASK]
-    'init': [IBus.KEY_Escape, 0, IBus.ModifierType.MOD1_MASK],
+    'init': [IBus.KEY_j, 0, IBus.ModifierType.CONTROL_MASK],
     'tests': [
                 { 'preedit': { 'string': 'watashinonamaeha,pendesu.' },
                   'conversion': { 'string': ' '  },
