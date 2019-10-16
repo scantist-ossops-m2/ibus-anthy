@@ -5,19 +5,28 @@ from __future__ import print_function
 
 from gi import require_version as gi_require_version
 gi_require_version('GLib', '2.0')
+gi_require_version('Gio', '2.0')
 gi_require_version('Gtk', '3.0')
 gi_require_version('IBus', '1.0')
 from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import Gtk
 from gi.repository import IBus
 
+import argparse
 import getopt
 import os
 import sys
 import subprocess
+import unittest
+
+try:
+    from tap import TAPTestRunner
+except ModuleNotFoundError as err:
+    print('Ignore tap module: %s' % str(err))
 
 PY3K = sys.version_info >= (3, 0)
-DONE_EXIT = False
+DONE_EXIT = True
 
 if 'IBUS_ANTHY_ENGINE_PATH' in os.environ:
     engine_path = os.environ['IBUS_ANTHY_ENGINE_PATH']
@@ -31,11 +40,28 @@ sys.path.append('/usr/share/ibus-anthy/engine')
 
 from anthycases import TestCases
 
-class AnthyTest:
+# Need to flush the output against Gtk.main()
+def printflush(sentence):
+    try:
+        print(sentence, flush=True)
+    except IOError:
+        pass
+
+def printerr(sentence):
+    try:
+        print(sentence, flush=True, file=sys.stderr)
+    except IOError:
+        pass
+
+class AnthyTest(unittest.TestCase):
     global DONE_EXIT
     ENGINE_PATH = '/com/redhat/IBus/engines/Anthy/Test/Engine'
-    def __init__(self):
+
+    @classmethod
+    def setUpClass(cls):
         IBus.init()
+
+    def setUp(self):
         self.__id = 0
         self.__rerun = False
         self.__test_index = 0
@@ -141,7 +167,6 @@ class AnthyTest:
         if not self.__bus.set_global_engine_async_finish(res):
             warning('set engine failed: ' + error.message)
             return
-        print('enabled engine')
         self.__enable_hiragana()
         self.__main_test()
 
@@ -173,28 +198,15 @@ class AnthyTest:
         self.__run_cases('commit')
 
     def __enable_hiragana(self):
-        commands = ['gsettings', 'get',
-                    'org.freedesktop.ibus.engine.anthy.common',
-                    'input-mode'
-                   ]
-        if PY3K:
-            py3result = subprocess.run(commands, stdout=subprocess.PIPE)
-            try:
-                result = int(py3result.stdout)
-            except ValueError:
-                # No user data
-                result = 0
-        else:
-            py2result = subprocess.check_output(commands)
-            result = py2result
-            if result == '':
-                result = 0
+        settings = Gio.Settings(
+                schema = "org.freedesktop.ibus.engine.anthy.common");
+        result = settings.get_int('input-mode')
         if result != 0:
-            print('Enable hiragana', result)
+            printflush('Enable hiragana %d' % result)
             key = TestCases['init']
             self.__typing(key[0], key[1], key[2])
         else:
-            print('Already hiragana')
+            printflush('Already hiragana')
 
     def __main_test(self):
         self.__conversion_index = 0
@@ -214,7 +226,8 @@ class AnthyTest:
         i = 0
         if type == 'string':
             if start == -1 and end == -1:
-                print('test step:', tag, 'sequences: "' + cases['string'] + '"')
+                printflush('test step: %s sequences: "%s"' \
+                           % (tag, str(cases['string'])))
             for a in cases['string']:
                 if start >= 0 and i < start:
                     i += 1
@@ -222,12 +235,14 @@ class AnthyTest:
                 if end >= 0 and i >= end:
                     break;
                 if start != -1 or end != -1:
-                    print('test step:', tag, 'sequences: "' + cases['string'][i] + '"')
+                    printflush('test step: %s sequences: "%s"' \
+                               % (tag, str(cases['string'])))
                 self.__typing(ord(a), 0, 0)
                 i += 1
         if type == 'keys':
             if start == -1 and end == -1:
-                print('test step:', tag, 'sequences:', cases['keys'])
+                printflush('test step: %s sequences: %s' \
+                           % (tag, str(cases['keys'])))
             for key in cases['keys']:
                 if start >= 0 and i < start:
                     i += 1
@@ -235,7 +250,8 @@ class AnthyTest:
                 if end >= 0 and i >= end:
                     break;
                 if start != -1 or end != -1:
-                    print('test step: %s sequences: [0x%X, 0x%X, 0x%X]' % (tag, key[0], key[1],  key[2]))
+                    printflush('test step: %s sequences: [0x%X, 0x%X, 0x%X]' \
+                               % (tag, key[0], key[1],  key[2]))
                 self.__typing(key[0], key[1], key[2])
                 i += 1
 
@@ -248,9 +264,10 @@ class AnthyTest:
         tests = TestCases['tests'][self.__test_index]
         cases = tests['result']
         if cases['string'] == chars:
-            print("OK: ", chars)
+            printflush('OK: %d %s' % (self.__test_index, chars))
         else:
-            print("NG: ", cases['string'], chars)
+            printflush('NG: %d %s %s' \
+                       % (self.__test_index, str(cases['string']), chars))
         self.__test_index += 1
         if self.__test_index == len(TestCases['tests']):
             if DONE_EXIT:
@@ -259,8 +276,14 @@ class AnthyTest:
         self.__entry.set_text('')
         self.__main_test()
 
-    def run(self):
+    def main(self):
         Gtk.main()
+
+    def test_typing(self):
+        if not self.register_ibus_engine():
+            sys.exit(-1)
+        self.create_window()
+        self.main()
 
 def print_help(out, v = 0):
     print('-e, --exit             Exit this program after test is done.',
@@ -285,25 +308,30 @@ def get_userhome():
     return userhome
 
 def main():
-    shortopt = 'efh'
-    longopt = ['exit', 'force', 'help']
     force_run = False
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
-    except getopt.GetoptError as err:
-        print_help(sys.stderr, 1)
-
-    for o, a in opts:
-        if o in ('-e', '--exit'):
-            global DONE_EXIT
-            DONE_EXIT = True
-        elif o in ('-f', '--force'):
-            force_run = True
-        elif o in ('-h', '--help'):
-            print_help(sys.stderr)
-        else:
-            print('Unknown argument: %s' % o, file=sys.stderr)
-            print_help(sys.stderr, 1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-k', '--keep', action='store_true',
+                        help='keep this GtkWindow after test is done')
+    parser.add_argument('-f', '--force', action='store_true',
+                        help='run this program forcibly with .anthy')
+    parser.add_argument('-t', '--tap', action='store_true',
+                        help='enable TAP')
+    parser.add_argument('-F', '--unittest-failfast', action='store_true',
+                        help='stop on first fail or error in unittest')
+    parser.add_argument('-H', '--unittest-help', action='store_true',
+                        help='show unittest help message and exit')
+    args, unittest_args = parser.parse_known_args()
+    sys.argv[1:] = unittest_args
+    if args.keep:
+        global DONE_EXIT
+        DONE_EXIT = False
+    if args.force:
+        force_run = True
+    if args.unittest_failfast:
+        sys.argv.append('-f')
+    if args.unittest_help:
+        sys.argv.append('-h')
+        unittest.main()
 
     for anthy_config in ['/.config/anthy', '/.anthy']:
         anthy_user_dir = get_userhome() + anthy_config
@@ -312,11 +340,14 @@ def main():
             print('Please remove %s before the test' % anthy_last_file,
                   file=sys.stderr)
             sys.exit(-1)
-    EngineTest = AnthyTest()
-    if not EngineTest.register_ibus_engine():
-        sys.exit(-1)
-    EngineTest.create_window()
-    EngineTest.run()
+
+    if args.tap:
+        loader = unittest.TestLoader()
+        runner = TAPTestRunner()
+        runner.set_stream(True)
+        unittest.main(testRunner=runner, testLoader=loader)
+    else:
+        unittest.main()
 
 if __name__ == '__main__':
     main()

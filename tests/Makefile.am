@@ -19,12 +19,48 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+
+CLEANFILES =
+
 check:
+	@TAP_DIR=`python -m site --user-site`/tap;                      \
+	if test x"$$TAP_DIR" != x -a ! -d "$$TAP_DIR" ; then            \
+	    echo "pip install tap.py --user";                           \
+	    pip install tap.py --user;                                  \
+	fi;                                                             \
 	bash -x $(srcdir)/test-build.sh --builddir=$(builddir) --srcdir=$(srcdir)
 
+if ENABLE_INSTALLED_TESTS
+test_execsdir = $(libexecdir)/installed-tests/ibus-anthy
+test_execs = anthytest
+test_execs_SCRIPTS = \
+    anthycases.py \
+    anthytest.py \
+    $(NULL)
+
+test_metas_in = meta.test.in
+test_metas = $(addsuffix .test, $(test_execs))
+test_sources_DATA = \
+    $(test_metas) \
+    $(NULL)
+test_sourcesdir = $(datadir)/installed-tests/ibus-anthy
+
+CLEANFILES += \
+    $(test_metas) \
+    $(NULL)
+endif
+
+$(test_metas): $(test_metas_in)
+	f=`echo $@ | sed -e 's/\.test//'`; \
+	TEST_EXEC=$(test_execsdir)/$${f}.py; \
+	sed -e "s|@TEST_EXEC[@]|$$TEST_EXEC|g" $(test_metas_in) > $@.tmp; \
+	mv $@.tmp $@; \
+	$(NULL)
+
 EXTRA_DIST = \
-        anthycases.py \
-        anthytest.py \
-        test-build.sh \
-        test-console.sh \
-        $(NULL)
+    anthycases.py \
+    anthytest.py \
+    meta.test.in \
+    test-build.sh \
+    test-console.sh \
+    $(NULL)

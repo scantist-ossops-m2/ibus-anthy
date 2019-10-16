@@ -398,6 +398,20 @@ LAYOUT_XML="<layout>${LAYOUT}</layout>"
 AC_SUBST(LAYOUT)
 AC_SUBST(LAYOUT_XML)
 
+dnl --enable-installed-tests
+AC_ARG_ENABLE(installed-tests,
+    AS_HELP_STRING([--enable-installed-tests],
+                   [Enable to installed tests]),
+    [enable_installed_tests=$enableval],
+    [enable_installed_tests=no]
+)
+AM_CONDITIONAL([ENABLE_INSTALLED_TESTS],
+               [test x"$enable_installed_tests" = x"yes"])
+if test x"$enable_installed_tests" = x"no"; then
+    enable_installed_tests="no (disabled, use --enable-installed-tests to enable)"
+fi
+
+
 dnl libtool versioning
 dnl
 dnl If LT_VERSION_INFO="lt_current:lt_revision:lt_age", libibus is
