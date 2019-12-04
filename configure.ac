@@ -236,7 +236,7 @@ AC_ARG_WITH(anthy-zipcode,
            [AC_HELP_STRING([--with-anthy-zipcode=FILE],
                            [file path of Anty zipcode.t])],
            [ANTHY_ZIPCODE_FILE="$withval"],
-           [ANTHY_ZIPCODE_FILE="$datadir/anthy/zipcode.t"])
+           [ANTHY_ZIPCODE_FILE="$datadir/$ANTHY_PC/zipcode.t"])
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 eval ANTHY_ZIPCODE_FILE=$ANTHY_ZIPCODE_FILE
 eval ANTHY_ZIPCODE_FILE=$ANTHY_ZIPCODE_FILE

@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2017 Red Hat, Inc.
+# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1460,7 +1460,7 @@ class AnthySetup(object):
                                       Gtk.MessageType.ERROR)
             return
         if not path.exists(dict_file[0]):
-            self.__run_message_dialog(_("Your file does not exist: ") + dict_file,
+            self.__run_message_dialog(_("Your file does not exist: ") + dict_file[0],
                                       Gtk.MessageType.ERROR)
             return
 
