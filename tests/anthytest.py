@@ -20,10 +20,23 @@ import sys
 import subprocess
 import unittest
 
+TAP_MODULE_NONE, \
+TAP_MODULE_TAPPY, \
+TAP_MODULE_PYCOTAP = list(range(3))
+
+tap_module = TAP_MODULE_NONE
+
 try:
     from tap import TAPTestRunner
-except ModuleNotFoundError as err:
-    print('Ignore tap module: %s' % str(err))
+    tap_module = TAP_MODULE_TAPPY
+    print('Load tappy')
+except ModuleNotFoundError:
+    try:
+        from pycotap import TAPTestRunner
+        tap_module = TAP_MODULE_PYCOTAP
+        print('Load pycotap')
+    except ModuleNotFoundError as err:
+        print('Ignore tap module: %s' % str(err))
 
 PY3K = sys.version_info >= (3, 0)
 DONE_EXIT = True
@@ -344,7 +357,8 @@ def main():
     if args.tap:
         loader = unittest.TestLoader()
         runner = TAPTestRunner()
-        runner.set_stream(True)
+        if tap_module == TAP_MODULE_TAPPY:
+            runner.set_stream(True)
         unittest.main(testRunner=runner, testLoader=loader)
     else:
         unittest.main()
