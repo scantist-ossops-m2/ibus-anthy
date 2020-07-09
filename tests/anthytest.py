@@ -5,10 +5,12 @@ from __future__ import print_function
 
 from gi import require_version as gi_require_version
 gi_require_version('GLib', '2.0')
+gi_require_version('Gdk', '3.0')
 gi_require_version('Gio', '2.0')
 gi_require_version('Gtk', '3.0')
 gi_require_version('IBus', '1.0')
 from gi.repository import GLib
+from gi.repository import Gdk
 from gi.repository import Gio
 from gi.repository import Gtk
 from gi.repository import IBus
@@ -66,6 +68,7 @@ def printerr(sentence):
     except IOError:
         pass
 
+@unittest.skipIf(Gdk.Display.open('') == None, 'Display cannot be open.')
 class AnthyTest(unittest.TestCase):
     global DONE_EXIT
     ENGINE_PATH = '/com/redhat/IBus/engines/Anthy/Test/Engine'
@@ -84,7 +87,7 @@ class AnthyTest(unittest.TestCase):
     def register_ibus_engine(self):
         self.__bus = IBus.Bus()
         if not self.__bus.is_connected():
-            error('ibus-daemon is not running')
+            self.fail('ibus-daemon is not running')
             return False;
         self.__bus.get_connection().signal_subscribe('org.freedesktop.DBus',
                                               'org.freedesktop.DBus',
@@ -130,12 +133,24 @@ class AnthyTest(unittest.TestCase):
                                 interface_name, signal_name, parameters,
                                 user_data):
         if signal_name == 'NameOwnerChanged':
-            import engine
+            try:
+                import engine
+            except ModuleNotFoundError as e:
+                with self.subTest(i = 'name-owner-changed'):
+                    self.fail('NG: Not installed ibus-anthy %s' % str(e))
+                Gtk.main_quit()
+                return
             engine.Engine.CONFIG_RELOADED()
 
     def __create_engine_cb(self, factory, engine_name):
         if engine_name == 'testanthy':
-            import engine
+            try:
+                import engine
+            except ModuleNotFoundError as e:
+                with self.subTest(i = 'create-engine'):
+                    self.fail('NG: Not installed ibus-anthy %s' % str(e))
+                Gtk.main_quit()
+                return
             self.__id += 1
             self.__engine = engine.Engine(self.__bus, '%s/%d' % (self.ENGINE_PATH, self.__id))
             self.__engine.connect('focus-in', self.__engine_focus_in)
@@ -178,7 +193,8 @@ class AnthyTest(unittest.TestCase):
 
     def __set_engine_cb(self, object, res):
         if not self.__bus.set_global_engine_async_finish(res):
-            warning('set engine failed: ' + error.message)
+            with self.subTest(i = self.__test_index):
+                self.fail('set engine failed: ' + error.message)
             return
         self.__enable_hiragana()
         self.__main_test()
@@ -238,18 +254,14 @@ class AnthyTest(unittest.TestCase):
         type = list(cases.keys())[0]
         i = 0
         if type == 'string':
-            if start == -1 and end == -1:
-                printflush('test step: %s sequences: "%s"' \
-                           % (tag, str(cases['string'])))
+            printflush('test step: %s sequences: "%s"' \
+                       % (tag, str(cases['string'])))
             for a in cases['string']:
                 if start >= 0 and i < start:
                     i += 1
                     continue
                 if end >= 0 and i >= end:
                     break;
-                if start != -1 or end != -1:
-                    printflush('test step: %s sequences: "%s"' \
-                               % (tag, str(cases['string'])))
                 self.__typing(ord(a), 0, 0)
                 i += 1
         if type == 'keys':
@@ -279,8 +291,11 @@ class AnthyTest(unittest.TestCase):
         if cases['string'] == chars:
             printflush('OK: %d %s' % (self.__test_index, chars))
         else:
-            printflush('NG: %d %s %s' \
-                       % (self.__test_index, str(cases['string']), chars))
+            with self.subTest(i = self.__test_index):
+                self.fail('NG: %d %s %s' \
+                          % (self.__test_index, str(cases['string']), chars))
+            if DONE_EXIT:
+                Gtk.main_quit()
         self.__test_index += 1
         if self.__test_index == len(TestCases['tests']):
             if DONE_EXIT:
