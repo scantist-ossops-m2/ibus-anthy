@@ -4,7 +4,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1739,7 +1739,7 @@ class Engine(IBus.EngineSimple):
     def _mk_key(keyval, state):
         if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK):
             if keyval < 0xff and \
-               unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
+               unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\\]^_`{|}~':
                 state |= IBus.ModifierType.SHIFT_MASK
             elif IBus.KEY_a <= keyval <= IBus.KEY_z:
                 keyval -= (IBus.KEY_a - IBus.KEY_A)
