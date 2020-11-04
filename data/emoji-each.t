@@ -2,8 +2,8 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2015-2019 Red Hat, Inc.
+# Copyright (c) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2020 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1251,11 +1251,11 @@
 そり #T35*500 🛷
 そろばん #T35*500 🧮
 そーだ #T35*500 🥤
+ぞう #T35*500 🐘
 ぞっと #T35*500 😨
 ぞっと #T35*500 😱
 ぞっとする #T35*500 😨
 ぞっとする #T35*500 😱
-ぞう #T35*500 🐘
 ぞんび #T35*500 🧟
 たいこ #T35*500 🥁
 たいそう #T35*500 🤸
@@ -1410,8 +1410,8 @@
 ちょうしょく #T35*500 🥣
 ちょうしんき #T35*500 🩺
 ちょうみりょう #T35*500 🧂
-ちょくりつ #T35*500 🧍
 ちょき #T35*500 ✌
+ちょくりつ #T35*500 🧍
 ちょこれーと #T35*500 🍫
 ちんげんさい #T35*500 🥬
 ちーず #T35*500 🧀
