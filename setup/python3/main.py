@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -76,7 +76,6 @@ class AnthySetup(object):
         except AttributeError:
             pass
         gettext.bindtextdomain(DOMAINNAME, config.LOCALEDIR)
-        gettext.bind_textdomain_codeset(DOMAINNAME, 'UTF-8')
 
         self.__prefs =  AnthyPrefs()
 
