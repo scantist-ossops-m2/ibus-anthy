@@ -2,7 +2,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2010-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -49,8 +49,10 @@ $(metainfo_DATA): $(metainfo_in_files) Makefile
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 $(schemas_DATA): $(schemas_in_files)
+	KASUMI_EXEC_BASENAME=`basename $(KASUMI_EXEC_FILE)`; \
 	$(SED) -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
 	       -e "s|\@KASUMI_EXEC_FILE\@|$(KASUMI_EXEC_FILE)|g" \
+	       -e "s|\@KASUMI_EXEC_BASENAME\@|$$KASUMI_EXEC_BASENAME|g" \
 	       -e "s|\@KASUMI_ICON_FILE\@|$(KASUMI_ICON_FILE)|g" \
 	       -e "s|\@ON_OFF_KEYS\@|$(ON_OFF_KEYS)|g" \
 	       -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \

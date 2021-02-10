@@ -108,12 +108,12 @@
       <description></description>
     </key>
     <key name="dict-admin-command" type="as">
-      <default>['@KASUMI_EXEC_FILE@', 'kasumi']</default>
+      <default>['@KASUMI_EXEC_FILE@', '@KASUMI_EXEC_BASENAME@']</default>
       <summary>Dictionary Administration Command</summary>
       <description></description>
     </key>
     <key name="add-word-command" type="as">
-      <default>['@KASUMI_EXEC_FILE@', 'kasumi', '-a']</default>
+      <default>['@KASUMI_EXEC_FILE@', '@KASUMI_EXEC_BASENAME@', '-a']</default>
       <summary>Add Word Command</summary>
       <description></description>
     </key>
