@@ -27,7 +27,7 @@ SRCDIR=".";
 ANTHY_SCHEMA_FILE=org.freedesktop.ibus.engine.anthy.gschema.xml;
 SCHEMA_TMPDIR="";
 FORCE_TEST="";
-RUN_ARGS="--exit";
+RUN_ARGS="";
 
 usage()
 {
@@ -110,7 +110,7 @@ run_test_suite()
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$BUILDDIR/../gir;
     export GTK_IM_MODULE=ibus;
 
-    for i in 3 2 ; do
+    for i in 3; do
         echo "#### Starting Python$i API test $RUN_ARGS";
         env IBUS_ANTHY_ENGINE_PATH=$SRCDIR/../engine/python$i          \
             IBUS_ANTHY_SETUP_PATH=$SRCDIR/../setup/python$i            \
