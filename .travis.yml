@@ -1,0 +1,65 @@
+language: c
+compiler: gcc
+os: linux
+
+# Require gettext-0.19.8
+dist: focal
+
+branches:
+  only:
+  - master
+
+arch:
+  - amd64
+  #- ppc64le
+  #- s390x
+  #- arm64
+
+addons:
+  apt:
+    packages:
+    # For autogen.sh
+    - autopoint
+    # For make from
+    # https://packages.ubuntu.com/search?searchon=sourcenames&keywords=ibus-anthy
+    - desktop-file-utils
+    - gir1.2-ibus-1.0
+    - gobject-introspection
+    - gettext
+    - libanthy-dev
+    - libgirepository1.0-dev
+    - libglib2.0-dev
+    - pkg-config
+    - python3-dev
+    - python3-gi
+
+jobs:
+  include:
+  - name: Build
+    before_script:
+    - sudo apt-get -qq update
+    script:
+    - set -e
+    - git pull --depth=200
+    # configure options from
+    # https://salsa.debian.org/debian/ibus-anthy/-/blob/master/debian/rules
+    - >
+      ./autogen.sh
+      --libexecdir=/usr/lib/ibus
+      --with-layout='default'
+      --with-python=python3
+      --with-hotkeys
+      --with-on-off-keys="'Zenkaku_Hankaku', 'Ctrl+space', 'Ctrl+J'"
+      --enable-installed-tests
+      --disable-static
+    # Set the cutom DESTDIR because the default DESTDIR
+    # /home/travis/bulid/fujiwarat/$PKG/ibus/ibus-$VERSION/_inst seems to be
+    # too long and failed to set DESTDIR to install bindings/pygobject/IBus.py
+    - >
+      make
+      VERBOSE=1
+      DESTDIR="$HOME/build/$USER/dest"
+    - >
+      desktop-file-validate
+      ./setup/python3/ibus-setup-anthy.desktop
+
