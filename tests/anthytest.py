@@ -28,17 +28,31 @@ TAP_MODULE_PYCOTAP = list(range(3))
 
 tap_module = TAP_MODULE_NONE
 
+# Need to flush the output against Gtk.main()
+def printflush(sentence):
+    try:
+        print(sentence, flush=True)
+    except IOError:
+        pass
+
+def printerr(sentence):
+    try:
+        print(sentence, flush=True, file=sys.stderr)
+    except IOError:
+        pass
+
 try:
     from tap import TAPTestRunner
     tap_module = TAP_MODULE_TAPPY
-    print('Load tappy')
+    printflush('## Load tappy')
 except ModuleNotFoundError:
     try:
         from pycotap import TAPTestRunner
+        from pycotap import LogMode
         tap_module = TAP_MODULE_PYCOTAP
-        print('Load pycotap')
+        printflush('## Load pycotap')
     except ModuleNotFoundError as err:
-        print('Ignore tap module: %s' % str(err))
+        printflush('## Ignore tap module: %s' % str(err))
 
 PY3K = sys.version_info >= (3, 0)
 DONE_EXIT = True
@@ -55,18 +69,6 @@ sys.path.append('/usr/share/ibus-anthy/engine')
 
 from anthycases import TestCases
 
-# Need to flush the output against Gtk.main()
-def printflush(sentence):
-    try:
-        print(sentence, flush=True)
-    except IOError:
-        pass
-
-def printerr(sentence):
-    try:
-        print(sentence, flush=True, file=sys.stderr)
-    except IOError:
-        pass
 
 @unittest.skipIf(Gdk.Display.open('') == None, 'Display cannot be open.')
 class AnthyTest(unittest.TestCase):
@@ -83,8 +85,10 @@ class AnthyTest(unittest.TestCase):
         self.__test_index = 0
         self.__conversion_index = 0
         self.__commit_done = False
+        self.__engine = None
 
     def register_ibus_engine(self):
+        printflush('## Registering engine')
         self.__bus = IBus.Bus()
         if not self.__bus.is_connected():
             self.fail('ibus-daemon is not running')
@@ -144,6 +148,7 @@ class AnthyTest(unittest.TestCase):
 
     def __create_engine_cb(self, factory, engine_name):
         if engine_name == 'testanthy':
+            printflush('## Creating engine')
             try:
                 import engine
             except ModuleNotFoundError as e:
@@ -176,14 +181,20 @@ class AnthyTest(unittest.TestCase):
         window = Gtk.Window(type = Gtk.WindowType.TOPLEVEL)
         self.__entry = entry = Gtk.Entry()
         window.connect('destroy', Gtk.main_quit)
+        entry.connect('map', self.__entry_map_cb)
         entry.connect('focus-in-event', self.__entry_focus_in_event_cb)
         entry.connect('preedit-changed', self.__entry_preedit_changed_cb)
         buffer = entry.get_buffer()
         buffer.connect('inserted-text', self.__buffer_inserted_text_cb)
         window.add(entry)
         window.show_all()
+        printflush('## Build window')
+
+    def __entry_map_cb(self, entry):
+        printflush('## Map window')
 
     def __entry_focus_in_event_cb(self, entry, event):
+        printflush('## Get focus')
         if self.__test_index == len(TestCases['tests']):
             if DONE_EXIT:
                 Gtk.main_quit()
@@ -231,11 +242,11 @@ class AnthyTest(unittest.TestCase):
                 schema = "org.freedesktop.ibus.engine.anthy.common");
         result = settings.get_int('input-mode')
         if result != 0:
-            printflush('Enable hiragana %d' % result)
+            printflush('## Enable hiragana %d' % result)
             key = TestCases['init']
             self.__typing(key[0], key[1], key[2])
         else:
-            printflush('Already hiragana')
+            printflush('## Already hiragana')
 
     def __main_test(self):
         self.__conversion_index = 0
@@ -371,7 +382,11 @@ def main():
 
     if args.tap:
         loader = unittest.TestLoader()
-        runner = TAPTestRunner()
+        if tap_module == TAP_MODULE_PYCOTAP:
+            # Log should be in stderr instead of StringIO
+            runner = TAPTestRunner(test_output_log=LogMode.LogToError)
+        else:
+            runner = TAPTestRunner()
         if tap_module == TAP_MODULE_TAPPY:
             runner.set_stream(True)
         unittest.main(testRunner=runner, testLoader=loader)
