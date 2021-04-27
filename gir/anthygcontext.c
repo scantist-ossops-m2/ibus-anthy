@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus-anthy - The Anthy engine for IBus
- * Copyright (c) 2012-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2012-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (c) 2012 Peng Huang <shawn.p.huang@gmail.com>
  * Copyright (c) 2012-2013 Red Hat, Inc.
  *
@@ -29,7 +29,7 @@ extern int anthy_do_set_personality (const char *id);
 #include "anthygcontext.h"
 
 #define ANTHY_GCONTEXT_GET_PRIVATE(o)   \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), ANTHY_TYPE_GCONTEXT, AnthyGContextPrivate))
+    ((AnthyGContextPrivate *)anthy_gcontext_get_instance_private (o))
 
 struct _AnthyGContextPrivate {
     anthy_context_t context;

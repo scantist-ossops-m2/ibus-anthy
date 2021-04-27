@@ -4,7 +4,7 @@
 # ibus-tmpl - The Input Bus template project
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,4 +22,4 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 export IBUS_LOCALEDIR=@localedir@
-exec @PYTHON@ @prefix@/share/ibus-anthy/setup/main.py $@
+exec @PYTHON@ @prefix@/share/ibus-anthy/setup/main.py "$@"

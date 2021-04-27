@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
 # Copyright (c) 2009 Hideaki ABE <abe.sendai@gmail.com>
-# Copyright (c) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1253,7 +1253,7 @@ class AnthySetup(object):
         model_combobox = combobox.get_model()
         method = model_combobox[id][1]
         type = user_data
-        section_base = None
+        section = None
         key = input.get_text()
         value = output.get_text()
         left_text = left.get_text()
@@ -1308,7 +1308,7 @@ class AnthySetup(object):
         l, i = tv.get_selection().get_selected()
         type = l[i][0]
         key = l[i][1]
-        section_base = None
+        section = None
         if type == 'romaji':
             section = 'romaji-typing-rule'
         elif type == 'kana':
@@ -1379,6 +1379,7 @@ class AnthySetup(object):
     def on_btn_dict_add_clicked(self, widget):
         file = None
         id = None
+        dlg = None
 
         if Gtk.Buildable.get_name(widget) == 'dict:btn_add':
             dlg = Gtk.FileChooserDialog(title=_("Open Dictionary File"),
@@ -1394,6 +1395,7 @@ class AnthySetup(object):
                      _("_OK"), Gtk.ResponseType.OK)
             dlg.add_buttons(*buttons)
 
+        assert(dlg != None), 'Button name is undefined.'
         vbox = self.__builder.get_object('dict:add_extra_vbox')
         if Gtk.Buildable.get_name(widget) == 'dict:btn_add':
             # Need to init for the second time
