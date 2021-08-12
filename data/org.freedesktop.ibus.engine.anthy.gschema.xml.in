@@ -908,8 +908,13 @@
           'circle_input_mode': &lt;['Ctrl+comma', 'Ctrl+less']&gt;,
           <!-- # Removed Hiragana_Katakana key in circle_kana_mode
                  for latin_with_shift.
+               # Removed Ctrl+period in circle_kana_mode, which is
+                 now Emoji typing on-off shortcut key in IBus core
+                 to follow GNOME desktop.
+               # Ctrl+greater is actually Ctrl+Shift+period in
+                 JP and US layout.
           -->
-          'circle_kana_mode': &lt;['Ctrl+period', 'Ctrl+greater']&gt;,
+          'circle_kana_mode': &lt;['Ctrl+greater']&gt;,
 <!--          'cancel_pseudo_ascii_mode_key': &lt;['Escape']&gt;,          -->
           'circle_typing_method': &lt;['Alt+Romaji', 'Ctrl+slash']&gt;,
           'circle_dict_method': &lt;['Alt+Henkan']&gt;,
