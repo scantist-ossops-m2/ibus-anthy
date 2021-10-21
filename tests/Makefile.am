@@ -2,7 +2,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2017-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2017-2019 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,11 +23,6 @@
 CLEANFILES =
 
 check:
-	@TAP_DIR=`python -m site --user-site`/tap;                      \
-	if test x"$$TAP_DIR" != x -a ! -d "$$TAP_DIR" ; then            \
-	    echo "pip install tap.py --user";                           \
-	    pip install tap.py --user;                                  \
-	fi;                                                             \
 	bash -x $(srcdir)/test-build.sh --builddir=$(builddir) --srcdir=$(srcdir)
 
 if ENABLE_INSTALLED_TESTS

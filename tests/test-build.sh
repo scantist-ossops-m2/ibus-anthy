@@ -3,7 +3,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -67,6 +67,21 @@ init_environment()
 {
     if test x$FORCE_TEST != x ; then
         RUN_ARGS="$RUN_ARGS --force";
+    fi;
+    HAS_TAP=0;
+    if test -f /etc/redhat-release ; then
+        rpm -q --quiet python3-pycotap
+        if test $? -ne 0 ; then
+            echo "Not found python3-pycotap";
+            exit -1;
+	fi;
+        HAS_TAP=1;
+    fi;
+    TAP_DIR=`python -m site --user-site`/pycotap;
+    if test $HAS_TAP -ne 1 && \
+       test x"$TAP_DIR" != x && test ! -d "$TAP_DIR" ; then
+            echo "pip install pycotap --user";
+            pip install pycotap --user;
     fi;
     if test ! -f $BUILDDIR/../data/$ANTHY_SCHEMA_FILE ; then
         echo "Not found $BUILDDIR/../data/$ANTHY_SCHEMA_FILE";
