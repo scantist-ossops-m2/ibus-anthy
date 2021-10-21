@@ -79,6 +79,15 @@ zipcode.t: $(ANTHY_ZIPCODE_FILE)
 CLEANFILES += zipcode.t
 endif
 
+check:
+	S_YEAR=`date '+%Y'`;                                                 \
+	M_YEAR=`echo $$S_YEAR | sed 'y/0123456789/０１２３４５６７８９/'`;   \
+	grep -q $$M_YEAR $(srcdir)/era.t;                                    \
+	if test $$? -ne 0 ; then                                             \
+	    echo "This year $$M_YEAR is not included in era.y";              \
+	    exit 1;                                                          \
+	fi;
+
 install-data-hook:
 	if test -z "$(DESTDIR)"; then \
 	    glib-compile-schemas $(schemasdir); \
