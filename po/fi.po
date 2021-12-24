@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus-anthy 1.5.10\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus-anthy/issues\n"
 "POT-Creation-Date: 2019-04-22 23:08+0900\n"
-"PO-Revision-Date: 2021-06-12 17:04+0000\n"
+"PO-Revision-Date: 2021-11-07 02:22+0000\n"
 "Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/ibus/"
 "ibus-anthy/fi/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.6.2\n"
+"X-Generator: Weblate 4.8\n"
 
 #: data/ibus-anthy.appdata.xml.in:7
 msgid "Japanese input method"
@@ -550,7 +550,7 @@ msgstr ""
 
 #: setup/python2/setup.ui:167 setup/python3/setup.ui:167
 msgid "Clear"
-msgstr ""
+msgstr "Tyhjennä"
 
 #: setup/python2/setup.ui:170 setup/python3/setup.ui:170
 msgid "Commit"
@@ -578,7 +578,7 @@ msgstr ""
 
 #: setup/python2/setup.ui:263 setup/python3/setup.ui:263
 msgid "_Typing Method:"
-msgstr ""
+msgstr "_Kirjoitusmenetelmä:"
 
 #: setup/python2/setup.ui:297 setup/python3/setup.ui:297
 msgid "Conversion _Mode:"
@@ -681,7 +681,7 @@ msgstr "<b>Näppäimistön asettelu</b>"
 
 #: setup/python2/setup.ui:1127 setup/python3/setup.ui:1127
 msgid "Typing Method"
-msgstr ""
+msgstr "Kirjoitusmenetelmä"
 
 #: setup/python2/setup.ui:1168 setup/python3/setup.ui:1168
 msgid "_Left Thumb Shift Key:"
@@ -750,7 +750,7 @@ msgstr ""
 
 #: setup/python2/setup.ui:1522 setup/python3/setup.ui:1522
 msgid "Thumb Shift"
-msgstr ""
+msgstr "Peukalo muutos"
 
 #: setup/python2/setup.ui:1560 setup/python3/setup.ui:1560
 msgid "_Edit Dictionary Command:"
