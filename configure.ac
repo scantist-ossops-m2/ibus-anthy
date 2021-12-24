@@ -24,7 +24,7 @@ dnl - if not 1, append datestamp to the version number.
 m4_define([ibus_anthy_released], [1])
 m4_define([ibus_anthy_major_version], [1])
 m4_define([ibus_anthy_minor_version], [5])
-m4_define([ibus_anthy_micro_version], [13])
+m4_define([ibus_anthy_micro_version], [14])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_anthy_minor_version + ibus_anthy_micro_version)])
