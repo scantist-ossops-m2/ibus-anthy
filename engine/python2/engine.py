@@ -4,7 +4,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -127,9 +127,15 @@ class Engine(IBus.EngineSimple):
     __latin_with_shift = True
 
     def __init__(self, bus, object_path):
-        super(Engine, self).__init__(engine_name="anthy",
-                                     connection=bus.get_connection(),
-                                     object_path=object_path)
+        if hasattr(IBus.Engine.props, 'has_focus_id'):
+            super(Engine, self).__init__(engine_name="anthy",
+                                         connection=bus.get_connection(),
+                                         object_path=object_path,
+                                         has_focus_id=True)
+        else:
+            super(Engine, self).__init__(engine_name="anthy",
+                                         connection=bus.get_connection(),
+                                         object_path=object_path)
 
         self.add_table_by_locale(None)
         # create anthy context
@@ -1048,6 +1054,12 @@ class Engine(IBus.EngineSimple):
         return self.__argb(255, r, g, b)
 
     def do_focus_in(self):
+        self.do_focus_in_id(None, None)
+
+    def do_focus_out(self):
+        self.do_focus_out_id(None)
+
+    def do_focus_in_id(self, object_path, client):
         self.register_properties(self.__prop_list)
         self.__refresh_typing_mode_property()
         mode = self.__prefs.get_value('common', 'behavior-on-focus-out')
@@ -1059,7 +1071,7 @@ class Engine(IBus.EngineSimple):
         if size != self.__lookup_table.get_page_size():
             self.__lookup_table.set_page_size(size)
 
-    def do_focus_out(self):
+    def do_focus_out_id(self, object_path):
         if self.__has_input_purpose:
             self.__input_purpose = 0
         mode = self.__prefs.get_value('common', 'behavior-on-focus-out')
