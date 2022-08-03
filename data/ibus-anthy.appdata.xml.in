@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html -->
 <component type="inputmethod">
   <id>org.freedesktop.ibus.engine.anthy</id>
   <metadata_license>GFDL-1.3</metadata_license>
   <project_license>GPL-2.0</project_license>
   <name translatable="no">Anthy</name>
   <summary>Japanese input method</summary>
+  <icon type="remote" width="48" height="48">https://raw.githubusercontent.com/ibus/ibus-anthy/main/icons/ibus-anthy.png</icon>
   <description>
     <p>
       The Anthy input method is designed for entering Japanese text.
@@ -15,9 +17,29 @@
       out on a traditional keyboard.
     </p>
   </description>
+  <keywords>
+    <keyword>input-method</keyword>
+    <keyword>Japanese</keyword>
+  </keywords>
   <url type="homepage">https://github.com/ibus/ibus/wiki</url>
   <url type="bugtracker">https://github.com/ibus/ibus-anthy/issues</url>
   <url type="help">https://github.com/ibus/ibus/wiki/FAQ</url>
+  <url type="translate">https://translate.fedoraproject.org/projects/ibus/ibus-anthy/</url>
+  <releases>
+    <release version="latest">
+      <description>
+        <p>See the upstream release list.</p>
+      </description>
+      <url>https://github.com/ibus/ibus-anthy/releases</url>
+    </release>
+  </releases>
+  <compulsory_for_desktop>IBus</compulsory_for_desktop>
+  <screenshots>
+    <screenshot type="default">
+      <caption>The Anthy input method is designed for entering Japanese text.</caption>
+      <image type="source" width="236" height="200">http://ibus.github.io/images/2.png</image>
+    </screenshot>
+  </screenshots>
   <translation type="gettext">ibus-anthy</translation>
   <update_contact>tfujiwar_AT_redhat.com</update_contact>
 </component>
