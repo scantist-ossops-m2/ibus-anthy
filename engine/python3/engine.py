@@ -4,7 +4,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2023 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1531,14 +1531,14 @@ class Engine(IBus.EngineSimple):
         if self.__preedit_ja_string.is_empty():
             return False
         if self.__lookup_table_visible == True:
-            self.do_page_up()
+            self.__page_up(self)
         return True
 
     def __on_key_page_down(self):
         if self.__preedit_ja_string.is_empty():
             return False
         if self.__lookup_table_visible == True:
-            self.do_page_down()
+            self.__page_down(self)
         return True
 
     '''def __on_key_left(self):
