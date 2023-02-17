@@ -4,7 +4,7 @@
 # ibus-anthy - The Anthy engine for IBus
 #
 # Copyright (c) 2007-2008 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2023 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -179,6 +179,7 @@ def main():
             print >> sys.stderr, 'Unknown argument: %s' % o
             print_help(sys.stderr, 1)
 
+    IBus.init()
     if daemonize:
         if os.fork():
             sys.exit()
