@@ -151,6 +151,10 @@ class Engine(IBus.EngineSimple):
         self.__prop_dict = {}
         self.__input_purpose = 0
         self.__has_input_purpose = False
+        # OSK mode is designed for OSK on gnome-shell, which always shows
+        # IBus lookup window prior to the preedit and selecting a candidate
+        # causes the commmit instead of the selection.
+        self.__osk_mode = False
         if hasattr(IBus, 'InputPurpose'):
             self.__has_input_purpose = True
         try:
@@ -800,7 +804,10 @@ class Engine(IBus.EngineSimple):
             keyval = IBus.KEY_0
         else:
             keyval = IBus.KEY_1 + index
+        prev_cursor_pos = self.__cursor_pos
         self.__on_key_number(keyval)
+        if self.__osk_mode and prev_cursor_pos == self.__cursor_pos:
+            self.__on_key_return()
 
     def __commit_string(self, text):
         self.__reset()
@@ -1089,6 +1096,9 @@ class Engine(IBus.EngineSimple):
         self.__reset()
         self.__invalidate()
 
+    def do_set_capabilities(self, caps):
+        self.__osk_mode = True if caps & IBus.Capabilite.OSK else False
+
     def __destroy(self, obj):
         if self.__idle_id != 0:
             GLib.source_remove(self.__idle_id)
@@ -1143,7 +1153,10 @@ class Engine(IBus.EngineSimple):
         else:
             self.__cursor_pos = 0
         self.__fill_lookup_table()
-        self.__lookup_table_visible = False
+        if self.__osk_mode:
+            self.__lookup_table_visible = True
+        else:
+            self.__lookup_table_visible = False
 
     def __end_anthy_convert(self):
         if self.__convert_mode == CONV_MODE_OFF:
@@ -1348,7 +1361,8 @@ class Engine(IBus.EngineSimple):
                     self.__lookup_table.set_cursor_pos(0)
                 candidate = self.__lookup_table.get_candidate(0).get_text()
                 self.__segments[self.__cursor_pos] = 0, candidate
-                self.__lookup_table_visible = False
+                if not self.__osk_mode:
+                    self.__lookup_table_visible = False
             elif self.__segments[self.__cursor_pos][0] != \
                     NTH_UNCONVERTED_CANDIDATE:
                 buf = self.__context.get_segment(self.__cursor_pos,
@@ -1577,7 +1591,8 @@ class Engine(IBus.EngineSimple):
             return True
 
         self.__cursor_pos += 1
-        self.__lookup_table_visible = False
+        if not self.__osk_mode:
+            self.__lookup_table_visible = False
         self.__fill_lookup_table()
         self.__invalidate()
         return True
@@ -2308,7 +2323,10 @@ class Engine(IBus.EngineSimple):
         self.__convert_mode = CONV_MODE_PREDICTION
         self.__cursor_pos = 0
         self.__fill_lookup_table()
-        self.__lookup_table_visible = False
+        if self.__osk_mode:
+            self.__lookup_table_visible = True
+        else:
+            self.__lookup_table_visible = False
         self.__invalidate()
 
         return True
@@ -2387,7 +2405,10 @@ class Engine(IBus.EngineSimple):
         self.__convert_mode = CONV_MODE_ANTHY
         self.__cursor_pos = 0
         self.__fill_lookup_table()
-        self.__lookup_table_visible = False
+        if self.__osk_mode:
+            self.__lookup_table_visible = True
+        else:
+            self.__lookup_table_visible = False
         self.__invalidate()
 
         return True
@@ -2543,7 +2564,8 @@ class Engine(IBus.EngineSimple):
         index = self.__lookup_table.get_cursor_pos()
         candidate = self.__lookup_table.get_candidate(index).get_text()
         self.__segments[self.__cursor_pos] = index, candidate
-        self.__lookup_table_visible = False
+        if not self.__osk_mode:
+            self.__lookup_table_visible = False
         self.__on_key_right()
         self.__invalidate()
         return True
