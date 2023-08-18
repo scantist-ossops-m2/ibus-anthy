@@ -1935,7 +1935,8 @@ class Engine(IBus.EngineSimple):
 
         state = state & (IBus.ModifierType.SHIFT_MASK |
                          IBus.ModifierType.CONTROL_MASK |
-                         IBus.ModifierType.MOD1_MASK)
+                         IBus.ModifierType.MOD1_MASK |
+                         IBus.ModifierType.MOD4_MASK)
 
         # ignore key release events
         if not is_press:
