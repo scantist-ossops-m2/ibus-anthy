@@ -74,8 +74,12 @@ maybe_install_pycotap() {
 
     # Check if pycotap is already available.
     if ! python3 -m pycotap >/dev/null; then
-        echo "pycotap not found; installing via pip"
-        if ! pip install pycotap --user; then
+        PIP=pip3
+        if ! command -v $PIP &> /dev/null ; then
+            PIP=pip
+        fi
+        echo "pycotap not found; installing via $PIP"
+        if ! $PIP install pycotap --user; then
             echo "failed to install pycotap"
             exit -1
         fi
@@ -118,7 +122,7 @@ init_environment()
 
 run_ibus_daemon()
 {
-    ibus-daemon --daemonize --verbose;
+    ibus-daemon --daemonize --verbose --panel disable;
     sleep 1;
     SUSER=`echo "$USER" | cut -c 1-7`;
     ps -ef | grep "$SUSER" | grep ibus | grep -v grep;
