@@ -154,6 +154,7 @@ class Engine(IBus.EngineSimple):
         # IBus lookup window prior to the preedit and selecting a candidate
         # causes the commmit instead of the selection.
         self.__osk_mode = False
+        self.__selected_preedit_commit = False
         if hasattr(IBus, 'InputPurpose'):
             self.__has_input_purpose = True
         try:
@@ -812,7 +813,10 @@ class Engine(IBus.EngineSimple):
         prev_cursor_pos = self.__cursor_pos
         self.__on_key_number(keyval)
         if self.__osk_mode and prev_cursor_pos == self.__cursor_pos:
-            self.__on_key_return()
+            if self.__idle_id != 0:
+                self.__selected_preedit_commit = True
+            else:
+                self.__on_key_return()
 
     def __commit_string(self, text):
         self.__reset()
@@ -1328,6 +1332,9 @@ class Engine(IBus.EngineSimple):
         else:
             self.__update_convert_chars()
         self.__idle_id = 0
+        if self.__osk_mode and self.__selected_preedit_commit:
+            self.__on_key_return()
+            self.__selected_preedit_commit = False
 
     def __on_key_return(self):
         if self.__preedit_ja_string.is_empty():
