@@ -2,7 +2,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2010-2023 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2024 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2010-2013 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -342,6 +342,8 @@
 れいわ４ #T35*500 2022
 れいわ５ #T35*500 令和5
 れいわ５ #T35*500 2023
+れいわ６ #T35*500 令和6
+れいわ６ #T35*500 2024
 １８６８ #T35*500 明治1
 １８６９ #T35*500 明治2
 １８７０ #T35*500 明治3
@@ -502,3 +504,4 @@
 ２０２１ #T35*500 令和3
 ２０２２ #T35*500 令和4
 ２０２３ #T35*500 令和5
+２０２４ #T35*500 令和6
