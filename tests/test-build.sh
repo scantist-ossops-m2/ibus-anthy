@@ -28,6 +28,8 @@ ANTHY_SCHEMA_FILE=org.freedesktop.ibus.engine.anthy.gschema.xml;
 SCHEMA_TMPDIR="";
 FORCE_TEST="";
 RUN_ARGS="";
+# Fedora 39 Docker does not provide USER
+USER=${USER:-`id | sed -e "s/uid=[0-9]*(\([^)]*\)).*/\1/"`};
 
 usage()
 {
@@ -73,7 +75,8 @@ maybe_install_pycotap() {
     fi;
 
     # Check if pycotap is already available.
-    if ! python3 -m pycotap >/dev/null; then
+    # No pycotap.__main__ and cannot be directly executed with `-m` option
+    if ! python3 -c "import pycotap"; then
         PIP=pip3
         if ! command -v $PIP &> /dev/null ; then
             PIP=pip
@@ -122,7 +125,8 @@ init_environment()
 
 run_ibus_daemon()
 {
-    ibus-daemon --daemonize --verbose --panel disable;
+    # this script can run without Display
+    ibus-daemon --daemonize --verbose --panel disable --emoji-extension disable;
     sleep 1;
     SUSER=`echo "$USER" | cut -c 1-7`;
     ps -ef | grep "$SUSER" | grep ibus | grep -v grep;
@@ -141,8 +145,10 @@ run_test_suite()
         env IBUS_ANTHY_ENGINE_PATH=$SRCDIR/../engine/python$i          \
             IBUS_ANTHY_SETUP_PATH=$SRCDIR/../setup/python$i            \
         python$i -u $SRCDIR/anthytest.py $RUN_ARGS;
-        if test $? -ne 0 ; then
-            exit -1;
+        RETVAL=$?
+        # Return 5 with "NO TESTS RAN" in unittest/runner.py since python 3.12.1
+        if test $RETVAL -ne 0 && test $RETVAL -ne 5; then
+            exit 1;
         fi;
         if test x$FORCE_TEST = x ; then
             rm -r $HOME/.anthy;
